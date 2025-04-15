@@ -1,0 +1,68 @@
+<div class="flex justify-center items-center">
+  <div class="container flex justify-center flex-col items-center mt-10 bg-gray-100 max-w-md mx-auto p-6 rounded-lg shadow-md file-upload-container">
+    <!-- Imagen de previsualización -->
+    <div *ngIf="!selectedFile" class="w-full flex justify-center items-center">
+      <img class="w-full max-w-none rounded-lg"
+        src="https://dummyimage.com/500x500/cccccc/000000&text=Aun no se ha cargado ningun archivo"
+        alt="No Image Available">
+    </div>
+    
+    <!-- Información del archivo seleccionado -->
+    <div *ngIf="selectedFile" class="w-full bg-white p-4 rounded-lg border border-gray-200 mb-4">
+      <div class="flex items-center">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-blue-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+        </svg>
+        <div>
+          <p class="font-semibold">{{ selectedFile.name }}</p>
+          <p class="text-sm text-gray-500">{{ (selectedFile.size / 1024).toFixed(2) }} KB</p>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Barra de progreso -->
+    <div *ngIf="uploadStatus === 'uploading'" class="w-full mb-4">
+      <div class="w-full bg-gray-200 rounded-full h-2.5">
+        <div class="bg-blue-600 h-2.5 rounded-full progress-bar" [style.width.%]="uploadProgress"></div>
+      </div>
+      <p class="text-sm text-center mt-1">{{ uploadProgress }}% Completado</p>
+    </div>
+    
+    <!-- Mensaje de éxito -->
+    <div *ngIf="uploadStatus === 'success'" class="w-full mb-4 p-3 bg-green-100 text-green-700 rounded-lg success-animation">
+      <p class="text-center">¡Archivo subido correctamente!</p>
+    </div>
+    
+    <!-- Mensaje de error -->
+    <div *ngIf="errorMessage" class="w-full mb-4 p-3 bg-red-100 text-red-700 rounded-lg">
+      <p class="text-center">{{ errorMessage }}</p>
+    </div>
+    
+    <!-- Input para seleccionar archivo -->
+    <div class="w-full mb-4">
+      <label class="block mb-2 text-sm font-medium text-gray-900">Seleccionar archivo</label>
+      <input 
+        type="file" 
+        class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none file-input" 
+        (change)="onFileSelected($event)"
+        accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document">
+      <p class="mt-1 text-sm text-gray-500">Solo se permiten archivos PDF y Word (DOC, DOCX)</p>
+    </div>
+    
+    <!-- Botones de acción -->
+    <div class="flex space-x-2">
+      <button 
+        *ngIf="selectedFile && uploadStatus !== 'uploading' && uploadStatus !== 'success'"
+        (click)="uploadFile()" 
+        class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+        Subir Archivo
+      </button>
+      <button 
+        *ngIf="selectedFile || uploadStatus === 'success' || uploadStatus === 'error'"
+        (click)="resetForm()" 
+        class="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500">
+        Reiniciar
+      </button>
+    </div>
+  </div>
+</div>
