@@ -8,5 +8,6 @@ import { RouterOutlet } from '@angular/router';
   styleUrl: './app.component.css'
 })
 export class AppComponent {
-  title = 'biblio_front';
+  title = 'BiblioAccess';
+  email = 'name@flowbite.com';
 }
