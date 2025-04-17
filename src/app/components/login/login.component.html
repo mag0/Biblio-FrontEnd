@@ -1,0 +1,50 @@
+<div class="flex justify-center items-center min-h-screen">
+  <div class="w-full max-w-md p-6 bg-white rounded-lg shadow-md">
+    <h2 class="text-2xl font-bold text-center text-gray-800 mb-6">Iniciar Sesión</h2>
+    
+    <div *ngIf="errorMessage" class="p-4 mb-4 text-sm text-red-700 bg-red-100 rounded-lg">
+      {{ errorMessage }}
+    </div>
+    
+    <form (ngSubmit)="onSubmit()" #loginForm="ngForm">
+      <div class="mb-4">
+        <label for="email" class="block mb-2 text-sm font-medium text-gray-700">Correo Electrónico</label>
+        <input 
+          type="email" 
+          id="email" 
+          name="email"
+          [(ngModel)]="loginData.email"
+          required
+          email
+          class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+          placeholder="nombre@ejemplo.com">
+      </div>
+      
+      <div class="mb-6">
+        <label for="password" class="block mb-2 text-sm font-medium text-gray-700">Contraseña</label>
+        <input 
+          type="password" 
+          id="password" 
+          name="password"
+          [(ngModel)]="loginData.password"
+          required
+          minlength="6"
+          class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+          placeholder="••••••••">
+      </div>
+      
+      <button 
+        type="submit" 
+        [disabled]="loginForm.invalid || isLoading"
+        class="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center disabled:opacity-50 disabled:cursor-not-allowed">
+        <span *ngIf="isLoading" class="inline-block mr-2">
+          <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+        </span>
+        <span>Iniciar Sesión</span>
+      </button>
+    </form>
+  </div>
+</div>

@@ -12,27 +12,44 @@
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:application",
-          "options": {
-            "outputPath": "dist/biblio_front",
-            "index": "src/index.html",
-            "browser": "src/main.ts",
-            "polyfills": [
-              "zone.js"
-            ],
-            "tsConfig": "tsconfig.app.json",
-            "assets": [
-              {
-                "glob": "**/*",
-                "input": "public"
-              }
-            ],
-            "styles": [
-              "src/styles.css"
-            ],
-            "scripts": []
-          },
+            "options": {
+              "outputPath": "dist/biblio_front",
+              "index": "src/index.html",
+              "browser": "src/main.ts",
+              "polyfills": [
+                "zone.js"
+              ],
+              "tsConfig": "tsconfig.app.json",
+              "assets": [
+                {
+                  "glob": "**/*",
+                  "input": "public"
+                }
+              ],
+              "styles": [
+                "src/styles.css"
+              ],
+              "scripts": []
+            },
           "configurations": {
+            "development": {
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.ts"
+                }
+              ]
+            },
             "production": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.prod.ts"
+                }
+              ],
               "budgets": [
                 {
                   "type": "initial",
@@ -58,7 +75,24 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
+            "development": {
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.ts"
+                }
+              ]
+            },
             "production": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.prod.ts"
+                }
+              ],
               "buildTarget": "biblio_front:build:production"
             },
             "development": {

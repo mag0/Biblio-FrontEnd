@@ -4,7 +4,7 @@ import { NavBarComponent } from './components/nav-bar/nav-bar.component';
 import { FileUploadComponent } from './components/file-upload/file-upload.component';
 
 @Component({
-  selector: 'root',
+  selector: 'app-root',
   imports: [RouterOutlet, NavBarComponent, FileUploadComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'

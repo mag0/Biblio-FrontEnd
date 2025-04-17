@@ -1,1 +1,47 @@
-/* You can add global styles to this file, and also import other style files */
+/* Estilos globales para la aplicación */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+:root {
+  --primary-color: #3b82f6;
+  --primary-hover: #2563eb;
+  --danger-color: #dc2626;
+  --danger-hover: #b91c1c;
+  --text-dark: #1f2937;
+  --text-light: #6b7280;
+  --bg-light: #f9fafb;
+}
+
+body {
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  background-color: var(--bg-light);
+  color: var(--text-dark);
+  min-height: 100vh;
+}
+
+/* Mejoras de accesibilidad */
+:focus {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 2px;
+}
+
+/* Mejoras responsive */
+@media (max-width: 640px) {
+  h1 {
+    font-size: 1.5rem !important;
+  }
+  
+  .container {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+}
+
+/* Animaciones */
+.fade-in {
+  animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}

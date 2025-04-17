@@ -1,14 +1,17 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpEvent, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { EnvService } from './env.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class FileUploadService {
-  private apiUrl = 'http://localhost:5000/api'; // Ajusta esta URL según la configuración de tu API .NET
+  private apiUrl: string;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private envService: EnvService) {
+    this.apiUrl = this.envService.getApiUrl(); // URL de la API desde el servicio de entorno
+  }
 
   /**
    * Sube un archivo al servidor
