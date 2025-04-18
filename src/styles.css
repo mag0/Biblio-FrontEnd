@@ -24,6 +24,10 @@ body {
   outline-offset: 2px;
 }
 
+button{
+  cursor: pointer;
+}
+
 /* Mejoras responsive */
 @media (max-width: 640px) {
   h1 {

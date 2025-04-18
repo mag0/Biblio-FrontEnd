@@ -5,10 +5,9 @@ import { EnvService } from './env.service';
 
 export interface User {
   id: string;
-  username: string;
+  userName: string;
   email: string;
-  nombre: string;
-  apellido: string;
+  fullName: string;
 }
 
 export interface LoginRequest {
@@ -54,14 +53,19 @@ export class AuthService {
    * @param credentials Credenciales de login (email y password)
    * @returns Observable con la respuesta de autenticación
    */
-  login(credentials: LoginRequest): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${this.apiUrl}/auth/login`, credentials)
+  login(credentials: LoginRequest): Observable<{ token: string; userId: string }> {
+    return this.http.post<{ token: string; userId: string }>(`${this.apiUrl}/auth/login`, credentials)
       .pipe(
         tap(response => {
-          // Guardar el token en localStorage
-          localStorage.setItem(this.tokenKey, response.token);
-          // Actualizar el BehaviorSubject con el usuario actual
-          this.currentUserSubject.next(response.user);
+          console.log('Respuesta del backend:', response); // Depurar la respuesta
+          localStorage.setItem(this.tokenKey, response.token); // Guardar el token
+          const user: User = { // Crear un objeto User parcial
+            id: response.userId,
+            userName: '',
+            email: '',
+            fullName: ''
+          };
+          this.currentUserSubject.next(user); // Actualizar el BehaviorSubject
         })
       );
   }
@@ -97,6 +101,10 @@ export class AuthService {
    * @returns Observable con los datos del usuario
    */
   getUserProfile(): Observable<User> {
-    return this.http.get<User>(`${this.apiUrl}/users/profile`);
+    return this.http.get<User>(`${this.apiUrl}/User/profile`);
+  }
+
+  getCurrentUser(): User | null {
+    return this.currentUserSubject.value; // Permitir acceso al valor actual
   }
 }
