@@ -38,26 +38,14 @@ export class ProfileComponent implements OnInit {
 
   const currentUser = this.authService.getCurrentUser(); // Obtener el usuario parcial
   const userId = currentUser?.id;
+  console.log(currentUser)
 
-  if (!userId) {
-    console.error('No se encontró un userId en el usuario actual.');
-    this.errorMessage = 'No se pudo cargar el perfil porque el ID de usuario no está disponible.';
-    this.isLoading = false;
-    return;
-  }
+  // if (!userId) {
+  //   console.error('No se encontró un userId en el usuario actual.');
+  //   this.errorMessage = 'No se pudo cargar el perfil porque el ID de usuario no está disponible.';
+  //   this.isLoading = false;
+  // }
 
-  this.userService.getUserById(userId).subscribe({
-    next: (userData) => {
-      console.log('Datos del usuario recibidos:', userData);
-      this.user = userData; // Actualizar el usuario completo
-      this.isLoading = false;
-    },
-    error: (error) => {
-      console.error('Error al cargar el perfil:', error);
-      this.errorMessage = 'No se pudo cargar la información del perfil.';
-      this.isLoading = false;
-    },
-  });
 }
 
   /**

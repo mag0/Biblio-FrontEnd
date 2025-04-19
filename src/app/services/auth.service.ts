@@ -101,10 +101,30 @@ export class AuthService {
    * @returns Observable con los datos del usuario
    */
   getUserProfile(): Observable<User> {
-    return this.http.get<User>(`${this.apiUrl}/User/profile`);
+    const token = localStorage.getItem(this.tokenKey);
+    return this.http.get<User>(`${this.apiUrl}/user/me`, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
   }
 
   getCurrentUser(): User | null {
+
+    if(!this.currentUserSubject.value) {
+       this.getUserProfile().subscribe({
+        next: (userData) => {
+          console.log('Datos del usuario recibidos:', userData);
+          this.currentUserSubject.next(userData); // Actualizar el BehaviorSubject
+        },
+        error: (error) => {
+          console.error('Error al cargar el perfil:', error);
+          this.currentUserSubject.next(null); // Actualizar el BehaviorSubject
+        },
+      });
+      }
+      
+      
     return this.currentUserSubject.value; // Permitir acceso al valor actual
   }
 }
