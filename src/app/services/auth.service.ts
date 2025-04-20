@@ -109,10 +109,9 @@ export class AuthService {
     });
   }
 
-  getCurrentUser(): User | null {
-
-    if(!this.currentUserSubject.value) {
-       this.getUserProfile().subscribe({
+  getCurrentUser(): Observable<User | null> {
+    if (!this.currentUserSubject.value) {
+      this.getUserProfile().subscribe({
         next: (userData) => {
           console.log('Datos del usuario recibidos:', userData);
           this.currentUserSubject.next(userData); // Actualizar el BehaviorSubject
@@ -122,9 +121,7 @@ export class AuthService {
           this.currentUserSubject.next(null); // Actualizar el BehaviorSubject
         },
       });
-      }
-      
-      
-    return this.currentUserSubject.value; // Permitir acceso al valor actual
+    }
+    return this.currentUser$; // Retornar el observable para manejar el estado de forma reactiva
   }
 }
