@@ -12,9 +12,9 @@ import { UserService } from '../../services/user.service';
   templateUrl: './profile.component.html',
 })
 export class ProfileComponent implements OnInit {
-  user: User | null = null;
-  isLoading: boolean = true;
-  errorMessage: string = '';
+  user: User | null = null; // Usuario cargado desde el API
+  isLoading: boolean = true; // Indicador de carga
+  errorMessage: string = ''; // Mensaje de error si ocurre algún fallo
 
   constructor(private authService: AuthService, private userService: UserService, private router: Router) {}
 
@@ -25,31 +25,33 @@ export class ProfileComponent implements OnInit {
       return;
     }
 
-    // Cargar los datos del perfil del usuario
+    // Cargar el perfil del usuario
     this.loadUserProfile();
   }
 
   /**
-   * Carga los datos del perfil del usuario desde el API
+   * Cargar los datos del perfil del usuario desde el backend
    */
   loadUserProfile(): void {
-  this.isLoading = true;
-  this.errorMessage = '';
+    this.isLoading = true;
+    this.errorMessage = '';
 
-  const currentUser = this.authService.getCurrentUser(); // Obtener el usuario parcial
-  const userId = currentUser?.id;
-  console.log(currentUser)
-
-  // if (!userId) {
-  //   console.error('No se encontró un userId en el usuario actual.');
-  //   this.errorMessage = 'No se pudo cargar el perfil porque el ID de usuario no está disponible.';
-  //   this.isLoading = false;
-  // }
-
-}
+    this.authService.getCurrentUser().subscribe({
+      next: (userData) => {
+        console.log('Datos del usuario recibidos:', userData);
+        this.user = userData; // Asignar los datos a la propiedad `user`
+        this.isLoading = false; // Marcar como completada la carga
+      },
+      error: (error) => {
+        console.error('Error al cargar el perfil:', error);
+        this.errorMessage = 'No se pudo cargar la información del perfil.';
+        this.isLoading = false; // Terminar el estado de carga
+      },
+    });
+  }
 
   /**
-   * Cierra la sesión del usuario
+   * Cerrar sesión del usuario
    */
   logout(): void {
     this.authService.logout();
