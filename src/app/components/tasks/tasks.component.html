@@ -1,0 +1,23 @@
+<h2>Lista de Tareas</h2>
+
+<ul class="collapsible">
+    <li *ngFor="let task of tasks">
+        <div class="collapsible-header">
+            <h5>{{ task.nombre }}</h5>
+            <a class="waves-effect waves-light btn-large" [ngClass]="{ 'disabled-btn': task.estado !== 'Disponible' }"
+                [style.margin-left]="'auto'" [style.cursor]="task.estado === 'Disponible' ? 'pointer' : 'not-allowed'"
+                [style.background-color]="task.estado === 'Disponible' ? '#4caf50' : '#bdbdbd'"
+                [style.color]="task.estado === 'Disponible' ? 'white' : '#757575'"
+                (click)="task.estado === 'Disponible' && acceptTask(task, $event)">
+                {{ task.estado === 'Disponible' ? 'Aceptar' : 'Aceptada' }}
+            </a>
+        </div>
+        <div class="collapsible-body">
+            <p><strong>Descripción:</strong> {{ task.descripcion }}</p>
+            <p><strong>Vencimiento:</strong> {{ task.vencimiento }}</p>
+            <p><strong>Dificultad:</strong> {{ task.dificultad }}</p>
+            <p><strong>Voluntario:</strong> {{ task.voluntario ? task.voluntario : 'Sin asignar' }}</p>
+            <p><strong>Archivo:</strong> {{ task.archivo.nombre }}</p>
+        </div>
+    </li>
+</ul>

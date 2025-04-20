@@ -1,66 +1,68 @@
-<div class="container mx-auto p-3 sm:p-6 max-w-4xl">
-  <div class="bg-white rounded-lg shadow-md p-4 sm:p-6">
-    <h1 class="text-2xl font-bold text-gray-800 mb-6">Mi Perfil</h1>
+<div class="container" style="padding: 2rem;">
+  <div class="card z-depth-2">
+    <div class="card-content">
+      <span class="card-title blue-text text-darken-2">Mi Perfil</span>
 
-    <!-- Indicador de carga -->
-    <div *ngIf="isLoading" class="flex justify-center items-center py-8">
-      <svg class="animate-spin h-8 w-8 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none"
-        viewBox="0 0 24 24">
-        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-        <path class="opacity-75" fill="currentColor"
-          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
-        </path>
-      </svg>
-    </div>
-
-    <!-- Mensaje de error -->
-    <div *ngIf="errorMessage" class="p-4 mb-4 text-sm text-red-700 bg-red-100 rounded-lg">
-      {{ errorMessage }}
-    </div>
-
-    <!-- Información del usuario -->
-    <div *ngIf="user && !isLoading" class="space-y-6">
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
-        <div class="bg-gray-50 p-4 rounded-lg">
-          <h2 class="text-lg font-semibold text-gray-700 mb-2">Información Personal</h2>
-          <div class="space-y-3">
-            <div>
-              <p class="text-sm text-gray-500">Nombre Completo</p>
-              <p class="font-medium">{{ user.fullName }}</p>
+      <!-- Indicador de carga -->
+      <div *ngIf="isLoading" class="center" style="padding: 2rem;">
+        <div class="preloader-wrapper active">
+          <div class="spinner-layer spinner-blue-only">
+            <div class="circle-clipper left">
+              <div class="circle"></div>
             </div>
-            <div>
-              <p class="text-sm text-gray-500">Nombre de Usuario</p>
-              <p class="font-medium">{{ user.userName }}</p>
+            <div class="gap-patch">
+              <div class="circle"></div>
             </div>
-            <div>
-              <p class="text-sm text-gray-500">Correo Electrónico</p>
-              <p class="font-medium">{{ user.email }}</p>
+            <div class="circle-clipper right">
+              <div class="circle"></div>
             </div>
-          </div>
-        </div>
-
-        <div class="bg-gray-50 p-4 rounded-lg">
-          <h2 class="text-lg font-semibold text-gray-700 mb-2">Información de Cuenta</h2>
-          <div class="space-y-3">
-            <div>
-              <p class="text-sm text-gray-500">ID de Usuario</p>
-              <p class="font-medium">{{ user.id }}</p>
-            </div>
-            <!-- Más información de la cuenta si está disponible -->
           </div>
         </div>
       </div>
 
-      <!-- Botones de acción -->
-      <div class="flex flex-col sm:flex-row justify-between sm:justify-end mt-6 space-y-3 sm:space-y-0 sm:space-x-3">
-        <button (click)="loadUserProfile()"
-          class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 w-full sm:w-auto">
-          Actualizar Datos
-        </button>
-        <button (click)="logout()"
-          class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 w-full sm:w-auto">
-          Cerrar Sesión
-        </button>
+      <!-- Mensaje de error -->
+      <div *ngIf="errorMessage" class="card-panel red lighten-4 red-text text-darken-4">
+        {{ errorMessage }}
+      </div>
+
+      <!-- Información del usuario -->
+      <div *ngIf="user && !isLoading">
+        <div class="row">
+          <div class="col s12">
+            <div class="card-panel grey lighten-5">
+              <h6 class="blue-text text-darken-2">Información Personal</h6>
+              <div>
+                <p class="grey-text text-darken-1">Nombre Completo</p>
+                <p class="black-text">{{ user.fullName }}</p>
+              </div>
+              <div>
+                <p class="grey-text text-darken-1">Nombre de Usuario</p>
+                <p class="black-text">{{ user.userName }}</p>
+              </div>
+              <div>
+                <p class="grey-text text-darken-1">Correo Electrónico</p>
+                <p class="black-text">{{ user.email }}</p>
+              </div>
+            </div>
+          </div>
+          <div class="col s12">
+            <div class="card-panel grey lighten-5">
+              <h6 class="blue-text text-darken-2">Información de Cuenta</h6>
+              <div>
+                <p class="grey-text text-darken-1">ID de Usuario</p>
+                <p class="black-text">{{ user.id }}</p>
+              </div>
+              <!-- Más información de la cuenta si está disponible -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Botón de acción -->
+        <div class="center-align" style="margin-top: 2rem;">
+          <button (click)="loadUserProfile()" class="btn waves-effect waves-light blue">
+            Actualizar Datos
+          </button>
+        </div>
       </div>
     </div>
   </div>

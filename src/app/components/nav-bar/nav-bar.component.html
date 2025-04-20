@@ -1,61 +1,45 @@
-<nav class="bg-white border-gray-200 dark:bg-gray-900 sticky top-0 z-50 shadow-sm">
-  <div class="flex flex-wrap items-center justify-between max-w-screen-xl mx-auto p-4">
-    <a [routerLink]="['/']" class="flex items-center space-x-3 rtl:space-x-reverse">
-      <img src="https://flowbite.com/docs/images/logo.svg" class="h-8" alt="Flowbite Logo" />
-      <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">{{title}}</span>
+<nav class="nav-wrapper blue sticky top-0 z-depth-1" *ngIf="isAuthenticated">
+  <div class="container">
+    <!-- Título alineado a la izquierda -->
+    <a [routerLink]="['/']" class="brand-logo left white-text">BiblioAccess</a>
+    <a href="#" data-target="mobile-demo" class="sidenav-trigger right">
+      <i class="material-icons white-text">menu</i> <!-- Icono clásico de tres rayitas horizontales -->
     </a>
-    <div class="flex items-center md:order-2 space-x-1 md:space-x-2 rtl:space-x-reverse">
-      <!-- Mostrar estos botones solo si NO está autenticado -->
-      <ng-container *ngIf="!isAuthenticated">
-        <a [routerLink]="['/login']"
-          class="text-gray-800 dark:text-white hover:bg-gray-50 focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-4 py-2 md:px-5 md:py-2.5 dark:hover:bg-gray-700 focus:outline-none dark:focus:ring-gray-800">Iniciar
-          Sesión</a>
-      </ng-container>
 
-      <!-- Mostrar estos botones solo si está autenticado -->
-      <ng-container *ngIf="isAuthenticated">
-        <a [routerLink]="['/profile']"
-          class="hidden sm:inline-block text-gray-800 dark:text-white hover:bg-gray-50 focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-4 py-2 md:px-5 md:py-2.5 dark:hover:bg-gray-700 focus:outline-none dark:focus:ring-gray-800">Mi
-          Perfil</a>
-        <button (click)="logout()"
-          class="hidden sm:inline-block text-white bg-red-600 hover:bg-red-700 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-4 py-2 md:px-5 md:py-2.5 focus:outline-none">Cerrar
-          Sesión</button>
-      </ng-container>
-      <button (click)="toggleMobileMenu()" type="button"
-        class="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
-        aria-controls="mobile-menu" aria-expanded="false">
-        <span class="sr-only">Abrir menú</span>
-        <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 17 14">
-          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-            d="M1 1h15M1 7h15M1 13h15" />
-        </svg>
-      </button>
-    </div>
-    <div id="mobile-menu" [class.hidden]="!mobileMenuOpen"
-      class="items-center justify-between w-full md:flex md:w-auto md:order-1">
-      <ul class="flex flex-col mt-4 font-medium md:flex-row md:mt-0 md:space-x-8 rtl:space-x-reverse">
-        <!-- Enlaces adicionales para móvil cuando está autenticado -->
-        <li *ngIf="isAuthenticated" class="md:hidden">
-          <a [routerLink]="['/profile']"
-            class="block py-2 px-3 text-gray-900 border-b border-gray-100 hover:bg-gray-50 md:hover:bg-transparent md:border-0 md:hover:text-blue-600 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-blue-500 md:dark:hover:bg-transparent dark:border-gray-700">Mi
-            Perfil</a>
-        </li>
-        <li *ngIf="isAuthenticated" class="md:hidden">
-          <a [routerLink]="['/upload']"
-            class="block py-2 px-3 text-gray-900 border-b border-gray-100 hover:bg-gray-50 md:hover:bg-transparent md:border-0 md:hover:text-blue-600 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-blue-500 md:dark:hover:bg-transparent dark:border-gray-700">Subir
-            Archivo</a>
-        </li>
-        <li *ngIf="isAuthenticated" class="md:hidden">
-          <a [routerLink]="['/ocr-viewer']"
-            class="block py-2 px-3 text-gray-900 border-b border-gray-100 hover:bg-gray-50 md:hover:bg-transparent md:border-0 md:hover:text-blue-600 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-blue-500 md:dark:hover:bg-transparent dark:border-gray-700">Visualizador
-            OCR</a>
-        </li>
-        <li *ngIf="isAuthenticated" class="md:hidden">
-          <a href="javascript:void(0)" (click)="logout()"
-            class="block py-2 px-3 text-red-600 border-b border-gray-100 hover:bg-gray-50 md:hover:bg-transparent md:border-0 md:hover:text-red-700 md:p-0 dark:text-red-500 md:dark:hover:text-red-500 dark:hover:bg-gray-700 dark:hover:text-red-500 md:dark:hover:bg-transparent dark:border-gray-700">Cerrar
-            Sesión</a>
-        </li>
-      </ul>
-    </div>
+    <!-- Navegador centrado -->
+    <ul class="center-align hide-on-med-and-down" style="position: absolute; left: 50%; transform: translateX(-50%);">
+      <li>
+        <a [routerLink]="['/home']" class="white-text">Home</a>
+      </li>
+      <li>
+        <a [routerLink]="['/tasks']" class="white-text">Tasks</a>
+      </li>
+      <li>
+        <a [routerLink]="['/profile']" class="white-text">Profile</a>
+      </li>
+    </ul>
+
+    <!-- Cerrar Sesión alineado a la derecha -->
+    <ul class="right hide-on-med-and-down">
+      <li>
+        <a (click)="logout()" class="white-text">Cerrar Sesión</a>
+      </li>
+    </ul>
   </div>
+
+  <!-- Menú móvil -->
+  <ul class="sidenav" id="mobile-demo">
+    <li>
+      <a [routerLink]="['/home']" class="black-text">Home</a>
+    </li>
+    <li>
+      <a [routerLink]="['/tasks']" class="black-text">Tasks</a>
+    </li>
+    <li>
+      <a [routerLink]="['/profile']" class="black-text">Profile</a>
+    </li>
+    <li>
+      <a (click)="logout()" class="black-text">Cerrar Sesión</a>
+    </li>
+  </ul>
 </nav>
