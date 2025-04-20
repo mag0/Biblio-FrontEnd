@@ -33,6 +33,12 @@
       <p class="text-center">¡Archivo subido correctamente!</p>
     </div>
     
+    <!-- Respuesta JSON del OCR -->
+    <div *ngIf="ocrResponse" class="w-full mb-4 p-3 bg-blue-100 text-blue-700 rounded-lg">
+      <h3 class="font-bold mb-2">Respuesta OCR:</h3>
+      <pre class="bg-gray-800 text-white p-3 rounded-lg overflow-auto max-h-60 text-xs">{{ ocrResponse | json }}</pre>
+    </div>
+    
     <!-- Mensaje de error -->
     <div *ngIf="errorMessage" class="w-full mb-4 p-3 bg-red-100 text-red-700 rounded-lg">
       <p class="text-center">{{ errorMessage }}</p>
@@ -58,10 +64,22 @@
         Subir Archivo
       </button>
       <button 
+        *ngIf="selectedFile && uploadStatus !== 'uploading' && selectedFile.type === 'application/pdf'"
+        (click)="processOcr()" 
+        class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500">
+        Procesar OCR
+      </button>
+      <button 
         *ngIf="selectedFile || uploadStatus === 'success' || uploadStatus === 'error'"
         (click)="resetForm()" 
         class="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500">
         Reiniciar
+      </button>
+      <button 
+        *ngIf="ocrResponse"
+        (click)="goToOcrViewer()" 
+        class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500">
+        Ver Resultados OCR
       </button>
     </div>
   </div>

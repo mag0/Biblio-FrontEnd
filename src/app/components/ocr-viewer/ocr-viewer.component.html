@@ -1,0 +1,144 @@
+<div class="container mx-auto p-4 max-w-6xl">
+  <!-- Mensaje si no hay datos -->
+  <div *ngIf="!ocrData" class="text-center p-8 bg-gray-100 rounded-lg shadow">
+    <p class="text-xl text-gray-700">No hay datos OCR disponibles. Por favor, procese un documento primero.</p>
+    <button 
+      routerLink="/upload"
+      class="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+      Ir a cargar documento
+    </button>
+  </div>
+
+  <!-- Visualizador OCR -->
+  <div *ngIf="ocrData" class="bg-white rounded-lg shadow-lg overflow-hidden">
+    <!-- Cabecera con metadatos -->
+    <div class="bg-gray-800 text-white p-4">
+      <h1 class="text-2xl font-bold mb-2">{{ ocrData.metadatos['nombreArchivo'] }}</h1>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 text-sm">
+        <div>
+          <span class="font-semibold">Tamaño:</span> {{ ocrData.metadatos['tamaño'] }}
+        </div>
+        <div>
+          <span class="font-semibold">Páginas:</span> {{ ocrData.metadatos['totalPáginas'] }}
+        </div>
+        <div>
+          <span class="font-semibold">Tiempo de procesamiento:</span> {{ ocrData.metadatos['tiempoProcesamiento'] }}
+        </div>
+        <div>
+          <span class="font-semibold">Estado:</span> 
+          <span [ngClass]="{'text-green-400': ocrData['estado'] === 'éxito', 'text-red-400': ocrData['estado'] !== 'éxito'}">
+            {{ ocrData['estado'] }}
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Estadísticas -->
+    <div class="bg-gray-100 p-4 border-b border-gray-200">
+      <h2 class="text-lg font-semibold mb-2">Estadísticas</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 text-sm">
+        <div>
+          <span class="font-semibold">Total caracteres:</span> {{ ocrData.metadatos['estadísticas']['totalCaracteres'] }}
+        </div>
+        <div>
+          <span class="font-semibold">Total palabras:</span> {{ ocrData.metadatos['estadísticas']['totalPalabras'] }}
+        </div>
+        <div>
+          <span class="font-semibold">Promedio caracteres/página:</span> 
+          {{ ocrData.metadatos['estadísticas']['promedioCaracteresPorPágina'] | number:'1.2-2' }}
+        </div>
+        <div>
+          <span class="font-semibold">Promedio palabras/página:</span> 
+          {{ ocrData.metadatos['estadísticas']['promedioPalabrasPorPágina'] | number:'1.2-2' }}
+        </div>
+      </div>
+    </div>
+
+    <!-- Navegación de páginas -->
+    <div class="flex justify-between items-center p-4 border-b border-gray-200">
+      <button 
+        [disabled]="currentPage <= 1"
+        (click)="goToPage(currentPage - 1)"
+        class="px-3 py-1 bg-gray-200 text-gray-800 rounded hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed">
+        &laquo; Anterior
+      </button>
+      
+      <div class="text-center">
+        <span class="font-semibold">Página {{ currentPage }} de {{ ocrData.metadatos['totalPáginas'] }}</span>
+      </div>
+      
+      <button 
+        [disabled]="currentPage >= ocrData.metadatos['totalPáginas']"
+        (click)="goToPage(currentPage + 1)"
+        class="px-3 py-1 bg-gray-200 text-gray-800 rounded hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed">
+        Siguiente &raquo;
+      </button>
+    </div>
+
+    <!-- Contenido de la página actual -->
+    <div class="p-6">
+      <div class="flex justify-between items-center mb-4">
+        <h3 class="text-xl font-semibold">Página {{ currentPage }}</h3>
+        <div>
+          <span class="text-sm text-gray-600 mr-4">
+            <span class="font-semibold">Confianza:</span> {{ getCurrentPage()?.confianza }}%
+          </span>
+          <span class="text-sm text-gray-600 mr-4">
+            <span class="font-semibold">Caracteres:</span> {{ getCurrentPage()?.caracteres }}
+          </span>
+          <span class="text-sm text-gray-600">
+            <span class="font-semibold">Palabras:</span> {{ getCurrentPage()?.palabras }}
+          </span>
+        </div>
+      </div>
+
+      <!-- Modo visualización -->
+      <div *ngIf="!isEditing" class="bg-gray-50 p-4 rounded-lg border border-gray-200 min-h-[300px] whitespace-pre-wrap">
+        {{ getCurrentPage()?.texto }}
+      </div>
+
+      <!-- Modo edición -->
+      <div *ngIf="isEditing" class="mb-4">
+        <textarea 
+          [(ngModel)]="editingText"
+          class="w-full p-4 border border-gray-300 rounded-lg min-h-[300px] focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          placeholder="Edite el texto de esta página..."></textarea>
+      </div>
+
+      <!-- Botones de acción -->
+      <div class="mt-4 flex justify-end space-x-2">
+        <button 
+          *ngIf="!isEditing"
+          (click)="startEditing()"
+          class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+          Editar texto
+        </button>
+        <button 
+          *ngIf="isEditing"
+          (click)="saveChanges()"
+          class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500">
+          Guardar cambios
+        </button>
+        <button 
+          *ngIf="isEditing"
+          (click)="cancelEditing()"
+          class="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500">
+          Cancelar
+        </button>
+      </div>
+    </div>
+
+    <!-- Selector de página rápido -->
+    <div class="p-4 border-t border-gray-200 bg-gray-50">
+      <div class="flex flex-wrap gap-2 justify-center">
+        <button 
+          *ngFor="let page of ocrData['páginas']"
+          (click)="goToPage(page.numero)"
+          [ngClass]="{'bg-blue-600 text-white': currentPage === page.numero, 'bg-gray-200 text-gray-800': currentPage !== page.numero}"
+          class="px-3 py-1 rounded hover:bg-blue-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+          {{ page.numero }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

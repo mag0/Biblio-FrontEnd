@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { LoginComponent } from './components/login/login.component';
 import { ProfileComponent } from './components/profile/profile.component';
 import { FileUploadComponent } from './components/file-upload/file-upload.component';
+import { OcrViewerComponent } from './components/ocr-viewer/ocr-viewer.component';
 import { AuthGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
@@ -9,5 +10,6 @@ export const routes: Routes = [
   { path: 'login', component: LoginComponent, canActivate: [AuthGuard] },
   { path: 'profile', component: ProfileComponent, canActivate: [AuthGuard] },
   { path: 'upload', component: FileUploadComponent, canActivate: [AuthGuard] },
+  { path: 'ocr-viewer', component: OcrViewerComponent, canActivate: [AuthGuard] },
   { path: '**', redirectTo: '/login' }
 ];

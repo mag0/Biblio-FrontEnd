@@ -33,6 +33,23 @@ export class FileUploadService {
   }
 
   /**
+   * Procesa un archivo PDF mediante OCR
+   * @param file El archivo PDF a procesar
+   * @returns Observable con la respuesta JSON del servidor
+   */
+  processOcr(file: File): Observable<any> {
+    const formData = new FormData();
+    formData.append('file', file, file.name);
+
+    const headers = new HttpHeaders();
+    // No establecemos Content-Type ya que FormData lo establece automáticamente con el boundary
+
+    return this.http.post<any>(`${this.apiUrl}/ocr/process`, formData, {
+      headers: headers
+    });
+  }
+
+  /**
    * Verifica si el tipo de archivo es válido (PDF, DOC, DOCX)
    * @param file El archivo a verificar
    * @returns true si el archivo es válido, false en caso contrario

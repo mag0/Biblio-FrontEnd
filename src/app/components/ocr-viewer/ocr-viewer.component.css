@@ -1,0 +1,47 @@
+.page-content {
+  font-family: 'Roboto', sans-serif;
+  line-height: 1.6;
+}
+
+.confidence-low {
+  color: #ef4444;
+}
+
+.confidence-medium {
+  color: #f59e0b;
+}
+
+.confidence-high {
+  color: #10b981;
+}
+
+.page-navigation {
+  transition: all 0.3s ease;
+}
+
+.page-navigation button:hover:not(:disabled) {
+  transform: translateY(-2px);
+}
+
+.page-selector button {
+  transition: all 0.2s ease;
+}
+
+.page-selector button:hover {
+  transform: scale(1.1);
+}
+
+.edit-textarea {
+  font-family: 'Courier New', monospace;
+  resize: vertical;
+}
+
+/* Animación para cambios guardados */
+@keyframes saved-flash {
+  0% { background-color: rgba(16, 185, 129, 0.2); }
+  100% { background-color: transparent; }
+}
+
+.saved-animation {
+  animation: saved-flash 1.5s ease-out;
+}

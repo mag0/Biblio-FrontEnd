@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule, HttpEventType } from '@angular/common/http';
+import { Router } from '@angular/router';
 import { FileUploadService } from '../../services/file-upload.service';
 
 @Component({
@@ -15,8 +16,9 @@ export class FileUploadComponent {
   uploadProgress: number = 0;
   uploadStatus: 'initial' | 'uploading' | 'success' | 'error' = 'initial';
   errorMessage: string = '';
+  ocrResponse: any = null; // Para almacenar la respuesta JSON del OCR
   
-  constructor(private fileUploadService: FileUploadService) {}
+  constructor(private fileUploadService: FileUploadService, private router: Router) {}
 
   /**
    * Maneja la selección de archivos
@@ -72,6 +74,48 @@ export class FileUploadComponent {
   }
 
   /**
+   * Procesa un archivo PDF mediante OCR y muestra la respuesta JSON
+   */
+  processOcr(): void {
+    if (!this.selectedFile) {
+      this.errorMessage = 'Por favor, seleccione un archivo PDF';
+      this.uploadStatus = 'error';
+      return;
+    }
+
+    // Verificar que sea un PDF
+    if (this.selectedFile.type !== 'application/pdf') {
+      this.errorMessage = 'Solo se permiten archivos PDF para el procesamiento OCR';
+      this.uploadStatus = 'error';
+      return;
+    }
+
+    this.uploadStatus = 'uploading';
+    this.uploadProgress = 0;
+    this.ocrResponse = null;
+
+    this.fileUploadService.processOcr(this.selectedFile).subscribe({
+      next: (response) => {
+        this.uploadStatus = 'success';
+        this.uploadProgress = 100;
+        this.ocrResponse = response;
+        console.log('Respuesta OCR:', response);
+        
+        // Guardar los datos OCR en localStorage para que estén disponibles en el visualizador
+        localStorage.setItem('ocrData', JSON.stringify(response));
+        
+        // Redirigir al visualizador OCR
+        this.router.navigate(['/ocr-viewer']);
+      },
+      error: (error) => {
+        console.error('Error al procesar el archivo con OCR:', error);
+        this.errorMessage = 'Error al procesar el archivo con OCR. Por favor, intente nuevamente.';
+        this.uploadStatus = 'error';
+      }
+    });
+  }
+
+  /**
    * Resetea el formulario
    */
   resetForm(): void {
@@ -79,5 +123,13 @@ export class FileUploadComponent {
     this.uploadProgress = 0;
     this.uploadStatus = 'initial';
     this.errorMessage = '';
+    this.ocrResponse = null;
+  }
+
+  /**
+   * Navega al visualizador OCR
+   */
+  goToOcrViewer(): void {
+    this.router.navigate(['/ocr-viewer']);
   }
 }
