@@ -3,6 +3,7 @@ import { LoginComponent } from './components/login/login.component';
 import { ProfileComponent } from './components/profile/profile.component';
 import { FileUploadComponent } from './components/file-upload/file-upload.component';
 import { OcrViewerComponent } from './components/ocr-viewer/ocr-viewer.component';
+import { TasksComponent } from './components/tasks/tasks.component';
 import { AuthGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
@@ -11,5 +12,6 @@ export const routes: Routes = [
   { path: 'profile', component: ProfileComponent, canActivate: [AuthGuard] },
   { path: 'upload', component: FileUploadComponent, canActivate: [AuthGuard] },
   { path: 'ocr-viewer', component: OcrViewerComponent, canActivate: [AuthGuard] },
+  { path: 'tasks', component: TasksComponent, canActivate: [AuthGuard] },
   { path: '**', redirectTo: '/login' }
 ];

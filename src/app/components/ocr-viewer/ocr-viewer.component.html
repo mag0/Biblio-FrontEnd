@@ -1,53 +1,39 @@
-<div class="container mx-auto p-4 max-w-6xl">
+<div class="container" style="margin-top: 64px; max-width: 960px;">
   <!-- Barra de navegación superior -->
-  <div class="flex justify-between items-center mb-4">
-    <h1 class="text-xl font-bold text-gray-800">Visualizador OCR</h1>
-    <div class="flex space-x-2">
-      <a routerLink="/profile" 
-         class="inline-flex items-center px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-        </svg>
-        Mi Perfil
+  <div class="row valign-wrapper mb-4">
+    <div class="col s6">
+      <h5 class="blue-text text-darken-2">Visualizador OCR</h5>
+    </div>
+    <div class="col s6 right-align">
+      <a routerLink="/profile" class="btn grey lighten-3 waves-effect waves-light">
+        <i class="material-icons left">person</i> Mi Perfil
       </a>
-      <a routerLink="/upload" 
-         class="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-        </svg>
-        Subir PDF
+      <a routerLink="/upload" class="btn blue waves-effect waves-light">
+        <i class="material-icons left">cloud_upload</i> Subir PDF
       </a>
     </div>
   </div>
-  
+
   <!-- Mensaje si no hay datos -->
-  <div *ngIf="!ocrData" class="text-center p-8 bg-gray-100 rounded-lg shadow">
-    <p class="text-xl text-gray-700">No hay datos OCR disponibles. Por favor, procese un documento primero.</p>
-    <button 
-      routerLink="/upload"
-      class="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+  <div *ngIf="!ocrData" class="card-panel grey lighten-4 center-align">
+    <p class="blue-text text-darken-2">No hay datos OCR disponibles. Por favor, procese un documento primero.</p>
+    <button routerLink="/upload" class="btn blue waves-effect waves-light">
       Ir a cargar documento
     </button>
   </div>
 
   <!-- Visualizador OCR -->
-  <div *ngIf="ocrData" class="bg-white rounded-lg shadow-lg overflow-hidden">
+  <div *ngIf="ocrData" class="card z-depth-2">
     <!-- Cabecera con metadatos -->
-    <div class="bg-gray-800 text-white p-4">
-      <h1 class="text-2xl font-bold mb-2">{{ ocrData.metadatos['nombreArchivo'] }}</h1>
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 text-sm">
-        <div>
-          <span class="font-semibold">Tamaño:</span> {{ ocrData.metadatos['tamaño'] }}
-        </div>
-        <div>
-          <span class="font-semibold">Páginas:</span> {{ ocrData.metadatos['totalPáginas'] }}
-        </div>
-        <div>
-          <span class="font-semibold">Tiempo de procesamiento:</span> {{ ocrData.metadatos['tiempoProcesamiento'] }}
-        </div>
-        <div>
-          <span class="font-semibold">Estado:</span> 
-          <span [ngClass]="{'text-green-400': ocrData['estado'] === 'éxito', 'text-red-400': ocrData['estado'] !== 'éxito'}">
+    <div class="card-content blue darken-2 white-text">
+      <h6>{{ ocrData.metadatos['nombreArchivo'] }}</h6>
+      <div class="row">
+        <div class="col s12 m3">Tamaño: {{ ocrData.metadatos['tamaño'] }}</div>
+        <div class="col s12 m3">Páginas: {{ ocrData.metadatos['totalPáginas'] }}</div>
+        <div class="col s12 m3">Tiempo de procesamiento: {{ ocrData.metadatos['tiempoProcesamiento'] }}</div>
+        <div class="col s12 m3">
+          Estado:
+          <span [ngClass]="{'green-text': ocrData['estado'] === 'éxito', 'red-text': ocrData['estado'] !== 'éxito'}">
             {{ ocrData['estado'] }}
           </span>
         </div>
@@ -55,108 +41,70 @@
     </div>
 
     <!-- Estadísticas -->
-    <div class="bg-gray-100 p-4 border-b border-gray-200">
-      <h2 class="text-lg font-semibold mb-2">Estadísticas</h2>
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 text-sm">
-        <div>
-          <span class="font-semibold">Total caracteres:</span> {{ ocrData.metadatos['estadísticas']['totalCaracteres'] }}
-        </div>
-        <div>
-          <span class="font-semibold">Total palabras:</span> {{ ocrData.metadatos['estadísticas']['totalPalabras'] }}
-        </div>
-        <div>
-          <span class="font-semibold">Promedio caracteres/página:</span> 
-          {{ ocrData.metadatos['estadísticas']['promedioCaracteresPorPágina'] | number:'1.2-2' }}
-        </div>
-        <div>
-          <span class="font-semibold">Promedio palabras/página:</span> 
-          {{ ocrData.metadatos['estadísticas']['promedioPalabrasPorPágina'] | number:'1.2-2' }}
-        </div>
+    <div class="card-content grey lighten-5">
+      <h6 class="blue-text">Estadísticas</h6>
+      <div class="row">
+        <div class="col s12 m3">Total caracteres: {{ ocrData.metadatos['estadísticas']['totalCaracteres'] }}</div>
+        <div class="col s12 m3">Total palabras: {{ ocrData.metadatos['estadísticas']['totalPalabras'] }}</div>
+        <div class="col s12 m3">Promedio caracteres/página: {{
+          ocrData.metadatos['estadísticas']['promedioCaracteresPorPágina'] }}</div>
+        <div class="col s12 m3">Promedio palabras/página: {{
+          ocrData.metadatos['estadísticas']['promedioPalabrasPorPágina'] }}</div>
       </div>
     </div>
 
     <!-- Navegación de páginas -->
-    <div class="flex justify-between items-center p-4 border-b border-gray-200">
-      <button 
-        [disabled]="currentPage <= 1"
-        (click)="goToPage(currentPage - 1)"
-        class="px-3 py-1 bg-gray-200 text-gray-800 rounded hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed">
-        &laquo; Anterior
-      </button>
-      
-      <div class="text-center">
-        <span class="font-semibold">Página {{ currentPage }} de {{ ocrData.metadatos['totalPáginas'] }}</span>
+    <div class="card-content grey lighten-4">
+      <div class="row valign-wrapper">
+        <div class="col s4">
+          <button [disabled]="currentPage <= 1" (click)="goToPage(currentPage - 1)" class="btn grey waves-effect">
+            &laquo; Anterior
+          </button>
+        </div>
+        <div class="col s4 center-align">
+          <span>Página {{ currentPage }} de {{ ocrData.metadatos['totalPáginas'] }}</span>
+        </div>
+        <div class="col s4 right-align">
+          <button [disabled]="currentPage >= ocrData.metadatos['totalPáginas']" (click)="goToPage(currentPage + 1)"
+            class="btn grey waves-effect">
+            Siguiente &raquo;
+          </button>
+        </div>
       </div>
-      
-      <button 
-        [disabled]="currentPage >= ocrData.metadatos['totalPáginas']"
-        (click)="goToPage(currentPage + 1)"
-        class="px-3 py-1 bg-gray-200 text-gray-800 rounded hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed">
-        Siguiente &raquo;
-      </button>
     </div>
 
     <!-- Contenido de la página actual -->
-    <div class="p-6">
-      <div class="flex justify-between items-center mb-4">
-        <h3 class="text-xl font-semibold">Página {{ currentPage }}</h3>
-        <div>
-          <span class="text-sm text-gray-600 mr-4">
-            <span class="font-semibold">Confianza:</span> {{ getCurrentPage()?.confianza }}%
-          </span>
-          <span class="text-sm text-gray-600 mr-4">
-            <span class="font-semibold">Caracteres:</span> {{ getCurrentPage()?.caracteres }}
-          </span>
-          <span class="text-sm text-gray-600">
-            <span class="font-semibold">Palabras:</span> {{ getCurrentPage()?.palabras }}
-          </span>
+    <div class="card-content grey lighten-3">
+      <h6 class="blue-text">Página {{ currentPage }}</h6>
+      <div *ngIf="!isEditing" class="card-panel grey lighten-5">
+        <pre style="white-space: pre-wrap; font-family: inherit;">
+          {{ getCurrentPage()?.texto }}
+        </pre>
+      </div>
+      <div *ngIf="isEditing">
+        <div class="card-panel grey lighten-5" style="padding: 0;">
+          <textarea [(ngModel)]="editingText" class="materialize-textarea"
+            style="width: 100%; height: 300px; font-family: inherit; white-space: pre-wrap;">
+          </textarea>
+        </div>
+        <div class="right-align">
+          <button (click)="saveChanges()" class="btn green waves-effect waves-light">Guardar cambios</button>
+          <button (click)="cancelEditing()" class="btn grey waves-effect waves-light">Cancelar</button>
         </div>
       </div>
-
-      <!-- Modo visualización -->
-      <div *ngIf="!isEditing" class="bg-gray-50 p-4 rounded-lg border border-gray-200 min-h-[300px] whitespace-pre-wrap">
-        {{ getCurrentPage()?.texto }}
-      </div>
-
-      <!-- Modo edición -->
-      <div *ngIf="isEditing" class="mb-4">
-        <textarea 
-          [(ngModel)]="editingText"
-          class="w-full p-4 border border-gray-300 rounded-lg min-h-[300px] focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-          placeholder="Edite el texto de esta página..."></textarea>
-      </div>
-
-      <!-- Botones de acción -->
-      <div class="mt-4 flex justify-end space-x-2">
-        <button 
-          *ngIf="!isEditing"
-          (click)="startEditing()"
-          class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+      <div class="right-align">
+        <button *ngIf="!isEditing" (click)="startEditing()" class="btn blue waves-effect waves-light">
           Editar texto
-        </button>
-        <button 
-          *ngIf="isEditing"
-          (click)="saveChanges()"
-          class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500">
-          Guardar cambios
-        </button>
-        <button 
-          *ngIf="isEditing"
-          (click)="cancelEditing()"
-          class="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500">
-          Cancelar
         </button>
       </div>
     </div>
 
     <!-- Selector de página rápido -->
-    <div class="p-4 border-t border-gray-200 bg-gray-50">
-      <div class="flex flex-wrap gap-2 justify-center">
-        <button 
-          *ngFor="let page of ocrData['páginas']"
-          (click)="goToPage(page.numero)"
-          [ngClass]="{'bg-blue-600 text-white': currentPage === page.numero, 'bg-gray-200 text-gray-800': currentPage !== page.numero}"
-          class="px-3 py-1 rounded hover:bg-blue-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+    <div class="card-content grey lighten-4 center-align">
+      <div class="row">
+        <button *ngFor="let page of ocrData['páginas']" (click)="goToPage(page.numero)"
+          [ngClass]="{'blue white-text': currentPage === page.numero, 'grey lighten-3': currentPage !== page.numero}"
+          class="btn-flat waves-effect">
           {{ page.numero }}
         </button>
       </div>

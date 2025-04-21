@@ -2,6 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { Router } from '@angular/router';
+import { AfterViewInit } from '@angular/core';
+
+declare const M: any;
 
 @Component({
   selector: 'app-nav-bar',
@@ -15,21 +19,31 @@ export class NavBarComponent implements OnInit {
   isAuthenticated = false;
   mobileMenuOpen = false;
 
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService, private router: Router) {}
 
   ngOnInit(): void {
     // Suscribirse a los cambios en el estado de autenticación
     this.authService.currentUser$.subscribe(user => {
       this.isAuthenticated = !!user;
     });
+
+    if (!this.authService.isAuthenticated()) {
+      this.router.navigate(['/login']);
+      return;
+    }
     
     // Verificar el estado inicial de autenticación
     this.isAuthenticated = this.authService.isAuthenticated();
   }
 
+  ngAfterViewInit(): void {
+    const elems = document.querySelectorAll('.sidenav');
+    M.Sidenav.init(elems);
+  }
+
   logout(): void {
     this.authService.logout();
-    this.mobileMenuOpen = false;
+    this.router.navigate(['/login']);
   }
 
   toggleMobileMenu(): void {
