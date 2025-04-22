@@ -1,0 +1,61 @@
+<div class="container" style="margin-top: 64px;">
+    <div style="box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); border-radius: 8px; padding: 16px; background-color: white;">
+        <h2 style="color: #1565c0; text-align: center;">Registrar Nueva Tarea</h2>
+
+        <!-- Margen interno en el formulario -->
+        <form (submit)="guardarTarea()" style="margin-top: 24px; padding: 16px;">
+            <!-- Nombre -->
+            <div style="margin-bottom: 16px;">
+                <label for="nombre" style="color: #1565c0; font-weight: bold;">Nombre de la Tarea:</label>
+                <input id="nombre" type="text" [(ngModel)]="tarea.nombre" name="nombre" required
+                    style="width: 100%; max-width: 600px; padding: 8px; border: 1px solid #ddd; border-radius: 4px;" />
+            </div>
+
+            <!-- Estado -->
+            <div style="margin-bottom: 16px;">
+                <label for="estado" style="color: #1565c0; font-weight: bold;">Estado:</label>
+                <select id="estado" [(ngModel)]="tarea.estado" name="estado"
+                    style="width: 100%; max-width: 600px; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                    <option value="Disponible">Disponible</option>
+                    <option value="Aceptada">Aceptada</option>
+                </select>
+            </div>
+
+            <!-- Descripción -->
+            <div style="margin-bottom: 16px;">
+                <label for="descripcion" style="color: #1565c0; font-weight: bold;">Descripción:</label>
+                <textarea id="descripcion" [(ngModel)]="tarea.descripcion" name="descripcion" required
+                    style="width: 100%; max-width: 600px; padding: 8px; border: 1px solid #ddd; border-radius: 4px;"></textarea>
+            </div>
+
+            <!-- Vencimiento -->
+            <div style="margin-bottom: 16px;">
+                <label for="vencimiento" style="color: #1565c0; font-weight: bold;">Fecha de Vencimiento:</label>
+                <input id="vencimiento" type="date" [(ngModel)]="tarea.vencimiento" name="vencimiento" required
+                    style="width: 100%; max-width: 600px; padding: 8px; border: 1px solid #ddd; border-radius: 4px;" />
+            </div>
+
+            <!-- Dificultad -->
+            <div style="margin-bottom: 16px;">
+                <label for="dificultad" style="color: #1565c0; font-weight: bold;">Dificultad:</label>
+                <input id="dificultad" type="text" [(ngModel)]="tarea.dificultad" name="dificultad" required
+                    style="width: 100%; max-width: 600px; padding: 8px; border: 1px solid #ddd; border-radius: 4px;" />
+            </div>
+
+            <!-- Archivo -->
+            <div style="margin-bottom: 24px;">
+                <label for="archivo" style="color: #1565c0; font-weight: bold;">Archivo:</label>
+                <input id="archivo" type="file" [(ngModel)]="tarea.archivo" name="archivo" required
+                    style="width: 100%; max-width: 600px; padding: 8px; border: 1px solid #ddd; border-radius: 4px;" />
+            </div>
+
+            <!-- Botón -->
+            <div style="text-align: center;">
+                <button type="submit"
+                    style="background-color: #1565c0; color: white; border: none; padding: 12px 24px; border-radius: 4px; cursor: pointer;">
+                    Registrar Tarea
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

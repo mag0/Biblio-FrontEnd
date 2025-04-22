@@ -1,23 +1,29 @@
-<h2>Lista de Tareas</h2>
+<div class="container" style="margin-top: 64px;">
+    <div class="card z-depth-2">
+        <div class="card-content">
+            <span class="card-title blue-text text-darken-2">Lista de Tareas</span>
 
-<ul class="collapsible">
-    <li *ngFor="let task of tasks">
-        <div class="collapsible-header">
-            <h5>{{ task.nombre }}</h5>
-            <a class="waves-effect waves-light btn-large" [ngClass]="{ 'disabled-btn': task.estado !== 'Disponible' }"
-                [style.margin-left]="'auto'" [style.cursor]="task.estado === 'Disponible' ? 'pointer' : 'not-allowed'"
-                [style.background-color]="task.estado === 'Disponible' ? '#4caf50' : '#bdbdbd'"
-                [style.color]="task.estado === 'Disponible' ? 'white' : '#757575'"
-                (click)="task.estado === 'Disponible' && acceptTask(task, $event)">
-                {{ task.estado === 'Disponible' ? 'Aceptar' : 'Aceptada' }}
-            </a>
+            <ul class="collapsible">
+                <li *ngFor="let task of tasks">
+                    <div class="collapsible-header card z-depth-1 grey lighten-5">
+                        <h6 class="blue-text text-darken-2">{{ task.nombre }}</h6>
+                        <button class="btn waves-effect waves-light"
+                            [ngClass]="{ 'disabled-btn': task.estado !== 'Disponible' }" [style.margin-left]="'auto'"
+                            [style.background-color]="task.estado === 'Disponible' ? '#4caf50' : '#bdbdbd'"
+                            [style.color]="task.estado === 'Disponible' ? 'white' : '#757575'"
+                            (click)="task.estado === 'Disponible' && acceptTask(task, $event)">
+                            {{ task.estado === 'Disponible' ? 'Aceptar' : 'Aceptada' }}
+                        </button>
+                    </div>
+                    <div class="collapsible-body card z-depth-1 grey lighten-5">
+                        <p><strong>Descripción:</strong> {{ task.descripcion }}</p>
+                        <p><strong>Vencimiento:</strong> {{ task.vencimiento }}</p>
+                        <p><strong>Dificultad:</strong> {{ task.dificultad }}</p>
+                        <p><strong>Voluntario:</strong> {{ task.voluntario ? task.voluntario : 'Sin asignar' }}</p>
+                        <p><strong>Archivo:</strong> {{ task.archivo.nombre }}</p>
+                    </div>
+                </li>
+            </ul>
         </div>
-        <div class="collapsible-body">
-            <p><strong>Descripción:</strong> {{ task.descripcion }}</p>
-            <p><strong>Vencimiento:</strong> {{ task.vencimiento }}</p>
-            <p><strong>Dificultad:</strong> {{ task.dificultad }}</p>
-            <p><strong>Voluntario:</strong> {{ task.voluntario ? task.voluntario : 'Sin asignar' }}</p>
-            <p><strong>Archivo:</strong> {{ task.archivo.nombre }}</p>
-        </div>
-    </li>
-</ul>
+    </div>
+</div>
