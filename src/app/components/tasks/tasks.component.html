@@ -4,23 +4,28 @@
             <span class="card-title blue-text text-darken-2">Lista de Tareas</span>
 
             <ul class="collapsible">
-                <li *ngFor="let task of tasks">
+                <li *ngFor="let task of tasks; let i = index">
                     <div class="collapsible-header card z-depth-1 grey lighten-5">
                         <h6 class="blue-text text-darken-2">{{ task.nombre }}</h6>
                         <button class="btn waves-effect waves-light"
-                            [ngClass]="{ 'disabled-btn': task.estado !== 'Disponible' }" [style.margin-left]="'auto'"
-                            [style.background-color]="task.estado === 'Disponible' ? '#4caf50' : '#bdbdbd'"
-                            [style.color]="task.estado === 'Disponible' ? 'white' : '#757575'"
-                            (click)="task.estado === 'Disponible' && acceptTask(task, $event)">
-                            {{ task.estado === 'Disponible' ? 'Aceptar' : 'Aceptada' }}
+                            [ngClass]="{ 'disabled-btn': task.estado !== 'pendiente' }" [style.margin-left]="'auto'"
+                            [style.background-color]="task.estado === 'pendiente' ? '#4caf50' : '#bdbdbd'"
+                            [style.color]="task.estado === 'pendiente' ? 'white' : '#757575'"
+                            (click)="task.estado === 'pendiente' && acceptTask(task, $event)">
+                            {{ task.estado === 'pendiente' ? 'Aceptar' : 'Completada' }}
+                        </button>
+                        <button class="btn red waves-effect waves-light" [style.margin-left]="'10px'"
+                            (click)="deleteTask(task.id, i)">
+                            Eliminar
                         </button>
                     </div>
                     <div class="collapsible-body card z-depth-1 grey lighten-5">
                         <p><strong>Descripción:</strong> {{ task.descripcion }}</p>
-                        <p><strong>Vencimiento:</strong> {{ task.vencimiento }}</p>
-                        <p><strong>Dificultad:</strong> {{ task.dificultad }}</p>
-                        <p><strong>Voluntario:</strong> {{ task.voluntario ? task.voluntario : 'Sin asignar' }}</p>
-                        <p><strong>Archivo:</strong> {{ task.archivo.nombre }}</p>
+                        <p><strong>Estado:</strong> {{ task.estado }}</p>
+                        <p><strong>Fecha de Creación:</strong> {{ task.fechaCreacion | date:'dd/MM/yyyy' }}</p>
+                        <p><strong>Fecha Límite:</strong> {{ task.fechaLimite ? (task.fechaLimite | date:'dd/MM/yyyy') :
+                            'Sin fecha límite' }}</p>
+                        <p><strong>Usuario ID:</strong> {{ task.usuarioId }}</p>
                     </div>
                 </li>
             </ul>
