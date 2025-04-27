@@ -1,3 +1,4 @@
+
 <div class="row valign-wrapper" style="height: calc(100vh - 64px); margin: 0;">
   <div class="col s12 m6 offset-m3 l4 offset-l4">
     <div class="card z-depth-2" style="border: 2px solid #1976D2; border-radius: 8px;">
@@ -28,19 +29,6 @@
           <!-- Botón de envío -->
           <div class="center">
             <button type="submit" [disabled]="loginForm.invalid || isLoading" class="btn waves-effect waves-light blue">
-              <span *ngIf="isLoading" class="preloader-wrapper small active">
-                <div class="spinner-layer spinner-white-only">
-                  <div class="circle-clipper left">
-                    <div class="circle"></div>
-                  </div>
-                  <div class="gap-patch">
-                    <div class="circle"></div>
-                  </div>
-                  <div class="circle-clipper right">
-                    <div class="circle"></div>
-                  </div>
-                </div>
-              </span>
               <span>Iniciar Sesión</span>
             </button>
           </div>

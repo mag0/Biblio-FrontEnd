@@ -1,0 +1,122 @@
+html, body {
+    margin: 0;
+    padding: 0;
+  }
+  
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  background: #fff;
+  padding: 32px 24px;
+  border-radius: 18px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+  max-width: 350px;
+  margin: 40px auto;
+}
+
+input[type="email"],
+input[type="password"] {
+  border: 1.5px solid #d3d3d3;
+  color: #fff;
+  border-radius: 6px;
+  padding: 22px 16px 22px 21px; 
+  font-size: 1rem;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  background: #f8fafc;
+  margin-bottom: 8px;
+}
+
+input[type="email"]:focus,
+input[type="password"]:focus {
+  border-color: #1976d2;
+  box-shadow: 0 0 0 2px #1976d230;
+  color: #fff;
+}
+
+button[type="submit"] {
+  background: linear-gradient(90deg, #1976d2 60%, #42a5f5 100%);
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  padding: 12px 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(25, 118, 210, 0.08);
+  transition: background 0.2s, box-shadow 0.2s;
+}
+
+button[type="submit"]:hover {
+  background: linear-gradient(90deg, #1565c0 60%, #1976d2 100%);
+  box-shadow: 0 4px 16px rgba(25, 118, 210, 0.15);
+}
+
+label {
+  font-weight: 500;
+  color: #333;
+  margin-bottom: 8px; 
+}
+
+@media (max-width: 480px) {
+  form {
+    padding: 18px 8px;
+    max-width: 98vw;
+  }
+  input, button {
+    font-size: 0.98rem;
+  }
+}
+
+.login-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100vw;
+  margin-left: 0;
+  margin-right: 0;
+  background: linear-gradient(90deg, #1976d2 60%, #42a5f5 100%);
+  padding: 18px 28px 18px 18px;
+  border-radius: 0 0 18px 18px;
+  box-shadow: 0 2px 8px rgba(25, 118, 210, 0.10);
+  margin-bottom: 32px;
+}
+
+@media (max-width: 480px) {
+  .login-header {
+    padding: 12px 8px 12px 8px;
+    border-radius: 0 0 12px 12px;
+    margin-bottom: 18px;
+  }
+}
+.login-title {
+  color: #fff;
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+.login-user-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  box-shadow: 0 2px 8px rgba(25, 118, 210, 0.10);
+}
+@media (max-width: 480px) {
+  .login-header {
+    padding: 12px 8px 12px 8px;
+    border-radius: 0 0 12px 12px;
+    margin-bottom: 18px;
+  }
+  .login-title {
+    font-size: 1.1rem;
+  }
+  .login-user-icon {
+    width: 32px;
+    height: 32px;
+  }
+}

@@ -1,43 +1,99 @@
-<div class="container">
-    <form (ngSubmit)="onSubmit()" [formGroup]="formTask" enctype="multipart/form-data">
-        <div class="input-field">
-            <input id="nombre" type="text" formControlName="nombre" class="validate" required />
-            <label for="nombre">Nombre</label>
+<div class="container" style="margin-top: 64px;">
+  <div class="card z-depth-2">
+    <div class="card-content">
+      <span class="card-title blue-text text-darken-2">Crear Nueva Tarea</span>
+
+      <form [formGroup]="formTask" (ngSubmit)="onSubmit()">
+        <!-- Campos del formulario -->
+        <div class="row">
+          <div class="input-field col s12 m6">
+            <input id="nombre" type="text" formControlName="nombre" class="validate">
+            <label for="nombre">Nombre de la Tarea</label>
+            <span class="helper-text red-text" *ngIf="formTask.get('nombre')?.invalid && formTask.get('nombre')?.touched">
+              El nombre es requerido.
+            </span>
+          </div>
+
+          <div class="input-field col s12 m6">
+            <select formControlName="estado">
+              <option value="Pendiente" selected>Pendiente</option>
+              <option value="Completado">Completado</option>
+            </select>
+            <label for="estado">Estado</label>
+            <span class="helper-text red-text" *ngIf="formTask.get('estado')?.invalid && formTask.get('estado')?.touched">
+              El estado es requerido.
+            </span>
+          </div>
         </div>
 
-        <div class="input-field">
+        <div class="row">
+          <div class="input-field col s12">
             <textarea id="descripcion" class="materialize-textarea" formControlName="descripcion"></textarea>
             <label for="descripcion">Descripción</label>
+          </div>
         </div>
 
-        <div class="input-field">
-            <select id="estado" formControlName="estado" class="browser-default">
-                <option value="" disabled selected>Selecciona el estado</option>
-                <option value="pendiente">Pendiente</option>
-                <option value="completado">Completado</option>
-            </select>
-        </div>
-
-        <div class="input-field">
-            <input id="fechaCreacion" type="date" formControlName="fechaCreacion" class="validate" />
+        <div class="row">
+          <div class="input-field col s12 m6">
+            <input id="fechaCreacion" type="date" formControlName="fechaCreacion" class="validate">
             <label for="fechaCreacion">Fecha de Creación</label>
-        </div>
+            <span class="helper-text red-text" *ngIf="formTask.get('fechaCreacion')?.invalid && formTask.get('fechaCreacion')?.touched">
+              La fecha de creación es requerida.
+            </span>
+          </div>
 
-        <div class="input-field">
-            <input id="fechaLimite" type="date" formControlName="fechaLimite" class="validate" />
+          <div class="input-field col s12 m6">
+            <input id="fechaLimite" type="date" formControlName="fechaLimite">
             <label for="fechaLimite">Fecha Límite</label>
+          </div>
         </div>
 
-        <!-- <div class="file-field input-field">
-            <div class="btn">
-                <span>Archivo</span>
-                <input type="file" (change)="onFileSelected($event)" />
-            </div>
-            <div class="file-path-wrapper">
-                <input class="file-path validate" type="text" placeholder="Sube un archivo" />
-            </div>
-        </div> -->
+        <!-- Input para seleccionar archivo -->
+        <div class="file-field input-field">
+          <div class="btn blue">
+            <span>Seleccionar Archivo</span>
+            <input type="file" id="archivo" (change)="onFileSelected($event)">
+          </div>
+          <div class="file-path-wrapper">
+            <input class="file-path validate" type="text" placeholder="Sube un archivo (opcional)">
+          </div>
+        </div>
 
-        <button type="submit" class="btn waves-effect waves-light">Enviar</button>
-    </form>
+        <!-- Indicador de progreso de carga -->
+        <div *ngIf="uploadStatus === 'uploading'">
+          <div class="progress">
+            <div class="determinate blue" [style.width.%]="uploadProgress"></div>
+          </div>
+          <p class="center-align">Subiendo archivo... {{ uploadProgress }}%</p>
+        </div>
+
+        <!-- Mensajes de estado de carga -->
+        <div *ngIf="uploadStatus === 'success'" class="card-panel green lighten-4 green-text center-align">
+          Archivo subido con éxito.
+        </div>
+        <div *ngIf="uploadStatus === 'error'" class="card-panel red lighten-4 red-text center-align">
+          Error al subir el archivo. Por favor, inténtalo de nuevo.
+        </div>
+
+        <!-- Botón de envío del formulario -->
+        <div class="card-action center-align">
+          <button class="btn waves-effect waves-light blue" type="submit" [disabled]="formTask.invalid || uploadStatus === 'uploading'">
+            Enviar Tarea
+            <i class="material-icons right">send</i>
+          </button>
+        </div>
+
+        <!-- Botón de subida de archivo eliminado -->
+        <!--
+        <div class="card-action center-align" *ngIf="selectedFile">
+          <button class="btn waves-effect waves-light green" type="button" (click)="uploadFile()" [disabled]="uploadStatus === 'uploading'">
+            Subir Archivo Seleccionado
+            <i class="material-icons right">cloud_upload</i>
+          </button>
+        </div>
+        -->
+
+      </form>
+    </div>
+  </div>
 </div>

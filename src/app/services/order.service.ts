@@ -38,4 +38,14 @@ export class OrderService {
   deleteOrder(id: number): Observable<any> {
     return this.http.delete(`${this.apiUrl}/${id}`);
   }
+
+  // Método para subir un archivo
+  uploadFile(file: File): Observable<any> {
+    const formData = new FormData();
+    formData.append('file', file, file.name);
+
+    // No establecer Content-Type manualmente, HttpClient lo hará por nosotros con FormData
+    // Especificar responseType como 'text' para manejar la respuesta no JSON del backend
+    return this.http.post(`${this.apiUrl}/upload`, formData, { responseType: 'text' });
+  }
 }
