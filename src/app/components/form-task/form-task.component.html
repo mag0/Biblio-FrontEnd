@@ -1,12 +1,16 @@
-<div class="container" style="margin-top: 64px;">
-  <div class="card z-depth-2">
+<div class="container" style="margin-top: 40px; margin-bottom: 40px;"> <!-- Añadido margen inferior -->
+  <div class="card z-depth-3"> <!-- Aumentada ligeramente la sombra -->
     <div class="card-content">
-      <span class="card-title blue-text text-darken-2">Crear Nueva Tarea</span>
+      <span class="card-title blue-text text-darken-3 center-align" style="margin-bottom: 25px; font-weight: 400;"> <!-- Título centrado y con más margen -->
+        <i class="material-icons medium" style="vertical-align: middle; margin-right: 8px;">note_add</i>
+        Crear Nueva Tarea
+      </span>
 
       <form [formGroup]="formTask" (ngSubmit)="onSubmit()">
-        <!-- Campos del formulario -->
+        <!-- Fila 1: Nombre y Estado -->
         <div class="row">
           <div class="input-field col s12 m6">
+            <i class="material-icons prefix">title</i> <!-- Icono para Nombre -->
             <input id="nombre" type="text" formControlName="nombre" class="validate">
             <label for="nombre">Nombre de la Tarea</label>
             <span class="helper-text red-text" *ngIf="formTask.get('nombre')?.invalid && formTask.get('nombre')?.touched">
@@ -15,27 +19,34 @@
           </div>
 
           <div class="input-field col s12 m6">
-            <select formControlName="estado">
-              <option value="Pendiente" selected>Pendiente</option>
-              <option value="Completado">Completado</option>
+             <i class="material-icons prefix">playlist_add_check</i> <!-- Icono para Estado -->
+            <select formControlName="estado" id="estado">
+              <option value="" disabled selected>Selecciona un estado</option>
+              <option value="Pendiente">Pendiente</option>
+              <option value="En Progreso">En Progreso</option>
+              <option value="Completada">Completada</option>
             </select>
-            <label for="estado">Estado</label>
+            <label for="estado">Estado</label> <!-- Asegúrate que esta label esté presente -->
             <span class="helper-text red-text" *ngIf="formTask.get('estado')?.invalid && formTask.get('estado')?.touched">
               El estado es requerido.
             </span>
           </div>
         </div>
 
+        <!-- Fila 2: Descripción -->
         <div class="row">
           <div class="input-field col s12">
-            <textarea id="descripcion" class="materialize-textarea" formControlName="descripcion"></textarea>
-            <label for="descripcion">Descripción</label>
+            <i class="material-icons prefix">description</i> <!-- Icono para Descripción -->
+            <textarea id="descripcion" class="materialize-textarea" formControlName="descripcion" style="min-height: 80px;"></textarea> <!-- Altura mínima -->
+            <label for="descripcion">Descripción (Opcional)</label>
           </div>
         </div>
 
+        <!-- Fila 3: Fechas -->
         <div class="row">
           <div class="input-field col s12 m6">
-            <input id="fechaCreacion" type="date" formControlName="fechaCreacion" class="validate">
+             <i class="material-icons prefix">event</i> <!-- Icono para Fecha Creación -->
+            <input id="fechaCreacion" type="text" class="datepicker" formControlName="fechaCreacion"> <!-- Usar datepicker de Materialize -->
             <label for="fechaCreacion">Fecha de Creación</label>
             <span class="helper-text red-text" *ngIf="formTask.get('fechaCreacion')?.invalid && formTask.get('fechaCreacion')?.touched">
               La fecha de creación es requerida.
@@ -43,55 +54,55 @@
           </div>
 
           <div class="input-field col s12 m6">
-            <input id="fechaLimite" type="date" formControlName="fechaLimite">
-            <label for="fechaLimite">Fecha Límite</label>
+             <i class="material-icons prefix">event_busy</i> <!-- Icono para Fecha Límite -->
+            <input id="fechaLimite" type="text" class="datepicker" formControlName="fechaLimite"> <!-- Usar datepicker de Materialize -->
+            <label for="fechaLimite">Fecha Límite (Opcional)</label>
           </div>
         </div>
 
-        <!-- Input para seleccionar archivo -->
-        <div class="file-field input-field">
-          <div class="btn blue">
-            <span>Seleccionar Archivo</span>
-            <input type="file" id="archivo" (change)="onFileSelected($event)">
+        <!-- Fila 4: Input de Archivo -->
+        <div class="row" style="margin-bottom: 0;"> <!-- Reducir margen inferior antes de indicadores -->
+          <div class="file-field input-field col s12">
+             <div class="btn blue darken-1 waves-effect waves-light"> <!-- Botón con icono -->
+              <span><i class="material-icons left">attach_file</i>Adjuntar Archivo</span>
+              <input type="file" id="archivo" (change)="onFileSelected($event)">
+            </div>
+            <div class="file-path-wrapper">
+              <input class="file-path validate" type="text" placeholder="Selecciona un archivo (Opcional)"> <!-- Placeholder más claro -->
+            </div>
           </div>
-          <div class="file-path-wrapper">
-            <input class="file-path validate" type="text" placeholder="Sube un archivo (opcional)">
+        </div>
+
+        <!-- Fila 5: Indicadores de Progreso y Estado -->
+        <div class="row" style="min-height: 60px; margin-top: 0;"> <!-- Espacio reservado para indicadores -->
+          <div class="col s12">
+            <!-- Indicador de progreso de carga -->
+            <div *ngIf="uploadStatus === 'uploading'" style="margin-top: 10px;">
+              <div class="progress blue lighten-4">
+                <div class="determinate blue" [style.width.%]="uploadProgress"></div>
+              </div>
+              <p class="center-align blue-text text-darken-2" style="margin-top: 5px;">Subiendo archivo... {{ uploadProgress }}%</p>
+            </div>
+
+            <!-- Mensajes de estado de envío -->
+            <div *ngIf="uploadStatus === 'success'" class="card-panel green lighten-4 green-text text-darken-4 center-align feedback-panel">
+              <i class="material-icons tiny" style="vertical-align: middle;">check_circle</i> Tarea creada y archivo subido con éxito.
+            </div>
+            <div *ngIf="uploadStatus === 'error'" class="card-panel red lighten-4 red-text text-darken-4 center-align feedback-panel">
+               <i class="material-icons tiny" style="vertical-align: middle;">error</i> Error al crear la tarea o subir el archivo. Por favor, inténtalo de nuevo.
+            </div>
           </div>
         </div>
 
-        <!-- Indicador de progreso de carga -->
-        <div *ngIf="uploadStatus === 'uploading'">
-          <div class="progress">
-            <div class="determinate blue" [style.width.%]="uploadProgress"></div>
+        <!-- Fila 6: Botón de Envío -->
+        <div class="row">
+          <div class="col s12 center-align" style="margin-top: 20px;"> <!-- Margen superior antes del botón -->
+            <button class="btn-large waves-effect waves-light blue darken-2" type="submit" [disabled]="formTask.invalid || uploadStatus === 'uploading'">
+              <i class="material-icons left">save</i> <!-- Icono de guardar -->
+              Guardar Tarea
+            </button>
           </div>
-          <p class="center-align">Subiendo archivo... {{ uploadProgress }}%</p>
         </div>
-
-        <!-- Mensajes de estado de carga -->
-        <div *ngIf="uploadStatus === 'success'" class="card-panel green lighten-4 green-text center-align">
-          Archivo subido con éxito.
-        </div>
-        <div *ngIf="uploadStatus === 'error'" class="card-panel red lighten-4 red-text center-align">
-          Error al subir el archivo. Por favor, inténtalo de nuevo.
-        </div>
-
-        <!-- Botón de envío del formulario -->
-        <div class="card-action center-align">
-          <button class="btn waves-effect waves-light blue" type="submit" [disabled]="formTask.invalid || uploadStatus === 'uploading'">
-            Enviar Tarea
-            <i class="material-icons right">send</i>
-          </button>
-        </div>
-
-        <!-- Botón de subida de archivo eliminado -->
-        <!--
-        <div class="card-action center-align" *ngIf="selectedFile">
-          <button class="btn waves-effect waves-light green" type="button" (click)="uploadFile()" [disabled]="uploadStatus === 'uploading'">
-            Subir Archivo Seleccionado
-            <i class="material-icons right">cloud_upload</i>
-          </button>
-        </div>
-        -->
 
       </form>
     </div>

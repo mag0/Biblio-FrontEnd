@@ -50,10 +50,6 @@ export class FormTaskComponent implements OnInit, AfterViewInit, OnDestroy {
     if (this.formSelectInstance) {
       this.formSelectInstance.destroy();
     }
-    // Cancelar subida si está en progreso
-    if (this.uploadSubscription) {
-      this.uploadSubscription.unsubscribe();
-    }
   }
 
   initializeMaterializeComponents(): void {
@@ -63,15 +59,13 @@ export class FormTaskComponent implements OnInit, AfterViewInit, OnDestroy {
       M.Datepicker.init(datepickerElems, {
         format: 'yyyy-mm-dd',
         autoClose: true,
-        // i18n: { /* ... */ } // Configuración español si la necesitas
       });
       console.log('Materialize datepickers inicializados.');
 
       // Inicializar Selects
       const selectElems = document.querySelectorAll('select');
       if (selectElems.length > 0) {
-        // Guardar la instancia para poder destruirla luego
-        this.formSelectInstance = M.FormSelect.init(selectElems)[0]; // Asumiendo que solo hay un select principal que necesitamos gestionar
+        this.formSelectInstance = M.FormSelect.init(selectElems)[0];
         console.log('Materialize selects inicializados.');
       } else {
         console.warn('No se encontraron elementos <select> para inicializar.');
@@ -95,8 +89,7 @@ export class FormTaskComponent implements OnInit, AfterViewInit, OnDestroy {
     let fileList: FileList | null = element.files;
     if (fileList && fileList.length > 0) {
       this.selectedFile = fileList[0];
-      this.formTask.patchValue({ archivo: this.selectedFile }); // Actualizar form control si es necesario
-      this.uploadStatus = 'initial'; // Resetear estado al seleccionar nuevo archivo
+      this.formTask.patchValue({ archivo: this.selectedFile });
       console.log('Archivo seleccionado:', this.selectedFile.name);
     } else {
       this.selectedFile = null;
@@ -107,14 +100,10 @@ export class FormTaskComponent implements OnInit, AfterViewInit, OnDestroy {
   onSubmit(): void {
     if (this.formTask.invalid) {
       console.error('Formulario inválido.');
-      this.formTask.markAllAsTouched(); // Marcar todos los campos para mostrar errores
-      // Forzar reinicialización visual de Materialize select si hay error de validación
+      this.formTask.markAllAsTouched();
       setTimeout(() => this.initializeMaterializeComponents(), 0);
       return;
     }
-
-    this.uploadStatus = 'uploading';
-    this.uploadProgress = 0;
 
     const formData = new FormData();
     Object.keys(this.formTask.value).forEach(key => {
@@ -129,28 +118,22 @@ export class FormTaskComponent implements OnInit, AfterViewInit, OnDestroy {
 
     console.log('Enviando datos:', this.formTask.value);
 
-    // Use createOrder instead of createOrderWithFile
     this.uploadSubscription = this.orderService.createOrder(formData).subscribe({
-      next: (event: HttpEvent<any>) => { // Add explicit type HttpEvent<any>
+      next: (event: HttpEvent<any>) => {
         if (event.type === HttpEventType.UploadProgress) {
           if (event.total) {
             this.uploadProgress = Math.round(100 * event.loaded / event.total);
           }
         } else if (event instanceof HttpResponse) {
           console.log('Respuesta completa:', event.body);
-          this.uploadStatus = 'success';
-          alert('Tarea creada con éxito.'); // Success message
-          // Podrías resetear el form aquí o navegar a otra página
-          this.resetFormAndState(); // Reset form on success
-          this.router.navigate(['/tasks']); // Navigate to tasks list
+          alert('Tarea creada con éxito.');
+          this.resetFormAndState();
+          this.router.navigate(['/tasks']);
         }
       },
-      error: (error: HttpErrorResponse) => { // Add explicit type HttpErrorResponse
+      error: (error: HttpErrorResponse) => {
         console.error('Error en la subida:', error);
-        this.uploadStatus = 'error';
-        this.uploadProgress = 0;
-        alert(`Error al crear la tarea: ${error.message}`); // Error message
-        // Forzar reinicialización visual de Materialize select en caso de error
+        alert(`Error al crear la tarea: ${error.message}`);
         setTimeout(() => this.initializeMaterializeComponents(), 0);
       }
     });
@@ -162,21 +145,16 @@ export class FormTaskComponent implements OnInit, AfterViewInit, OnDestroy {
       descripcion: '',
       fechaCreacion: this.getTodayDate(),
       fechaLimite: '',
-      estado: '', // Resetear estado a valor inicial vacío
+      estado: '',
       archivo: null
     });
     this.selectedFile = null;
-    this.uploadStatus = 'initial';
-    this.uploadProgress = 0;
 
-    // Limpiar campos de archivo visualmente
     const fileInput = document.getElementById('archivo') as HTMLInputElement;
     const filePathInput = document.querySelector('.file-path') as HTMLInputElement;
     if (fileInput) fileInput.value = '';
     if (filePathInput) filePathInput.value = '';
 
-    // Re-inicializar componentes Materialize después de resetear
-    // Es crucial para que el select muestre el placeholder correcto
     setTimeout(() => this.initializeMaterializeComponents(), 0);
   }
 }

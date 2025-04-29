@@ -1,34 +1,74 @@
-<div class="container" style="margin-top: 64px;">
-    <div class="card z-depth-2">
-        <div class="card-content">
-            <span class="card-title blue-text text-darken-2">Lista de Tareas</span>
+<div class="container task-list-container" style="margin-top: 20px;">
+  <div style="display: flex; justify-content: space-between; align-items: center;"> <!-- Eliminado margin-bottom -->
+    <h2 class="blue-text text-darken-2" style="margin: 0;">Lista de Tareas</h2>
+    <a class="btn waves-effect waves-light blue" routerLink="/form-task" title="Crear Nueva Tarea">
+      Agregar Tarea
+      <i class="material-icons right">add</i>
+    </a>
+  </div>
 
-            <ul class="collapsible">
-                <li *ngFor="let task of tasks; let i = index">
-                    <div class="collapsible-header card z-depth-1 grey lighten-5">
-                        <h6 class="blue-text text-darken-2">{{ task.nombre }}</h6>
-                        <button class="btn waves-effect waves-light"
-                            [ngClass]="{ 'disabled-btn': task.estado !== 'pendiente' }" [style.margin-left]="'auto'"
-                            [style.background-color]="task.estado === 'pendiente' ? '#4caf50' : '#bdbdbd'"
-                            [style.color]="task.estado === 'pendiente' ? 'white' : '#757575'"
-                            (click)="task.estado === 'pendiente' && acceptTask(task, $event)">
-                            {{ task.estado === 'pendiente' ? 'Aceptar' : 'Completada' }}
-                        </button>
-                        <button class="btn red waves-effect waves-light" [style.margin-left]="'10px'"
-                            (click)="deleteTask(task.id, i)">
-                            Eliminar
-                        </button>
-                    </div>
-                    <div class="collapsible-body card z-depth-1 grey lighten-5">
-                        <p><strong>Descripción:</strong> {{ task.descripcion }}</p>
-                        <p><strong>Estado:</strong> {{ task.estado }}</p>
-                        <p><strong>Fecha de Creación:</strong> {{ task.fechaCreacion | date:'dd/MM/yyyy' }}</p>
-                        <p><strong>Fecha Límite:</strong> {{ task.fechaLimite ? (task.fechaLimite | date:'dd/MM/yyyy') :
-                            'Sin fecha límite' }}</p>
-                        <p><strong>Usuario ID:</strong> {{ task.usuarioId }}</p>
-                    </div>
-                </li>
-            </ul>
+  <div *ngIf="isLoading" class="progress blue lighten-4">
+    <div class="indeterminate blue"></div>
+  </div>
+
+  <!-- Usaremos collapsible popout para un look clásico pero funcional -->
+  <ul class="collapsible popout" *ngIf="!isLoading && tasks.length > 0">
+    <li *ngFor="let task of tasks; let i = index">
+      <!-- Cabecera del Collapsible (Clickable) -->
+      <div class="collapsible-header waves-effect">
+        <i class="material-icons task-icon">assignment</i>
+        <span class="task-title">{{ task.nombre }}</span>
+        <!-- Badge de estado -->
+        <span class="task-status-badge" [ngClass]="getStatusClass(task.estado)">{{ task.estado }}</span>
+        <!-- Icono indicador (opcional, Materialize lo maneja) -->
+        <!-- <i class="material-icons expand-icon">arrow_drop_down</i> -->
+      </div>
+
+      <!-- Cuerpo del Collapsible (Contenido) -->
+      <div class="collapsible-body">
+        <div class="task-details">
+          <p><strong>Descripción:</strong> {{ task.descripcion || 'N/A' }}</p>
+          <p><strong>Fecha Creación:</strong> {{ task.fechaCreacion | date:'dd/MM/yyyy HH:mm' }}</p>
+          <p><strong>Fecha Límite:</strong> {{ task.fechaLimite ? (task.fechaLimite | date:'dd/MM/yyyy') : 'N/A' }}</p>
+
+          <!-- Sección Archivo Adjunto -->
+          <div class="file-section" *ngIf="task.fileName">
+             <div class="divider"></div>
+             <p class="section-title">
+               <i class="material-icons tiny">attach_file</i> Archivo Adjunto
+             </p>
+             <div class="file-info">
+               <span>{{ task.fileName }}</span>
+               <button class="btn waves-effect waves-light blue lighten-1 btn-small download-btn"
+                       (click)="downloadFile(task.id, task.fileName, $event)">
+                 Descargar
+                 <i class="material-icons right tiny">file_download</i>
+               </button>
+             </div>
+          </div>
+          <div *ngIf="!task.fileName" class="file-section-empty">
+             <div class="divider"></div>
+             <p class="grey-text"><i class="material-icons tiny">attach_file</i> No hay archivo adjunto.</p>
+          </div>
+
+
+          <!-- Acciones -->
+          <div class="task-actions">
+            <div class="divider"></div>
+            <!-- <a [routerLink]="['/edit-task', task.id]" class="btn waves-effect waves-light orange btn-small action-btn" (click)="$event.stopPropagation()">
+              Editar <i class="material-icons right tiny">edit</i>
+            </a> -->
+            <button class="btn waves-effect waves-light red btn-small action-btn" (click)="deleteTask(task.id, i, $event)">
+              Eliminar <i class="material-icons right tiny">delete</i>
+            </button>
+          </div>
         </div>
-    </div>
+      </div>
+    </li>
+  </ul>
+
+  <p *ngIf="!isLoading && tasks.length === 0" class="center-align grey-text" style="margin-top: 30px;">
+    No hay tareas disponibles. ¡Crea una nueva!
+  </p>
+
 </div>

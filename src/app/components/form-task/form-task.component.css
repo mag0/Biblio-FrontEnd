@@ -18,3 +18,67 @@ select:focus {
   box-shadow: 0 0 5px rgba(102, 175, 233, 0.6);
 }
 
+
+/* Ajustes menores para el formulario */
+.input-field .prefix {
+  color: #1976d2; /* Color azul para los iconos prefix */
+}
+
+.input-field .prefix.active {
+  color: #1976d2; /* Mantener color azul cuando el campo está activo */
+}
+
+/* Estilo para los paneles de feedback */
+.feedback-panel {
+  padding: 10px 15px !important; /* Ajustar padding */
+  margin-top: 10px;
+  border-radius: 4px;
+  font-weight: 500;
+}
+
+.feedback-panel i {
+  margin-right: 5px;
+}
+
+/* Ajustes menores para el formulario */
+.input-field .prefix {
+  color: #1976d2; /* Color azul para los iconos prefix */
+}
+
+.input-field .prefix.active {
+  color: #1976d2; /* Mantener color azul cuando el campo está activo */
+}
+
+/* Estilo para los paneles de feedback */
+.feedback-panel {
+  padding: 10px 15px !important; /* Ajustar padding */
+  margin-top: 10px;
+  border-radius: 4px;
+  font-weight: 500;
+}
+
+.feedback-panel i {
+  margin-right: 5px;
+}
+
+/* Ajustes menores para el formulario */
+.input-field .prefix {
+  color: #1976d2; /* Color azul para los iconos prefix */
+}
+
+.input-field .prefix.active {
+  color: #1976d2; /* Mantener color azul cuando el campo está activo */
+}
+
+/* Estilo para los paneles de feedback */
+.feedback-panel {
+  padding: 10px 15px !important; /* Ajustar padding */
+  margin-top: 10px;
+  border-radius: 4px;
+  font-weight: 500;
+}
+
+.feedback-panel i {
+  margin-right: 5px;
+}
+

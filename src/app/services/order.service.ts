@@ -3,49 +3,46 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root' // Hace que el servicio esté disponible en toda la aplicación
+  providedIn: 'root'
 })
 export class OrderService {
-  private apiUrl = 'https://localhost:44342/api/tarea'; // URL del endpoint
+  // Asegúrate que esta URL es correcta y NO tiene /upload
+  private apiUrl = 'https://localhost:44342/api/tarea';
 
   constructor(private http: HttpClient) {}
 
-  // Método para crear una nueva orden
-  createOrder(orderData: any): Observable<any> {
-    return this.http.post(this.apiUrl, orderData, {
-      headers: { 'Content-Type': 'application/json' } // Configuración del tipo de contenido
+  // Método para obtener todas las órdenes/tareas
+  getOrders(): Observable<any[]> { // Asume que devuelve un array de tareas
+    return this.http.get<any[]>(this.apiUrl);
+  }
+
+  // Método para crear una nueva orden usando FormData
+  createOrder(formData: FormData): Observable<any> {
+    // *** Añade este console.log para depurar ***
+    console.log(`OrderService: Intentando POST a: ${this.apiUrl}`);
+    // La llamada POST debe usar solo this.apiUrl y observar los eventos
+    return this.http.post(this.apiUrl, formData, {
+      reportProgress: true, // Para seguir el progreso de la subida
+      observe: 'events'     // Para obtener todos los eventos, incluida la respuesta final
     });
   }
 
-  // Método para obtener todas las órdenes (opcional)
-  getOrders(): Observable<any> {
-    return this.http.get(this.apiUrl);
-  }
-
-  // Método para obtener una orden específica por ID (opcional)
-  getOrderById(id: number): Observable<any> {
-    return this.http.get(`${this.apiUrl}/${id}`);
-  }
-
-  // Método para actualizar una orden existente (opcional)
-  updateOrder(id: number, orderData: any): Observable<any> {
-    return this.http.put(`${this.apiUrl}/${id}`, orderData, {
-      headers: { 'Content-Type': 'application/json' }
+  // Método para descargar un archivo asociado a una tarea
+  downloadFile(id: number): Observable<Blob> {
+    const downloadUrl = `${this.apiUrl}/download/${id}`;
+    console.log(`OrderService: Intentando GET para descarga desde: ${downloadUrl}`);
+    return this.http.get(downloadUrl, {
+      responseType: 'blob'
     });
   }
 
-  // Método para eliminar una orden por ID (opcional)
+  // Método para eliminar una tarea
   deleteOrder(id: number): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/${id}`);
+    const deleteUrl = `${this.apiUrl}/${id}`;
+    console.log(`OrderService: Intentando DELETE a: ${deleteUrl}`);
+    return this.http.delete(deleteUrl);
   }
 
-  // Método para subir un archivo
-  uploadFile(file: File): Observable<any> {
-    const formData = new FormData();
-    formData.append('file', file, file.name);
-
-    // No establecer Content-Type manualmente, HttpClient lo hará por nosotros con FormData
-    // Especificar responseType como 'text' para manejar la respuesta no JSON del backend
-    return this.http.post(`${this.apiUrl}/upload`, formData, { responseType: 'text' });
-  }
+  // Asegúrate de que no haya otros métodos que llamen a /upload
+  // Si existe un método uploadFile, verifica que no se esté llamando desde form-task.component.ts
 }
