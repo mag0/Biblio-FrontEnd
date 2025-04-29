@@ -1,186 +1,182 @@
-import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { OrderService } from '../../services/order.service'; // Ruta relativa
-import { HttpEventType, HttpResponse } from '@angular/common/http'; // Importar HttpEventType y HttpResponse
-import { CommonModule } from '@angular/common'; // Importar CommonModule
-import { Router } from '@angular/router';
+import { Component, OnInit, AfterViewInit, OnDestroy } from '@angular/core'; // Añadir OnDestroy si es necesario
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms'; // Import ReactiveFormsModule
+import { OrderService } from '../../services/order.service';
+import { HttpEventType, HttpResponse, HttpEvent, HttpErrorResponse } from '@angular/common/http'; // Import HttpEvent, HttpErrorResponse
+import { Subscription } from 'rxjs'; // Para gestionar suscripciones
+import { CommonModule } from '@angular/common'; // Import CommonModule
+import { Router } from '@angular/router'; // Import Router if not already present
+
+declare var M: any; // Declaración global de Materialize
 
 @Component({
   standalone: true, // Indica que el componente es standalone
   selector: 'app-form-task',
   templateUrl: './form-task.component.html',
   styleUrls: ['./form-task.component.css'],
-  imports: [ReactiveFormsModule, CommonModule] // Importa los módulos necesarios aquí, incluyendo CommonModule
+  // Ensure CommonModule and ReactiveFormsModule are imported for standalone components
+  imports: [ReactiveFormsModule, CommonModule]
 })
-export class FormTaskComponent {
+export class FormTaskComponent implements OnInit, AfterViewInit, OnDestroy {
   formTask!: FormGroup;
-  uploadStatus: 'initial' | 'uploading' | 'success' | 'error' = 'initial'; // Estado de la carga
-  uploadProgress: number = 0; // Progreso de la carga
-  selectedFile: File | null = null; // Archivo seleccionado
+  selectedFile: File | null = null;
+  uploadProgress: number = 0;
+  uploadStatus: 'initial' | 'uploading' | 'success' | 'error' = 'initial';
+  private uploadSubscription: Subscription | null = null;
+  private formSelectInstance: any = null; // Para guardar la instancia del select
 
-  constructor(private fb: FormBuilder, private orderService: OrderService, private router: Router) {
-    console.log('Constructor inicializado.'); // Log para verificar el constructor
-  }
+  constructor(
+    private fb: FormBuilder,
+    private orderService: OrderService,
+    private router: Router // Inject Router if needed for navigation
+    ) {}
 
   ngOnInit(): void {
-    console.log('ngOnInit ejecutado.'); // Log para rastrear la inicialización del componente
-
-    // Inicialización del formulario reactivo
     this.formTask = this.fb.group({
       nombre: ['', Validators.required],
       descripcion: [''],
-      estado: ['', Validators.required],
-      fechaCreacion: ['', Validators.required],
-      fechaLimite: ['']
+      fechaCreacion: [this.getTodayDate(), Validators.required], // Valor inicial
+      fechaLimite: [''],
+      estado: ['', Validators.required], // Estado requerido
+      archivo: [null] // Control para el archivo
     });
-
-    console.log('Formulario reactivo inicializado:', this.formTask.value); // Log del estado inicial del formulario
   }
 
-  onSubmit(): void {
-    console.log('onSubmit ejecutado.'); // Log para rastrear la ejecución del método
+  ngAfterViewInit(): void {
+    this.initializeMaterializeComponents();
+  }
 
-    if (this.formTask.invalid) {
-      console.warn('Formulario inválido:', this.formTask.errors); // Log de las validaciones fallidas
-      alert('Por favor completa los campos requeridos');
-      return;
+  ngOnDestroy(): void {
+    // Destruir instancia de FormSelect para evitar memory leaks
+    if (this.formSelectInstance) {
+      this.formSelectInstance.destroy();
     }
+    // Cancelar subida si está en progreso
+    if (this.uploadSubscription) {
+      this.uploadSubscription.unsubscribe();
+    }
+  }
 
-    // Construcción del objeto que coincide con el modelo Order en el backend
-    const orderData = {
-      nombre: this.formTask.get('nombre')?.value,
-      descripcion: this.formTask.get('descripcion')?.value,
-      estado: this.formTask.get('estado')?.value,
-      fechaCreacion: this.formTask.get('fechaCreacion')?.value,
-      fechaLimite: this.formTask.get('fechaLimite')?.value
-    };
-
-    console.log('Datos del formulario preparados:', orderData); // Log de los datos a enviar
-
-    if (this.selectedFile) {
-      console.log('Archivo seleccionado para subir:', this.selectedFile.name);
-      this.uploadStatus = 'uploading';
-      this.uploadProgress = 0;
-
-      this.orderService.uploadFile(this.selectedFile).subscribe({
-        next: (event: any) => {
-          if (event.type === HttpEventType.UploadProgress && event.total) {
-            this.uploadProgress = Math.round(100 * (event.loaded / event.total));
-            console.log(`Progreso de carga: ${this.uploadProgress}%`);
-          } else if (event.type === HttpEventType.Response) {
-            console.log('Respuesta del servidor (carga de archivo):', event.body); // Loguear la respuesta
-            this.uploadStatus = 'success';
-            alert('Archivo subido correctamente. Enviando formulario...');
-            // Ahora que el archivo se subió, enviar los datos del formulario
-            this.submitFormData(orderData);
-          }
-        },
-        error: (error) => {
-          console.error('Error al subir el archivo:', error);
-          this.uploadStatus = 'error';
-          // Verificar si el error es HttpErrorResponse y si la respuesta es texto
-          if (error.error instanceof ProgressEvent) {
-            alert('Error de red o conexión al subir el archivo.');
-          } else if (typeof error.error === 'string') {
-            // Si el backend envió texto (ej. 'File uploaded successfully') pero HttpClient esperaba JSON
-            console.warn('El backend respondió con texto, pero se esperaba JSON. Asumiendo éxito si el status es 2xx.');
-            if (error.status >= 200 && error.status < 300) {
-              this.uploadStatus = 'success';
-              alert('Archivo subido (respuesta de texto). Enviando formulario...');
-              console.log('>>> onSubmit: Llamando a submitFormData después de subir archivo (respuesta texto).');
-              this.submitFormData(orderData);
-            } else {
-              alert(`Hubo un problema al subir el archivo: ${error.statusText}`);
-            }
-          } else {
-            alert('Hubo un problema al subir el archivo.');
-          }
-        }
+  initializeMaterializeComponents(): void {
+    try {
+      // Inicializar Datepickers
+      const datepickerElems = document.querySelectorAll('.datepicker');
+      M.Datepicker.init(datepickerElems, {
+        format: 'yyyy-mm-dd',
+        autoClose: true,
+        // i18n: { /* ... */ } // Configuración español si la necesitas
       });
-    } else {
-      console.log('No hay archivo seleccionado, enviando solo datos del formulario.');
-      // Si no hay archivo, enviar solo los datos del formulario
-      this.submitFormData(orderData);
-    }
+      console.log('Materialize datepickers inicializados.');
 
-    // Redirigir a la vista de tareas después de enviar el formulario
-    this.router.navigate(['/tasks']);
+      // Inicializar Selects
+      const selectElems = document.querySelectorAll('select');
+      if (selectElems.length > 0) {
+        // Guardar la instancia para poder destruirla luego
+        this.formSelectInstance = M.FormSelect.init(selectElems)[0]; // Asumiendo que solo hay un select principal que necesitamos gestionar
+        console.log('Materialize selects inicializados.');
+      } else {
+        console.warn('No se encontraron elementos <select> para inicializar.');
+      }
+
+    } catch (e) {
+      console.error('Error inicializando componentes Materialize:', e);
+    }
   }
 
-  // Método auxiliar para enviar los datos del formulario
-  private submitFormData(orderData: any): void {
-    console.log('Enviando datos del formulario:', orderData);
-    this.orderService.createOrder(orderData).subscribe(
-      response => {
-        console.log('Respuesta del servidor (envío de formulario):', response);
-        alert('Formulario enviado correctamente');
-        // Opcional: Resetear formulario y estado de carga
-        this.formTask.reset();
-        this.selectedFile = null;
-        this.uploadStatus = 'initial';
-        this.uploadProgress = 0;
-        // Limpiar el input de archivo visualmente (puede requerir manipulación del DOM o ViewChild)
-        const fileInput = document.getElementById('archivo') as HTMLInputElement;
-        if (fileInput) {
-          fileInput.value = '';
-        }
-      },
-      error => {
-        console.error('Error al enviar el formulario:', error);
-        alert('Hubo un problema al enviar los datos del formulario');
-        // No resetear el estado de carga aquí para permitir reintentos si es necesario
-      }
-    );
+  getTodayDate(): string {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = ('0' + (today.getMonth() + 1)).slice(-2);
+    const day = ('0' + today.getDate()).slice(-2);
+    return `${year}-${month}-${day}`;
   }
 
   onFileSelected(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    if (input.files && input.files.length > 0) {
-      const file = input.files[0];
-      this.selectedFile = file;
-      // Opcional: Podrías querer añadir validación del tipo de archivo aquí
-      // Opcional: Actualizar un FormControl si el archivo es parte del formulario reactivo
-      // this.formTask.patchValue({ archivo: file }); // Ejemplo si tuvieras un control 'archivo'
-      console.log('Archivo seleccionado:', file.name);
+    const element = event.currentTarget as HTMLInputElement;
+    let fileList: FileList | null = element.files;
+    if (fileList && fileList.length > 0) {
+      this.selectedFile = fileList[0];
+      this.formTask.patchValue({ archivo: this.selectedFile }); // Actualizar form control si es necesario
+      this.uploadStatus = 'initial'; // Resetear estado al seleccionar nuevo archivo
+      console.log('Archivo seleccionado:', this.selectedFile.name);
     } else {
       this.selectedFile = null;
-      // Opcional: Limpiar el FormControl si es necesario
-      // this.formTask.patchValue({ archivo: null });
-      console.log('No se seleccionó ningún archivo.');
+      this.formTask.patchValue({ archivo: null });
     }
   }
 
-  // El método uploadFile() ya no es necesario como acción separada del botón
-  // Se elimina o se comenta si prefieres mantenerlo para referencia futura.
-  /*
-  uploadFile(): void { 
-    if (!this.selectedFile) {
-      alert('Por favor, selecciona un archivo primero.');
-      console.warn('Intento de subir sin archivo seleccionado.');
-      return; 
+  onSubmit(): void {
+    if (this.formTask.invalid) {
+      console.error('Formulario inválido.');
+      this.formTask.markAllAsTouched(); // Marcar todos los campos para mostrar errores
+      // Forzar reinicialización visual de Materialize select si hay error de validación
+      setTimeout(() => this.initializeMaterializeComponents(), 0);
+      return;
     }
 
-    const fileToUpload = this.selectedFile;
     this.uploadStatus = 'uploading';
     this.uploadProgress = 0;
 
-    this.orderService.uploadFile(fileToUpload).subscribe({
-      next: (event: any) => { 
-        if (event.type === HttpEventType.UploadProgress && event.total) {
-          this.uploadProgress = Math.round(100 * (event.loaded / event.total));
-          console.log(`Progreso de carga: ${this.uploadProgress}%`);
-        } else if (event.type === HttpEventType.Response) {
-          console.log('Respuesta del servidor (carga de archivo):', event.body);
+    const formData = new FormData();
+    Object.keys(this.formTask.value).forEach(key => {
+      if (key !== 'archivo' && this.formTask.value[key] !== null) {
+        formData.append(key, this.formTask.value[key]);
+      }
+    });
+
+    if (this.selectedFile) {
+      formData.append('file', this.selectedFile, this.selectedFile.name);
+    }
+
+    console.log('Enviando datos:', this.formTask.value);
+
+    // Use createOrder instead of createOrderWithFile
+    this.uploadSubscription = this.orderService.createOrder(formData).subscribe({
+      next: (event: HttpEvent<any>) => { // Add explicit type HttpEvent<any>
+        if (event.type === HttpEventType.UploadProgress) {
+          if (event.total) {
+            this.uploadProgress = Math.round(100 * event.loaded / event.total);
+          }
+        } else if (event instanceof HttpResponse) {
+          console.log('Respuesta completa:', event.body);
           this.uploadStatus = 'success';
-          alert('Archivo subido correctamente');
+          alert('Tarea creada con éxito.'); // Success message
+          // Podrías resetear el form aquí o navegar a otra página
+          this.resetFormAndState(); // Reset form on success
+          this.router.navigate(['/tasks']); // Navigate to tasks list
         }
       },
-      error: (error) => {
-        console.error('Error al subir el archivo:', error);
+      error: (error: HttpErrorResponse) => { // Add explicit type HttpErrorResponse
+        console.error('Error en la subida:', error);
         this.uploadStatus = 'error';
-        alert('Hubo un problema al subir el archivo');
+        this.uploadProgress = 0;
+        alert(`Error al crear la tarea: ${error.message}`); // Error message
+        // Forzar reinicialización visual de Materialize select en caso de error
+        setTimeout(() => this.initializeMaterializeComponents(), 0);
       }
     });
   }
-  */
+
+  private resetFormAndState(): void {
+    this.formTask.reset({
+      nombre: '',
+      descripcion: '',
+      fechaCreacion: this.getTodayDate(),
+      fechaLimite: '',
+      estado: '', // Resetear estado a valor inicial vacío
+      archivo: null
+    });
+    this.selectedFile = null;
+    this.uploadStatus = 'initial';
+    this.uploadProgress = 0;
+
+    // Limpiar campos de archivo visualmente
+    const fileInput = document.getElementById('archivo') as HTMLInputElement;
+    const filePathInput = document.querySelector('.file-path') as HTMLInputElement;
+    if (fileInput) fileInput.value = '';
+    if (filePathInput) filePathInput.value = '';
+
+    // Re-inicializar componentes Materialize después de resetear
+    // Es crucial para que el select muestre el placeholder correcto
+    setTimeout(() => this.initializeMaterializeComponents(), 0);
+  }
 }
