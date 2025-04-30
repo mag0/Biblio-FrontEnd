@@ -28,10 +28,15 @@ export class LoginComponent {
     this.errorMessage = '';
 
     this.authService.login(this.loginData).subscribe({
-      next: () => {
-        this.isLoading = false;
-        // Redirigir al perfil después de iniciar sesión
-        this.router.navigate(['/profile']);
+      next: (user) => { // El método login ahora emite el objeto User
+        // No establecer isLoading aquí, se hará dentro del setTimeout
+        console.log('LoginComponent: Login exitoso, usuario recibido:', user);
+        // Redirigir al perfil después de iniciar sesión y obtener el perfil
+        // Usar setTimeout para asegurar que la detección de cambios se ejecute antes de navegar
+        setTimeout(() => {
+          this.isLoading = false; // Asegurarse que isLoading se actualice antes de navegar
+          this.router.navigate(['/profile']);
+        }, 0);
       },
       error: (error) => {
         this.isLoading = false;

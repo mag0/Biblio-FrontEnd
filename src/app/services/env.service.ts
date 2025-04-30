@@ -41,6 +41,6 @@ export class EnvService {
    */
   getApiUrl(): string {
     // Devuelve directamente el valor de apiUrl del environment
-    return this.env['apiUrl'] || '';
+    return this.env['apiUrl'] || 'https://localhost:44342/api';
   }
 }

@@ -23,17 +23,14 @@ export class NavBarComponent implements OnInit {
 
   ngOnInit(): void {
     // Suscribirse a los cambios en el estado de autenticación
+    // Suscribirse a los cambios en el estado de autenticación
     this.authService.currentUser$.subscribe(user => {
       this.isAuthenticated = !!user;
+      console.log('NavBarComponent: currentUser$ updated, isAuthenticated:', this.isAuthenticated); // Added for debugging
     });
 
-    if (!this.authService.isAuthenticated()) {
-      this.router.navigate(['/login']);
-      return;
-    }
-    
-    // Verificar el estado inicial de autenticación
-    this.isAuthenticated = this.authService.isAuthenticated();
+    // La verificación y redirección aquí son redundantes porque AuthGuard protege la ruta.
+    // La suscripción anterior es suficiente para actualizar el estado para la plantilla.
   }
 
   ngAfterViewInit(): void {
