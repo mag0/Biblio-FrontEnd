@@ -15,20 +15,21 @@ export class EnvService {
     }
   }
 
-
   /**
-   * Obtiene el valor de una variable de entorno
-   * @param key Nombre de la variable
-   * @param defaultValue Valor por defecto si la variable no existe
-   * @returns El valor de la variable o el valor por defecto
+   * Obtiene el valor de una variable de entorno específica.
+   * Busca la clave en el objeto `environment` importado.
+   * @param key - El nombre (clave) de la variable de entorno.
+   * @param defaultValue - El valor a devolver si la clave no se encuentra. Por defecto es una cadena vacía.
+   * @returns El valor de la variable de entorno o el valor por defecto proporcionado.
    */
   get(key: string, defaultValue: any = ''): any {
     return this.env[key] || defaultValue;
   }
 
   /**
-   * Verifica si estamos en modo producción
-   * @returns true si estamos en producción, false en caso contrario
+   * Comprueba si la aplicación se está ejecutando en modo de producción.
+   * Se basa en el valor de la propiedad `production` en el archivo `environment`.
+   * @returns `true` si la propiedad `production` es `true`, `false` en caso contrario.
    */
   isProduction(): boolean {
     // Devuelve directamente el valor de production del environment
@@ -36,8 +37,9 @@ export class EnvService {
   }
 
   /**
-   * Obtiene la URL base de la API
-   * @returns URL de la API
+   * Obtiene la URL base de la API desde la configuración del entorno.
+   * Se basa en el valor de la propiedad `apiUrl` en el archivo `environment`.
+   * @returns La URL de la API como cadena, o una cadena vacía si no está definida.
    */
   getApiUrl(): string {
     // Devuelve directamente el valor de apiUrl del environment

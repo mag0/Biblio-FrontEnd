@@ -14,9 +14,10 @@ export class FileUploadService {
   }
 
   /**
-   * Sube un archivo al servidor
-   * @param file El archivo a subir
-   * @returns Observable con la respuesta del servidor
+   * Sube un archivo al endpoint `/upload` del servidor.
+   * Envía el archivo como parte de un FormData.
+   * @param file - El archivo que se va a subir.
+   * @returns Un Observable que emite eventos HTTP para seguir el progreso de la subida.
    */
   uploadFile(file: File): Observable<HttpEvent<any>> {
     const formData = new FormData();
@@ -33,9 +34,10 @@ export class FileUploadService {
   }
 
   /**
-   * Procesa un archivo PDF mediante OCR
-   * @param file El archivo PDF a procesar
-   * @returns Observable con la respuesta JSON del servidor
+   * Envía un archivo al endpoint `/ocr/process` para su procesamiento OCR.
+   * Envía el archivo como parte de un FormData.
+   * @param file - El archivo PDF que se va a procesar.
+   * @returns Un Observable que emite la respuesta JSON del servidor tras el procesamiento.
    */
   processOcr(file: File): Observable<any> {
     const formData = new FormData();
@@ -50,9 +52,10 @@ export class FileUploadService {
   }
 
   /**
-   * Verifica si el tipo de archivo es válido (PDF, DOC, DOCX)
-   * @param file El archivo a verificar
-   * @returns true si el archivo es válido, false en caso contrario
+   * Comprueba si el tipo MIME del archivo está dentro de los tipos permitidos.
+   * Tipos válidos: 'application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'.
+   * @param file - El archivo a verificar.
+   * @returns `true` si el tipo de archivo es válido, `false` en caso contrario.
    */
   isValidFileType(file: File): boolean {
     const validTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];

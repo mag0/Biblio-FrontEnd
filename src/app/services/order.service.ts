@@ -6,17 +6,25 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class OrderService {
-  // Asegúrate que esta URL es correcta y NO tiene /upload
+  // URL base para las operaciones relacionadas con las tareas/órdenes.
   private apiUrl = 'https://localhost:44342/api/tarea';
 
   constructor(private http: HttpClient) {}
 
-  // Método para obtener todas las órdenes/tareas
-  getOrders(): Observable<any[]> { // Asume que devuelve un array de tareas
+  /**
+   * Obtiene todas las órdenes/tareas desde la API.
+   * @returns Un Observable que emite un array de tareas.
+   */
+  getOrders(): Observable<any[]> {
     return this.http.get<any[]>(this.apiUrl);
   }
 
-  // Método para crear una nueva orden usando FormData
+  /**
+   * Crea una nueva orden/tarea enviando datos de formulario.
+   * Incluye seguimiento del progreso de subida.
+   * @param formData Los datos del formulario para la nueva tarea.
+   * @returns Un Observable que emite eventos HTTP, incluida la respuesta final.
+   */
   createOrder(formData: FormData): Observable<any> {
     // *** Añade este console.log para depurar ***
     console.log(`OrderService: Intentando POST a: ${this.apiUrl}`);
@@ -27,7 +35,11 @@ export class OrderService {
     });
   }
 
-  // Método para descargar un archivo asociado a una tarea
+  /**
+   * Descarga el archivo asociado a una tarea específica.
+   * @param id El ID de la tarea cuyo archivo se descargará.
+   * @returns Un Observable que emite el archivo como un Blob.
+   */
   downloadFile(id: number): Observable<Blob> {
     const downloadUrl = `${this.apiUrl}/download/${id}`;
     console.log(`OrderService: Intentando GET para descarga desde: ${downloadUrl}`);
@@ -36,13 +48,14 @@ export class OrderService {
     });
   }
 
-  // Método para eliminar una tarea
+  /**
+   * Elimina una tarea específica.
+   * @param id El ID de la tarea a eliminar.
+   * @returns Un Observable que emite la respuesta de la API tras la eliminación.
+   */
   deleteOrder(id: number): Observable<any> {
     const deleteUrl = `${this.apiUrl}/${id}`;
     console.log(`OrderService: Intentando DELETE a: ${deleteUrl}`);
     return this.http.delete(deleteUrl);
   }
-
-  // Asegúrate de que no haya otros métodos que llamen a /upload
-  // Si existe un método uploadFile, verifica que no se esté llamando desde form-task.component.ts
 }

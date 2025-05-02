@@ -21,7 +21,9 @@ export class LoginComponent {
   constructor(private authService: AuthService, private router: Router) {}
 
   /**
-   * Maneja el envío del formulario de login
+   * Procesa el envío del formulario de inicio de sesión.
+   * Llama al servicio de autenticación y redirige al perfil si tiene éxito,
+   * o muestra un mensaje de error en caso contrario.
    */
   onSubmit(): void {
     this.isLoading = true;

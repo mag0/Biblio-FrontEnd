@@ -36,22 +36,21 @@ export class AuthService {
   }
 
   /**
-   * Carga el usuario desde el localStorage si existe un token guardado
+   * Verifica la existencia del token de autenticación al iniciar el servicio.
+   * @private
    */
   private loadUserFromStorage(): void {
     const token = localStorage.getItem(this.tokenKey);
+    // TODO: Implementar validación del token y obtención de datos del usuario
     if (token) {
-      // Aquí podrías decodificar el token JWT para obtener la información del usuario
-      // o hacer una petición al backend para obtener los datos del usuario actual
-      // Por ahora, simplemente verificamos que existe un token
-      // En una implementación real, deberías validar el token y obtener los datos del usuario
+      // Por ahora solo verificamos la existencia del token
     }
   }
 
   /**
-   * Inicia sesión con email y contraseña
-   * @param credentials Credenciales de login (email y password)
-   * @returns Observable con la respuesta de autenticación
+   * Autentica al usuario y almacena su token
+   * @param credentials - Credenciales de acceso
+   * @returns Observable con el token y ID del usuario
    */
   login(credentials: LoginRequest): Observable<{ token: string; userId: string }> {
     return this.http.post<{ token: string; userId: string }>(`${this.apiUrl}/auth/login`, credentials)
@@ -71,7 +70,7 @@ export class AuthService {
   }
 
   /**
-   * Cierra la sesión del usuario actual
+   * Cierra la sesión y limpia los datos de autenticación
    */
   logout(): void {
     // Eliminar el token del localStorage
@@ -81,24 +80,22 @@ export class AuthService {
   }
 
   /**
-   * Obtiene el token de autenticación actual
-   * @returns El token JWT o null si no hay sesión
+   * @returns Token JWT actual o null
    */
   getToken(): string | null {
     return localStorage.getItem(this.tokenKey);
   }
 
   /**
-   * Verifica si el usuario está autenticado
-   * @returns true si hay un token guardado, false en caso contrario
+   * @returns Estado de autenticación del usuario
    */
   isAuthenticated(): boolean {
     return !!this.getToken();
   }
 
   /**
-   * Obtiene los datos del perfil del usuario actual
-   * @returns Observable con los datos del usuario
+   * Obtiene el perfil del usuario desde la API
+   * @returns Observable con la información del usuario
    */
   getUserProfile(): Observable<User> {
     const token = localStorage.getItem(this.tokenKey);
@@ -109,6 +106,10 @@ export class AuthService {
     });
   }
 
+  /**
+   * Obtiene o actualiza los datos del usuario actual
+   * @returns Observable con la información del usuario
+   */
   getCurrentUser(): Observable<User | null> {
     if (!this.currentUserSubject.value) {
       this.getUserProfile().subscribe({
@@ -122,6 +123,6 @@ export class AuthService {
         },
       });
     }
-    return this.currentUser$; // Retornar el observable para manejar el estado de forma reactiva
+    return this.currentUser$;
   }
 }
