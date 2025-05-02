@@ -7,7 +7,7 @@ form {
   display: flex;
   flex-direction: column;
   gap: 24px;
-  background: #fff;
+  background: var(--color-blanco);
   padding: 32px 24px;
   border-radius: 18px;
   box-shadow: 0 4px 24px rgba(0,0,0,0.08);
@@ -17,11 +17,11 @@ form {
 
 input[type="email"],
 input[type="password"] {
-  border: 1.5px solid #d3d3d3;
-  color: #fff;
+  border: 1.5px solid var(--color-secundario);
+  color: var(--color-texto-principal);
   border-radius: 6px;
   padding: 22px 16px 22px 21px; 
-  font-size: 1rem;
+  font-size: var(--font-size-base);
   outline: none;
   transition: border-color 0.2s, box-shadow 0.2s;
   background: #f8fafc;
@@ -30,32 +30,32 @@ input[type="password"] {
 
 input[type="email"]:focus,
 input[type="password"]:focus {
-  border-color: #1976d2;
-  box-shadow: 0 0 0 2px #1976d230;
-  color: #fff;
+  border-color: var(--color-primario);
+  box-shadow: 0 0 0 2px var(--color-primario);
+  color: var(--color-texto-principal);
 }
 
 button[type="submit"] {
-  background: linear-gradient(90deg, #1976d2 60%, #42a5f5 100%);
-  color: #fff;
+  background: linear-gradient(90deg, var(--color-primario) 60%, var(--color-azul) 100%);
+  color: var(--color-blanco);
   border: none;
   border-radius: 12px;
   padding: 12px 0;
-  font-size: 1.1rem;
-  font-weight: 600;
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
   cursor: pointer;
   box-shadow: 0 2px 8px rgba(25, 118, 210, 0.08);
   transition: background 0.2s, box-shadow 0.2s;
 }
 
 button[type="submit"]:hover {
-  background: linear-gradient(90deg, #1565c0 60%, #1976d2 100%);
-  box-shadow: 0 4px 16px rgba(25, 118, 210, 0.15);
+  background: linear-gradient(90deg, var(--color-secundario) 60%, var(--color-primario) 100%);
+  box-shadow: 0 4px 16px rgba(30, 105, 205, 0.15);
 }
 
 label {
-  font-weight: 500;
-  color: #333;
+  font-weight: var(--font-weight-medium);
+  color: var(--color-texto-principal);
   margin-bottom: 8px; 
 }
 
@@ -76,7 +76,7 @@ label {
   width: 100vw;
   margin-left: 0;
   margin-right: 0;
-  background: linear-gradient(90deg, #1976d2 60%, #42a5f5 100%);
+  background: linear-gradient(90deg, var(--color-primario) 60%, var(--color-azul) 100%);
   padding: 18px 28px 18px 18px;
   border-radius: 0 0 18px 18px;
   box-shadow: 0 2px 8px rgba(25, 118, 210, 0.10);
@@ -91,16 +91,16 @@ label {
   }
 }
 .login-title {
-  color: #fff;
-  font-size: 1.5rem;
-  font-weight: 700;
+  color: var(--color-blanco);
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-bold);
   letter-spacing: 1px;
 }
 .login-user-icon {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #fff;
+  background: var(--color-blanco);
   border-radius: 50%;
   width: 40px;
   height: 40px;

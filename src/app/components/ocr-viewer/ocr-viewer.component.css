@@ -1,18 +1,18 @@
 .page-content {
   font-family: 'Roboto', sans-serif;
-  line-height: 1.6;
+  line-height: var(--line-height-normal);
 }
 
 .confidence-low {
-  color: #ef4444;
+  color: var(--color-rojo, #ef4444);
 }
 
 .confidence-medium {
-  color: #f59e0b;
+  color: var(--color-amarillo);
 }
 
 .confidence-high {
-  color: #10b981;
+  color: var(--color-verde);
 }
 
 .page-navigation {
@@ -38,7 +38,7 @@
 
 /* Animación para cambios guardados */
 @keyframes saved-flash {
-  0% { background-color: rgba(16, 185, 129, 0.2); }
+  0% { background-color: rgba(var(--color-verde), 0.2); }
   100% { background-color: transparent; }
 }
 

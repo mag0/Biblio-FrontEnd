@@ -9,34 +9,42 @@
 }
 
 .collapsible-header {
-  display: flex; /* Usar flexbox para alinear items */
+  display: flex;
   align-items: center;
   padding: 15px 20px;
-  background-color: #fff; /* Fondo blanco para la cabecera */
-  border-bottom: 1px solid #ddd; /* Borde inferior estándar */
+  background-color: var(--color-fondo);
+  border-bottom: 1px solid var(--color-secundario);
   transition: background-color 0.3s;
 }
 
 .collapsible-header:hover {
-  background-color: #f5f5f5; /* Ligero gris al pasar el ratón */
+  background-color: var(--color-fondo);
+  opacity: 0.9;
 }
 
 li.active .collapsible-header {
-  background-color: #e3f2fd; /* Azul muy claro cuando está activo/abierto */
-  border-bottom: 1px solid #bbdefb;
+  background-color: var(--color-primario);
+  opacity: 0.9;
+  border-bottom: 1px solid var(--color-primario);
+  color: white;
 }
 
 .task-icon {
   margin-right: 15px;
-  color: #1976d2; /* Azul */
+  color: var(--color-primario);
+}
+
+li.active .collapsible-header .task-icon,
+li.active .collapsible-header .task-title {
+  color: white;
 }
 
 .task-title {
-  font-size: 1.1rem;
-  font-weight: 500;
-  color: #333;
-  margin-right: auto; /* Empuja el badge a la derecha */
-  flex-grow: 1; /* Ocupa espacio disponible */
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-texto-principal);
+  margin-right: auto;
+  flex-grow: 1;
 }
 
 /* Badge de estado (similar al de cards) */
@@ -51,10 +59,10 @@ li.active .collapsible-header {
   flex-shrink: 0; /* Evita que se encoja */
 }
 
-.status-pending { background-color: #ff9800; } /* Naranja */
-.status-in-progress { background-color: #2196f3; } /* Azul */
-.status-completed { background-color: #4caf50; } /* Verde */
-.status-default { background-color: #9e9e9e; } /* Gris */
+.status-pending { background-color: var(--color-acento); }
+.status-in-progress { background-color: var(--color-primario); }
+.status-completed { background-color: var(--color-secundario); }
+.status-default { background-color: var(--color-texto-principal); }
 
 /* Cuerpo del Collapsible */
 .collapsible-body {
@@ -65,11 +73,12 @@ li.active .collapsible-header {
 
 .task-details p {
   margin: 10px 0;
-  color: #555;
+  color: var(--color-texto-principal);
+  opacity: 0.8;
 }
 
 .task-details strong {
-    color: #333;
+    color: var(--color-texto-principal);
 }
 
 /* Separadores */
@@ -86,8 +95,8 @@ li.active .collapsible-header {
 .section-title {
   display: flex;
   align-items: center;
-  font-weight: 500;
-  color: #444;
+  font-weight: var(--font-weight-medium);
+  color: var(--color-texto-principal);
   margin-bottom: 10px;
 }
 

@@ -34,9 +34,9 @@ export class FormTaskComponent implements OnInit, AfterViewInit, OnDestroy {
     this.formTask = this.fb.group({
       nombre: ['', Validators.required],
       descripcion: [''],
-      fechaCreacion: [this.getTodayDate(), Validators.required], // Valor inicial
+      fechaCreacion: [this.getTodayDate()], // Valor inicial oculto
       fechaLimite: [''],
-      estado: ['', Validators.required], // Estado requerido
+      estado: ['Pendiente'], // Estado por defecto oculto
       archivo: [null] // Control para el archivo
     });
   }

@@ -7,28 +7,14 @@
       </span>
 
       <form [formGroup]="formTask" (ngSubmit)="onSubmit()">
-        <!-- Fila 1: Nombre y Estado -->
+        <!-- Fila 1: Nombre -->
         <div class="row">
-          <div class="input-field col s12 m6">
+          <div class="input-field col s12">
             <i class="material-icons prefix">title</i> <!-- Icono para Nombre -->
             <input id="nombre" type="text" formControlName="nombre" class="validate">
             <label for="nombre">Nombre de la Tarea</label>
             <span class="helper-text red-text" *ngIf="formTask.get('nombre')?.invalid && formTask.get('nombre')?.touched">
               El nombre es requerido.
-            </span>
-          </div>
-
-          <div class="input-field col s12 m6">
-             <i class="material-icons prefix">playlist_add_check</i> <!-- Icono para Estado -->
-            <select formControlName="estado" id="estado">
-              <option value="" disabled selected>Selecciona un estado</option>
-              <option value="Pendiente">Pendiente</option>
-              <option value="En Progreso">En Progreso</option>
-              <option value="Completada">Completada</option>
-            </select>
-            <label for="estado">Estado</label> <!-- Asegúrate que esta label esté presente -->
-            <span class="helper-text red-text" *ngIf="formTask.get('estado')?.invalid && formTask.get('estado')?.touched">
-              El estado es requerido.
             </span>
           </div>
         </div>
@@ -42,18 +28,9 @@
           </div>
         </div>
 
-        <!-- Fila 3: Fechas -->
+        <!-- Fila 3: Fecha Límite -->
         <div class="row">
-          <div class="input-field col s12 m6">
-             <i class="material-icons prefix">event</i> <!-- Icono para Fecha Creación -->
-            <input id="fechaCreacion" type="text" class="datepicker" formControlName="fechaCreacion"> <!-- Usar datepicker de Materialize -->
-            <label for="fechaCreacion">Fecha de Creación</label>
-            <span class="helper-text red-text" *ngIf="formTask.get('fechaCreacion')?.invalid && formTask.get('fechaCreacion')?.touched">
-              La fecha de creación es requerida.
-            </span>
-          </div>
-
-          <div class="input-field col s12 m6">
+          <div class="input-field col s12">
              <i class="material-icons prefix">event_busy</i> <!-- Icono para Fecha Límite -->
             <input id="fechaLimite" type="text" class="datepicker" formControlName="fechaLimite"> <!-- Usar datepicker de Materialize -->
             <label for="fechaLimite">Fecha Límite (Opcional)</label>
