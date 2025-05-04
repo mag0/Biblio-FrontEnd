@@ -167,6 +167,10 @@ export class FormTaskComponent implements OnInit, AfterViewInit, OnDestroy {
     this.showSuccessPopup = false; // Ocultar popup
     this.resetFormAndState(); // Resetear el formulario
     this.uploadStatus = 'initial'; // Resetear estado de subida
+    // Recargar la página actual navegando al mismo componente
+    this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+      this.router.navigate(['/form-task']);
+    });
   }
 
   // Acción para el botón 'Ver Tareas' del popup
