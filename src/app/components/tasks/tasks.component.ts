@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { OrderService } from '../../services/order.service';
 import { RouterLink } from '@angular/router';
 import { saveAs } from 'file-saver';
+import { ConfirmationPopupComponent } from '../confirmation-popup/confirmation-popup.component'; // Importar el nuevo componente
 
 declare var M: any; // Re-añadir declaración de Materialize
 
@@ -11,11 +12,18 @@ declare var M: any; // Re-añadir declaración de Materialize
   selector: 'app-tasks',
   templateUrl: './tasks.component.html',
   styleUrls: ['./tasks.component.css'],
-  imports: [CommonModule, RouterLink]
+  imports: [CommonModule, RouterLink, ConfirmationPopupComponent] // Añadir ConfirmationPopupComponent a los imports
 })
 export class TasksComponent implements OnInit, AfterViewInit { // Re-añadir AfterViewInit
   tasks: any[] = [];
   isLoading: boolean = true;
+
+  // Propiedades para el popup de confirmación
+  showConfirmationPopup: boolean = false;
+  popupTitle: string = '';
+  popupQuestion: string = '';
+  taskToDeleteId: number | null = null;
+  taskToDeleteIndex: number | null = null;
 
   constructor(private orderService: OrderService) {}
 
@@ -95,24 +103,57 @@ export class TasksComponent implements OnInit, AfterViewInit { // Re-añadir Aft
     });
   }
 
-  // Método para eliminar tarea (se mantiene igual, pero revisa event.stopPropagation)
-  deleteTask(taskId: number, index: number, event: Event): void {
-    event.stopPropagation(); // MUY IMPORTANTE: Evita que el collapsible se cierre/abra al hacer clic en el botón
-    if (confirm('¿Estás seguro de que quieres eliminar esta tarea?')) {
-      this.orderService.deleteOrder(taskId).subscribe({
+  // Método para solicitar confirmación antes de eliminar
+  askForDeleteConfirmation(taskId: number, index: number, taskName: string, event: Event): void {
+    event.stopPropagation(); // Evita que el collapsible se cierre/abra
+    this.taskToDeleteId = taskId;
+    this.taskToDeleteIndex = index;
+    this.popupTitle = 'Confirmar Eliminación';
+    this.popupQuestion = `¿Estás seguro de que quieres eliminar la tarea "${taskName}"?`;
+    this.showConfirmationPopup = true;
+  }
+
+  // Método que se ejecuta al confirmar la eliminación desde el popup
+  confirmDelete(): void {
+    if (this.taskToDeleteId !== null && this.taskToDeleteIndex !== null) {
+      this.orderService.deleteOrder(this.taskToDeleteId).subscribe({
         next: () => {
-          console.log(`Tarea ${taskId} eliminada.`);
-          // Podríamos necesitar cerrar el item antes de eliminarlo visualmente
-          // o simplemente dejar que se elimine.
-          this.tasks.splice(index, 1);
-          // Opcional: Reinicializar si la eliminación causa problemas de UI
-          // setTimeout(() => this.initializeCollapsible(), 0);
+          console.log(`Tarea ${this.taskToDeleteId} eliminada.`);
+          // En lugar de splice, recargamos las tareas
+          this.loadTasks(); 
+          this.resetDeleteState();
+          // Ya no es necesario reinicializar collapsible aquí, loadTasks lo hará
         },
         error: error => {
           console.error('Error al eliminar la tarea:', error);
           alert('No se pudo eliminar la tarea.');
+          this.resetDeleteState();
         }
       });
+    } else {
+      console.error('Error: IDs para eliminar no encontrados.');
+      this.resetDeleteState();
     }
+  }
+
+  // Método que se ejecuta al cancelar la eliminación desde el popup
+  cancelDelete(): void {
+    console.log('Eliminación cancelada.');
+    this.resetDeleteState();
+  }
+
+  // Resetea el estado del popup
+  private resetDeleteState(): void {
+    this.showConfirmationPopup = false;
+    this.taskToDeleteId = null;
+    this.taskToDeleteIndex = null;
+    this.popupTitle = '';
+    this.popupQuestion = '';
+  }
+
+  // Método deleteTask ahora solo llama a askForDeleteConfirmation
+  // Lo mantenemos por si se usa en otro lugar, pero la lógica principal está en askForDeleteConfirmation
+  deleteTask(taskId: number, index: number, taskName: string, event: Event): void {
+     this.askForDeleteConfirmation(taskId, index, taskName, event);
   }
 }

@@ -1,0 +1,62 @@
+.popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6); /* Fondo oscuro semitransparente */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000; /* Asegura que esté por encima de otros elementos */
+}
+
+.popup-content {
+  background-color: #ffffff;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  position: relative;
+  min-width: 300px; /* Ancho mínimo */
+  max-width: 500px; /* Ancho máximo */
+  text-align: center; /* Centrar contenido */
+}
+
+.close-button {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  background: none;
+  border: none;
+  font-size: 24px; /* Tamaño del icono 'X' */
+  color: #aaa; /* Color grisáceo */
+  cursor: pointer;
+  line-height: 1;
+}
+
+.close-button:hover {
+  color: #333; /* Color más oscuro al pasar el mouse */
+}
+
+.popup-title {
+  margin-top: 0;
+  margin-bottom: 15px;
+  font-weight: 500; /* Un poco más de peso */
+}
+
+.popup-question {
+  margin-bottom: 25px;
+  color: #555; /* Color de texto para la pregunta */
+  font-size: 1rem;
+}
+
+.popup-actions {
+  display: flex;
+  justify-content: center; /* Centrar botones */
+  gap: 15px; /* Espacio entre botones */
+}
+
+/* Ajustes específicos para botones dentro del popup si es necesario */
+.popup-actions .btn {
+  min-width: 120px; /* Ancho mínimo para botones */
+}

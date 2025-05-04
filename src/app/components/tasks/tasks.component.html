@@ -27,38 +27,29 @@
       <!-- Cuerpo del Collapsible (Contenido) -->
       <div class="collapsible-body">
         <div class="task-details">
-          <p><strong>Descripción:</strong> {{ task.descripcion || 'N/A' }}</p>
-          <p><strong>Fecha Creación:</strong> {{ task.fechaCreacion | date:'dd/MM/yyyy HH:mm' }}</p>
-          <p><strong>Fecha Límite:</strong> {{ task.fechaLimite ? (task.fechaLimite | date:'dd/MM/yyyy') : 'N/A' }}</p>
+          <!-- Descripción -->
+          <p *ngIf="task.descripcion"><strong>Descripción:</strong> {{ task.descripcion }}</p>
+          <p *ngIf="!task.descripcion"><em>No hay descripción disponible.</em></p>
 
-          <!-- Sección Archivo Adjunto -->
-          <div class="file-section" *ngIf="task.fileName">
-             <div class="divider"></div>
-             <p class="section-title">
-               <i class="material-icons tiny">attach_file</i> Archivo Adjunto
-             </p>
-             <div class="file-info">
-               <span>{{ task.fileName }}</span>
-               <button class="btn waves-effect waves-light blue lighten-1 btn-small download-btn"
-                       (click)="downloadFile(task.id, task.fileName, $event)">
-                 Descargar
-                 <i class="material-icons right tiny">file_download</i>
-               </button>
-             </div>
-          </div>
-          <div *ngIf="!task.fileName" class="file-section-empty">
-             <div class="divider"></div>
-             <p class="grey-text"><i class="material-icons tiny">attach_file</i> No hay archivo adjunto.</p>
-          </div>
+          <!-- Fecha Límite -->
+          <p *ngIf="task.fechaLimite"><strong>Fecha Límite:</strong> {{ task.fechaLimite | date:'dd/MM/yyyy' }}</p>
+          <p *ngIf="!task.fechaLimite"><em>No se especificó fecha límite.</em></p>
 
+          <!-- Archivo Adjunto -->
+          <div *ngIf="task.filePath" class="file-attachment">
+            <strong>Archivo Adjunto:</strong>
+            <button class="btn-flat waves-effect waves-teal btn-small download-btn" (click)="downloadFile(task.id, task.fileName, $event)" title="Descargar {{ task.fileName }}">
+              <i class="material-icons left tiny">file_download</i> {{ task.fileName }}
+            </button>
+          </div>
+          <p *ngIf="!task.filePath"><em>No hay archivo adjunto.</em></p>
 
           <!-- Acciones -->
           <div class="task-actions">
-            <div class="divider"></div>
-            <!-- <a [routerLink]="['/edit-task', task.id]" class="btn waves-effect waves-light orange btn-small action-btn" (click)="$event.stopPropagation()">
-              Editar <i class="material-icons right tiny">edit</i>
-            </a> -->
-            <button class="btn waves-effect waves-light red btn-small action-btn" (click)="deleteTask(task.id, i, $event)">
+            <!-- Botón Editar (si se implementa) -->
+            <!-- <button class="btn waves-effect waves-light amber btn-small action-btn">Editar <i class="material-icons right tiny">edit</i></button> -->
+            <!-- Botón Eliminar -->
+            <button class="btn waves-effect waves-light red btn-small action-btn" (click)="askForDeleteConfirmation(task.id, i, task.nombre, $event)">
               Eliminar <i class="material-icons right tiny">delete</i>
             </button>
           </div>
@@ -67,8 +58,21 @@
     </li>
   </ul>
 
-  <p *ngIf="!isLoading && tasks.length === 0" class="center-align grey-text" style="margin-top: 30px;">
-    No hay tareas disponibles. ¡Crea una nueva!
-  </p>
-
+  <!-- Mensaje si no hay tareas -->
+  <div *ngIf="!isLoading && tasks.length === 0" class="center-align no-tasks-message">
+    <i class="material-icons large grey-text text-lighten-1">inbox</i>
+    <p class="grey-text">No tienes tareas pendientes.</p>
+    <a class="btn waves-effect waves-light blue" routerLink="/form-task">
+      Crea tu primera tarea
+    </a>
+  </div>
 </div>
+
+<!-- Popup de Confirmación -->
+<app-confirmation-popup
+  [isVisible]="showConfirmationPopup"
+  [title]="popupTitle"
+  [question]="popupQuestion"
+  (confirm)="confirmDelete()"
+  (cancel)="cancelDelete()">
+</app-confirmation-popup>
