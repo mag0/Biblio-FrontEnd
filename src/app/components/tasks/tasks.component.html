@@ -73,6 +73,8 @@
   [isVisible]="showConfirmationPopup"
   [title]="popupTitle"
   [question]="popupQuestion"
-  (confirm)="confirmDelete()"
-  (cancel)="cancelDelete()">
+  [primaryActionText]="'Eliminar'"
+  [secondaryActionText]="'Cancelar'"
+  (primaryAction)="confirmDelete()"
+  (secondaryAction)="cancelDelete()">
 </app-confirmation-popup>

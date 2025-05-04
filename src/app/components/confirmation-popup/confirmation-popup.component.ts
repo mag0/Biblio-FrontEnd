@@ -12,26 +12,28 @@ export class ConfirmationPopupComponent {
   @Input() title: string = 'Confirmar Acción';
   @Input() question: string = '¿Estás seguro de que deseas realizar esta acción?';
   @Input() isVisible: boolean = false;
+  @Input() primaryActionText: string = 'Confirmar'; // Renombrado desde confirmButtonText
+  @Input() secondaryActionText: string = 'Cancelar'; // Renombrado desde cancelButtonText
 
-  @Output() confirm = new EventEmitter<void>();
-  @Output() cancel = new EventEmitter<void>();
+  @Output() primaryAction = new EventEmitter<void>(); // Renombrado desde confirm
+  @Output() secondaryAction = new EventEmitter<void>(); // Renombrado desde cancel
 
   constructor() { }
 
-  onConfirm(): void {
-    this.confirm.emit();
+  onPrimaryAction(): void { // Renombrado desde onConfirm
+    this.primaryAction.emit();
     this.closePopup();
   }
 
-  onCancel(): void {
-    this.cancel.emit();
+  onSecondaryAction(): void { // Renombrado desde onCancel
+    this.secondaryAction.emit();
     this.closePopup();
   }
 
   closePopup(): void {
     this.isVisible = false;
-    // Emit cancel event when closing via 'X' or outside click, consistent with cancel button
-    this.cancel.emit(); 
+    // Emitir la acción secundaria al cerrar el popup
+    this.secondaryAction.emit();
   }
 
   // Close popup if clicking outside the modal content
@@ -44,7 +46,7 @@ export class ConfirmationPopupComponent {
        // This prevents immediate closing if the popup is opened by a click
        // A more robust solution might involve passing the opener element reference
        // For now, we assume clicks outside the content area are meant to close it.
-      this.closePopup();
+      this.closePopup(); // Solo cierra, no emite evento por defecto
     }
   }
 }

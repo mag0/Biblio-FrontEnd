@@ -5,6 +5,7 @@ import { HttpEventType, HttpResponse, HttpEvent, HttpErrorResponse } from '@angu
 import { Subscription } from 'rxjs'; // Para gestionar suscripciones
 import { CommonModule } from '@angular/common'; // Import CommonModule
 import { Router } from '@angular/router'; // Import Router if not already present
+import { ConfirmationPopupComponent } from '../confirmation-popup/confirmation-popup.component'; // Importar el popup
 
 declare var M: any; // Declaración global de Materialize
 
@@ -14,7 +15,7 @@ declare var M: any; // Declaración global de Materialize
   templateUrl: './form-task.component.html',
   styleUrls: ['./form-task.component.css'],
   // Ensure CommonModule and ReactiveFormsModule are imported for standalone components
-  imports: [ReactiveFormsModule, CommonModule]
+  imports: [ReactiveFormsModule, CommonModule, ConfirmationPopupComponent] // Añadir ConfirmationPopupComponent
 })
 export class FormTaskComponent implements OnInit, AfterViewInit, OnDestroy {
   formTask!: FormGroup;
@@ -23,6 +24,19 @@ export class FormTaskComponent implements OnInit, AfterViewInit, OnDestroy {
   uploadStatus: 'initial' | 'uploading' | 'success' | 'error' = 'initial';
   private uploadSubscription: Subscription | null = null;
   private formSelectInstance: any = null; // Para guardar la instancia del select
+
+  // Propiedades para el popup de éxito
+  showSuccessPopup: boolean = false;
+  successPopupTitle: string = '¡Éxito!';
+  successPopupMessage: string = 'La tarea se ha creado correctamente.';
+  successConfirmButtonText: string = 'Crear Nueva Tarea';
+  successCancelButtonText: string = 'Ver Tareas';
+
+  // Método para manejar el cierre del popup (al hacer clic fuera o en la X)
+  onPopupClose(): void {
+    this.showSuccessPopup = false;
+    this.router.navigate(['/tasks']); // Redirigir a la vista de tareas
+  }
 
   constructor(
     private fb: FormBuilder,
@@ -105,6 +119,9 @@ export class FormTaskComponent implements OnInit, AfterViewInit, OnDestroy {
       return;
     }
 
+    this.uploadStatus = 'uploading'; // Indicar que la subida ha comenzado
+    this.uploadProgress = 0;
+
     const formData = new FormData();
     Object.keys(this.formTask.value).forEach(key => {
       if (key !== 'archivo' && this.formTask.value[key] !== null) {
@@ -126,17 +143,36 @@ export class FormTaskComponent implements OnInit, AfterViewInit, OnDestroy {
           }
         } else if (event instanceof HttpResponse) {
           console.log('Respuesta completa:', event.body);
-          alert('Tarea creada con éxito.');
-          this.resetFormAndState();
-          this.router.navigate(['/tasks']);
+          this.uploadStatus = 'success'; // Marcar como éxito
+          // alert('Tarea creada con éxito.'); // Reemplazado por popup
+          this.showSuccessPopup = true; // Mostrar el popup de éxito
+          // No reseteamos ni navegamos aquí, lo hacemos en las acciones del popup
         }
       },
       error: (error: HttpErrorResponse) => {
         console.error('Error en la subida:', error);
+        this.uploadStatus = 'error'; // Marcar como error
         alert(`Error al crear la tarea: ${error.message}`);
         setTimeout(() => this.initializeMaterializeComponents(), 0);
+      },
+      complete: () => {
+        // Opcional: Limpiar suscripción si es necesario, aunque usualmente no para HTTP
+        this.uploadSubscription = null;
       }
     });
+  }
+
+  // Acción para el botón 'Crear Nueva Tarea' del popup
+  createNewTask(): void {
+    this.showSuccessPopup = false; // Ocultar popup
+    this.resetFormAndState(); // Resetear el formulario
+    this.uploadStatus = 'initial'; // Resetear estado de subida
+  }
+
+  // Acción para el botón 'Ver Tareas' del popup
+  goToTasks(): void {
+    this.showSuccessPopup = false; // Ocultar popup
+    this.router.navigate(['/tasks']); // Navegar a la lista de tareas
   }
 
   private resetFormAndState(): void {
@@ -145,16 +181,19 @@ export class FormTaskComponent implements OnInit, AfterViewInit, OnDestroy {
       descripcion: '',
       fechaCreacion: this.getTodayDate(),
       fechaLimite: '',
-      estado: '',
+      estado: 'Pendiente', // Resetear a Pendiente
       archivo: null
     });
     this.selectedFile = null;
+    this.uploadProgress = 0;
+    // No resetear uploadStatus aquí, se maneja en onSubmit y acciones del popup
 
     const fileInput = document.getElementById('archivo') as HTMLInputElement;
     const filePathInput = document.querySelector('.file-path') as HTMLInputElement;
     if (fileInput) fileInput.value = '';
     if (filePathInput) filePathInput.value = '';
 
+    // Re-inicializar selects y datepickers si es necesario después del reset
     setTimeout(() => this.initializeMaterializeComponents(), 0);
   }
 }

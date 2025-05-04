@@ -140,6 +140,8 @@ export class TasksComponent implements OnInit, AfterViewInit { // Re-añadir Aft
   cancelDelete(): void {
     console.log('Eliminación cancelada.');
     this.resetDeleteState();
+    // Recargar la lista de tareas al cancelar
+    this.loadTasks();
   }
 
   // Resetea el estado del popup

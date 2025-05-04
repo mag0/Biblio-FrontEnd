@@ -1,14 +1,14 @@
 <div class="popup-overlay" *ngIf="isVisible" (click)="closePopup()">
   <div class="popup-content" (click)="$event.stopPropagation()"> <!-- Evita que el clic dentro del contenido cierre el popup -->
-    <button class="close-button" (click)="onCancel()">&times;</button>
+    <button class="close-button" (click)="closePopup()">&times;</button>
     <h4 class="popup-title blue-text text-darken-2">{{ title }}</h4>
     <p class="popup-question">{{ question }}</p>
     <div class="popup-actions">
-      <button class="btn waves-effect waves-light grey lighten-1" (click)="onCancel()">
-        <i class="material-icons left">cancel</i>Cancelar
+      <button class="btn waves-effect waves-light grey lighten-1" (click)="onSecondaryAction()"> <!-- Renombrado desde onCancel -->
+        <i class="material-icons left">cancel</i>{{ secondaryActionText }} <!-- Renombrado desde cancelButtonText -->
       </button>
-      <button class="btn waves-effect waves-light blue darken-2" (click)="onConfirm()" style="margin-left: 10px;">
-        <i class="material-icons left">check_circle</i>Confirmar
+      <button class="btn waves-effect waves-light blue darken-2" (click)="onPrimaryAction()" style="margin-left: 10px;"> <!-- Renombrado desde onConfirm -->
+        <i class="material-icons left">check_circle</i>{{ primaryActionText }} <!-- Renombrado desde confirmButtonText -->
       </button>
     </div>
   </div>

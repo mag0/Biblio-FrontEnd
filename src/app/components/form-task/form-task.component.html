@@ -85,3 +85,14 @@
     </div>
   </div>
 </div>
+
+<!-- Popup de Éxito -->
+<app-confirmation-popup
+  [isVisible]="showSuccessPopup"
+  [title]="successPopupTitle"
+  [question]="successPopupMessage"
+  [primaryActionText]="successConfirmButtonText" 
+  [secondaryActionText]="successCancelButtonText" 
+  (primaryAction)="createNewTask()" 
+  (secondaryAction)="goToTasks()"> 
+</app-confirmation-popup>
