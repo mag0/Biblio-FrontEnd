@@ -4,29 +4,30 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
 interface OcrPage {
-  numero: number;
-  texto: string;
-  confianza: number;
-  caracteres: number;
-  palabras: number;
+  number: number;
+  text: string;
+  confidence: number;
+  characters: number;
+  words: number;
 }
 
 interface OcrResponse {
-  estado: string;
-  mensaje: string;
-  metadatos: {
-    nombreArchivo: string;
-    tamaño: string;
-    totalPáginas: number;
-    tiempoProcesamiento: string;
-    estadísticas: {
-      totalCaracteres: number;
-      totalPalabras: number;
-      promedioCaracteresPorPágina: number;
-      promedioPalabrasPorPágina: number;
+  status: string;
+  message: string;
+  metadata: {
+    fileName: string;
+    fileSize: string;
+    totalPages: number;
+    processingTime: string;
+    statistics: {
+      totalCharacters: number;
+      totalWords: number;
+      averageCharactersPerPage: number;
+      averageWordsPerPage: number;
+      averageConfidence?: number;
     }
   };
-  páginas: OcrPage[];
+  pages: OcrPage[];
 }
 
 @Component({
@@ -63,7 +64,7 @@ export class OcrViewerComponent implements OnInit {
    * @param pageNumber Número de página a mostrar
    */
   goToPage(pageNumber: number): void {
-    if (this.ocrData && pageNumber >= 1 && pageNumber <= this.ocrData.metadatos.totalPáginas) {
+    if (this.ocrData && pageNumber >= 1 && pageNumber <= this.ocrData.metadata.totalPages) {
       this.currentPage = pageNumber;
       this.isEditing = false;
     }
@@ -73,8 +74,8 @@ export class OcrViewerComponent implements OnInit {
    * Obtiene la página actual
    */
   getCurrentPage(): OcrPage | null {
-    if (!this.ocrData || !this.ocrData.páginas) return null;
-    return this.ocrData.páginas.find(page => page.numero === this.currentPage) || null;
+    if (!this.ocrData || !this.ocrData.pages) return null;
+    return this.ocrData.pages.find(page => page.number === this.currentPage) || null;
   }
   
   /**
@@ -83,7 +84,7 @@ export class OcrViewerComponent implements OnInit {
   startEditing(): void {
     const currentPage = this.getCurrentPage();
     if (currentPage) {
-      this.editingText = currentPage.texto;
+      this.editingText = currentPage.text;
       this.isEditing = true;
     }
   }
@@ -94,14 +95,14 @@ export class OcrViewerComponent implements OnInit {
   saveChanges(): void {
     if (!this.ocrData || !this.isEditing) return;
     
-    const pageIndex = this.ocrData.páginas.findIndex(page => page.numero === this.currentPage);
+    const pageIndex = this.ocrData.pages.findIndex(page => page.number === this.currentPage);
     if (pageIndex !== -1) {
       // Actualizar el texto
-      this.ocrData.páginas[pageIndex].texto = this.editingText;
+      this.ocrData.pages[pageIndex].text = this.editingText;
       
       // Recalcular caracteres y palabras
-      this.ocrData.páginas[pageIndex].caracteres = this.editingText.length;
-      this.ocrData.páginas[pageIndex].palabras = this.countWords(this.editingText);
+      this.ocrData.pages[pageIndex].characters = this.editingText.length;
+      this.ocrData.pages[pageIndex].words = this.countWords(this.editingText);
       
       // Recalcular estadísticas globales
       this.recalculateStats();
@@ -135,19 +136,19 @@ export class OcrViewerComponent implements OnInit {
   private recalculateStats(): void {
     if (!this.ocrData) return;
     
-    let totalCaracteres = 0;
-    let totalPalabras = 0;
+    let totalCharacters = 0;
+    let totalWords = 0;
     
-    this.ocrData.páginas.forEach(page => {
-      totalCaracteres += page.caracteres;
-      totalPalabras += page.palabras;
+    this.ocrData.pages.forEach(page => {
+      totalCharacters += page.characters;
+      totalWords += page.words;
     });
     
-    this.ocrData.metadatos.estadísticas.totalCaracteres = totalCaracteres;
-    this.ocrData.metadatos.estadísticas.totalPalabras = totalPalabras;
-    this.ocrData.metadatos.estadísticas.promedioCaracteresPorPágina = 
-      totalCaracteres / this.ocrData.metadatos.totalPáginas;
-    this.ocrData.metadatos.estadísticas.promedioPalabrasPorPágina = 
-      totalPalabras / this.ocrData.metadatos.totalPáginas;
+    this.ocrData.metadata.statistics.totalCharacters = totalCharacters;
+    this.ocrData.metadata.statistics.totalWords = totalWords;
+    this.ocrData.metadata.statistics.averageCharactersPerPage = 
+      totalCharacters / this.ocrData.metadata.totalPages;
+    this.ocrData.metadata.statistics.averageWordsPerPage = 
+      totalWords / this.ocrData.metadata.totalPages;
   }
 }

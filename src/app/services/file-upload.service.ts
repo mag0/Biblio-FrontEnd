@@ -39,14 +39,14 @@ export class FileUploadService {
    * @param file - El archivo PDF que se va a procesar.
    * @returns Un Observable que emite la respuesta JSON del servidor tras el procesamiento.
    */
-  processOcr(file: File): Observable<any> {
+  processOcr(file: File, processor: string = 'Azure'): Observable<any> {
     const formData = new FormData();
     formData.append('file', file, file.name);
 
     const headers = new HttpHeaders();
     // No establecemos Content-Type ya que FormData lo establece automáticamente con el boundary
 
-    return this.http.post<any>(`${this.apiUrl}/ocr/process`, formData, {
+    return this.http.post<any>(`${this.apiUrl}/ocr/${processor}`, formData, {
       headers: headers
     });
   }

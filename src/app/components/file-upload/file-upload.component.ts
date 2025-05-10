@@ -1,23 +1,36 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ElementRef, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { HttpClientModule, HttpEventType } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { FileUploadService } from '../../services/file-upload.service';
 
+declare global {
+  interface Window {
+    M: any;
+  }
+}
+
 @Component({
   selector: 'app-file-upload',
-  imports: [CommonModule, HttpClientModule],
+  imports: [CommonModule, HttpClientModule, FormsModule],
   templateUrl: './file-upload.component.html',
   styleUrl: './file-upload.component.css',
   standalone: true
 })
-export class FileUploadComponent {
+export class FileUploadComponent{
+  @ViewChild('ocrProcessor') ocrProcessorSelect!: ElementRef;
+  
   selectedFile: File | null = null;
   uploadProgress: number = 0;
-  uploadStatus: 'initial' | 'uploading' | 'success' | 'error' = 'initial';
+  uploadStatus: 'idle' | 'uploading' | 'success' | 'error' = 'idle';
   errorMessage: string = '';
   ocrResponse: any = null; // Para almacenar la respuesta JSON del OCR
-  
+  selectedOcrProcessor: string = 'Azure'; // Valor por defecto
+
+  ngOnInit(): void {
+    this.selectedOcrProcessor = 'Local';
+  }
   constructor(private fileUploadService: FileUploadService, private router: Router) {}
 
   /**
@@ -33,7 +46,7 @@ export class FileUploadComponent {
       if (this.fileUploadService.isValidFileType(file)) {
         this.selectedFile = file;
         this.errorMessage = '';
-        this.uploadStatus = 'initial';
+        this.uploadStatus = 'idle';
       } else {
         this.selectedFile = null;
         this.errorMessage = 'Solo se permiten archivos PDF, DOC o DOCX';
@@ -94,7 +107,7 @@ export class FileUploadComponent {
     this.uploadProgress = 0;
     this.ocrResponse = null;
 
-    this.fileUploadService.processOcr(this.selectedFile).subscribe({
+    this.fileUploadService.processOcr(this.selectedFile, this.selectedOcrProcessor).subscribe({
       next: (response) => {
         this.uploadStatus = 'success';
         this.uploadProgress = 100;
@@ -121,7 +134,7 @@ export class FileUploadComponent {
   resetForm(): void {
     this.selectedFile = null;
     this.uploadProgress = 0;
-    this.uploadStatus = 'initial';
+    this.uploadStatus = 'idle';
     this.errorMessage = '';
     this.ocrResponse = null;
   }

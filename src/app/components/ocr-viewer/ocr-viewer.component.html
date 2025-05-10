@@ -26,30 +26,37 @@
   <div *ngIf="ocrData" class="card z-depth-2">
     <!-- Cabecera con metadatos -->
     <div class="card-content blue darken-2 white-text">
-      <h6>{{ ocrData.metadatos['nombreArchivo'] }}</h6>
+      <h6>{{ ocrData.metadata.fileName }}</h6>
       <div class="row">
-        <div class="col s12 m3">Tamaño: {{ ocrData.metadatos['tamaño'] }}</div>
-        <div class="col s12 m3">Páginas: {{ ocrData.metadatos['totalPáginas'] }}</div>
-        <div class="col s12 m3">Tiempo de procesamiento: {{ ocrData.metadatos['tiempoProcesamiento'] }}</div>
+        <div class="col s12 m3">Tamaño: {{ ocrData.metadata.fileSize }}</div>
+        <div class="col s12 m3">Páginas: {{ ocrData.metadata.totalPages }}</div>
+        <div class="col s12 m3">Tiempo de procesamiento: {{ ocrData.metadata.processingTime }}</div>
         <div class="col s12 m3">
           Estado:
-          <span [ngClass]="{'green-text': ocrData['estado'] === 'éxito', 'red-text': ocrData['estado'] !== 'éxito'}">
-            {{ ocrData['estado'] }}
+          <span [ngClass]="{'green-text': ocrData.status === 'éxito', 'red-text': ocrData.status !== 'éxito'}">
+            {{ ocrData.status }}
           </span>
         </div>
       </div>
+    </div>
+
+    <!-- Mensaje del procesamiento -->
+    <div class="card-content blue lighten-5">
+      <h6 class="blue-text">Mensaje</h6>
+      <p>{{ ocrData.message }}</p>
     </div>
 
     <!-- Estadísticas -->
     <div class="card-content grey lighten-5">
       <h6 class="blue-text">Estadísticas</h6>
       <div class="row">
-        <div class="col s12 m3">Total caracteres: {{ ocrData.metadatos['estadísticas']['totalCaracteres'] }}</div>
-        <div class="col s12 m3">Total palabras: {{ ocrData.metadatos['estadísticas']['totalPalabras'] }}</div>
-        <div class="col s12 m3">Promedio caracteres/página: {{
-          ocrData.metadatos['estadísticas']['promedioCaracteresPorPágina'] }}</div>
-        <div class="col s12 m3">Promedio palabras/página: {{
-          ocrData.metadatos['estadísticas']['promedioPalabrasPorPágina'] }}</div>
+        <div class="col s12 m3">Total caracteres: {{ ocrData.metadata.statistics.totalCharacters }}</div>
+        <div class="col s12 m3">Total palabras: {{ ocrData.metadata.statistics.totalWords }}</div>
+        <div class="col s12 m3">Promedio caracteres/página: {{ ocrData.metadata.statistics.averageCharactersPerPage }}</div>
+        <div class="col s12 m3">Promedio palabras/página: {{ ocrData.metadata.statistics.averageWordsPerPage }}</div>
+      </div>
+      <div class="row" *ngIf="ocrData.metadata.statistics.averageConfidence !== undefined">
+        <div class="col s12">Confianza promedio: {{ ocrData.metadata.statistics.averageConfidence }}%</div>
       </div>
     </div>
 
@@ -62,10 +69,10 @@
           </button>
         </div>
         <div class="col s4 center-align">
-          <span>Página {{ currentPage }} de {{ ocrData.metadatos['totalPáginas'] }}</span>
+          <span>Página {{ currentPage }} de {{ ocrData.metadata.totalPages }}</span>
         </div>
         <div class="col s4 right-align">
-          <button [disabled]="currentPage >= ocrData.metadatos['totalPáginas']" (click)="goToPage(currentPage + 1)"
+          <button [disabled]="currentPage >= ocrData.metadata.totalPages" (click)="goToPage(currentPage + 1)"
             class="btn grey waves-effect">
             Siguiente &raquo;
           </button>
@@ -78,7 +85,7 @@
       <h6 class="blue-text">Página {{ currentPage }}</h6>
       <div *ngIf="!isEditing" class="card-panel grey lighten-5">
         <pre style="white-space: pre-wrap; font-family: inherit;">
-          {{ getCurrentPage()?.texto }}
+          {{ getCurrentPage()?.text }}
         </pre>
       </div>
       <div *ngIf="isEditing">
@@ -102,10 +109,10 @@
     <!-- Selector de página rápido -->
     <div class="card-content grey lighten-4 center-align">
       <div class="row">
-        <button *ngFor="let page of ocrData['páginas']" (click)="goToPage(page.numero)"
-          [ngClass]="{'blue white-text': currentPage === page.numero, 'grey lighten-3': currentPage !== page.numero}"
+        <button *ngFor="let page of ocrData.pages" (click)="goToPage(page.number)"
+          [ngClass]="{'blue white-text': currentPage === page.number, 'grey lighten-3': currentPage !== page.number}"
           class="btn-flat waves-effect">
-          {{ page.numero }}
+          {{ page.number }}
         </button>
       </div>
     </div>
