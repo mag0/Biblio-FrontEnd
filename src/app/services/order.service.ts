@@ -58,4 +58,23 @@ export class OrderService {
     console.log(`OrderService: Intentando DELETE a: ${deleteUrl}`);
     return this.http.delete(deleteUrl);
   }
+
+  updateOrder(id: number, formData: FormData): Observable<any> {
+    // Ensure the ID is included in the form data
+    formData.append('id', id.toString());
+    
+    return this.http.put(`${this.apiUrl}/${id}`, formData, {
+      reportProgress: true,
+      observe: 'events'
+    });
+  }
+
+  /**
+   * Obtiene una tarea específica por su ID.
+   * @param id El ID de la tarea a obtener.
+   * @returns Un Observable que emite los datos de la tarea.
+   */
+  getTaskById(id: string): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/${id}`);
+  }
 }

@@ -1,10 +1,10 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { OrderService } from '../../services/order.service';
-import { RouterLink } from '@angular/router';
+import { RouterLink, Router } from '@angular/router'; // Add Router import
 import { saveAs } from 'file-saver';
 import { ConfirmationPopupComponent } from '../confirmation-popup/confirmation-popup.component';
-import { AuthService } from '../../services/auth.service'; // Añadir esta importación
+import { AuthService } from '../../services/auth.service';
 
 declare var M: any;
 
@@ -30,7 +30,8 @@ export class TasksComponent implements OnInit, AfterViewInit {
 
   constructor(
     private orderService: OrderService,
-    private authService: AuthService // Añadir el servicio de autenticación
+    private authService: AuthService,
+    private router: Router // Add Router injection
   ) {}
 
   ngOnInit(): void {
@@ -183,5 +184,11 @@ export class TasksComponent implements OnInit, AfterViewInit {
   // Lo mantenemos por si se usa en otro lugar, pero la lógica principal está en askForDeleteConfirmation
   deleteTask(taskId: number, index: number, taskName: string, event: Event): void {
      this.askForDeleteConfirmation(taskId, index, taskName, event);
+  }
+
+  // Añadir este método para manejar la edición
+  navigateToEdit(taskId: number, event: Event): void {
+    event.stopPropagation(); // Prevenir que el collapsible se abra/cierre
+    this.router.navigate(['/form-task', taskId]);
   }
 }

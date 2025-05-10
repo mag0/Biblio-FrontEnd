@@ -46,8 +46,9 @@
 
           <!-- Acciones -->
           <div class="task-actions">
-            <!-- Botón Editar -->
-            <button *ngIf="isLibrarian" [routerLink]="['/form-task', task.id]" class="btn waves-effect waves-light amber btn-small action-btn" style="margin-right: 8px;">
+            <button class="btn-floating btn-small waves-effect waves-light blue"
+                    (click)="navigateToEdit(task.id, $event)"
+                    *ngIf="isLibrarian">
               <i class="material-icons">edit</i>
             </button>
             <!-- Botón Eliminar -->

@@ -1,18 +1,20 @@
-<div class="container" style="margin-top: 40px; margin-bottom: 40px;"> <!-- Añadido margen inferior -->
-  <div class="card z-depth-3"> <!-- Aumentada ligeramente la sombra -->
+<div class="container" style="margin-top: 40px; margin-bottom: 40px;">
+  <div class="card z-depth-3">
     <div class="card-content">
-      <span class="card-title blue-text text-darken-3 center-align" style="margin-bottom: 25px; font-weight: 400;"> <!-- Título centrado y con más margen -->
-        <i class="material-icons medium" style="vertical-align: middle; margin-right: 8px;">note_add</i>
-        Crear Nueva Tarea
+      <span class="card-title blue-text text-darken-3 center-align" style="margin-bottom: 25px; font-weight: 400;">
+        <i class="material-icons medium" style="vertical-align: middle; margin-right: 8px;">
+          {{isEditMode ? 'edit' : 'note_add'}}
+        </i>
+        {{isEditMode ? 'Editar Tarea' : 'Crear Nueva Tarea'}}
       </span>
 
       <form [formGroup]="formTask" (ngSubmit)="onSubmit()">
         <!-- Fila 1: Nombre -->
         <div class="row">
           <div class="input-field col s12">
-            <i class="material-icons prefix">title</i> <!-- Icono para Nombre -->
+            <i class="material-icons prefix">title</i>
             <input id="nombre" type="text" formControlName="nombre" class="validate">
-            <label for="nombre">Nombre de la Tarea</label>
+            <label for="nombre" [class.active]="isEditMode || formTask.get('nombre')?.value">Nombre de la Tarea</label>
             <span class="helper-text red-text" *ngIf="formTask.get('nombre')?.invalid && formTask.get('nombre')?.touched">
               El nombre es requerido.
             </span>
@@ -22,30 +24,54 @@
         <!-- Fila 2: Descripción -->
         <div class="row">
           <div class="input-field col s12">
-            <i class="material-icons prefix">description</i> <!-- Icono para Descripción -->
-            <textarea id="descripcion" class="materialize-textarea" formControlName="descripcion" style="min-height: 80px;"></textarea> <!-- Altura mínima -->
-            <label for="descripcion">Descripción (Opcional)</label>
+            <i class="material-icons prefix">description</i>
+            <textarea id="descripcion" class="materialize-textarea" formControlName="descripcion" 
+                      style="min-height: 80px;"></textarea>
+            <label for="descripcion" [class.active]="isEditMode || formTask.get('descripcion')?.value">Descripción (Opcional)</label>
           </div>
         </div>
 
         <!-- Fila 3: Fecha Límite -->
         <div class="row">
           <div class="input-field col s12">
-             <i class="material-icons prefix">event_busy</i> <!-- Icono para Fecha Límite -->
-            <input id="fechaLimite" type="text" class="datepicker" formControlName="fechaLimite"> <!-- Usar datepicker de Materialize -->
-            <label for="fechaLimite">Fecha Límite (Opcional)</label>
+            <i class="material-icons prefix">event_busy</i>
+            <input id="fechaLimite" type="text" class="datepicker" formControlName="fechaLimite" 
+                   [value]="formTask.get('fechaLimite')?.value">
+            <label for="fechaLimite" [class.active]="formTask.get('fechaLimite')?.value">Fecha Límite (Opcional)</label>
+          </div>
+        </div>
+
+        <!-- Estado field - solo visible en modo edición -->
+        <div class="row" *ngIf="isEditMode">
+          <div class="input-field col s12">
+            <i class="material-icons prefix">assignment</i>
+            <select formControlName="estado">
+              <option value="" disabled>Selecciona un estado</option>
+              <option value="Pendiente">Pendiente</option>
+              <option value="En Progreso">En Progreso</option>
+              <option value="Completada">Completada</option>
+            </select>
+            <label [class.active]="true">Estado de la tarea</label>
           </div>
         </div>
 
         <!-- Fila 4: Input de Archivo -->
-        <div class="row" style="margin-bottom: 0;"> <!-- Reducir margen inferior antes de indicadores -->
+        <div class="row" style="margin-bottom: 0;">
           <div class="file-field input-field col s12">
-             <div class="btn blue darken-1 waves-effect waves-light"> <!-- Botón con icono -->
-              <span><i class="material-icons left">attach_file</i>Adjuntar Archivo</span>
-              <input type="file" id="archivo" (change)="onFileSelected($event)">
+            <div class="btn blue darken-1 waves-effect waves-light">
+              <span>
+                <i class="material-icons left">attach_file</i>
+                {{isEditMode ? 'Cambiar Archivo' : 'Adjuntar Archivo'}}
+              </span>
+              <input type="file" id="archivo" (change)="onFileSelected($event)" [attr.readonly]="isEditMode">
             </div>
             <div class="file-path-wrapper">
-              <input class="file-path validate" type="text" placeholder="Selecciona un archivo (Opcional)"> <!-- Placeholder más claro -->
+              <input class="file-path validate" type="text" 
+                     [value]="currentFileName"
+                     [readonly]="true"
+                     [placeholder]="isEditMode ? 
+                       (currentFileName ? 'Archivo actual: ' + currentFileName : 'No hay archivo adjunto') : 
+                       'Selecciona un archivo (Opcional)'">
             </div>
           </div>
         </div>

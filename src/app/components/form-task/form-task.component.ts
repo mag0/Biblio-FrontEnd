@@ -1,79 +1,137 @@
-import { Component, OnInit, AfterViewInit, OnDestroy } from '@angular/core'; // Añadir OnDestroy si es necesario
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms'; // Import ReactiveFormsModule
+import { Component, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormControl } from '@angular/forms';
 import { OrderService } from '../../services/order.service';
-import { HttpEventType, HttpResponse, HttpEvent, HttpErrorResponse } from '@angular/common/http'; // Import HttpEvent, HttpErrorResponse
-import { Subscription } from 'rxjs'; // Para gestionar suscripciones
-import { CommonModule } from '@angular/common'; // Import CommonModule
-import { Router } from '@angular/router'; // Import Router if not already present
-import { ConfirmationPopupComponent } from '../confirmation-popup/confirmation-popup.component'; // Importar el popup
+import { HttpEventType, HttpResponse, HttpEvent, HttpErrorResponse } from '@angular/common/http';
+import { Subscription } from 'rxjs';
+import { CommonModule } from '@angular/common';
+import { Router, ActivatedRoute } from '@angular/router'; // Added ActivatedRoute
+import { ConfirmationPopupComponent } from '../confirmation-popup/confirmation-popup.component';
 
-declare var M: any; // Declaración global de Materialize
+declare var M: any;
 
 @Component({
-  standalone: true, // Indica que el componente es standalone
+  standalone: true,
   selector: 'app-form-task',
   templateUrl: './form-task.component.html',
   styleUrls: ['./form-task.component.css'],
   // Ensure CommonModule and ReactiveFormsModule are imported for standalone components
-  imports: [ReactiveFormsModule, CommonModule, ConfirmationPopupComponent] // Añadir ConfirmationPopupComponent
+  imports: [ReactiveFormsModule, CommonModule, ConfirmationPopupComponent]
 })
-export class FormTaskComponent implements OnInit, AfterViewInit, OnDestroy {
-  formTask!: FormGroup;
+export class FormTaskComponent implements OnInit {
+  formTask: FormGroup;
   selectedFile: File | null = null;
   uploadProgress: number = 0;
   uploadStatus: 'initial' | 'uploading' | 'success' | 'error' = 'initial';
   private uploadSubscription: Subscription | null = null;
-  private formSelectInstance: any = null; // Para guardar la instancia del select
+  private formSelectInstance: any = null;
+  isEditMode: boolean = false;
+  taskId: string | null = null;
+  currentFileName: string = '';
 
-  // Propiedades para el popup de éxito
+  // Properties for success popup
   showSuccessPopup: boolean = false;
   successPopupTitle: string = '¡Éxito!';
   successPopupMessage: string = 'La tarea se ha creado correctamente.';
   successConfirmButtonText: string = 'Crear Nueva Tarea';
   successCancelButtonText: string = 'Ver Tareas';
 
-  // Método para manejar el cierre del popup (al hacer clic fuera o en la X)
-  onPopupClose(): void {
-    this.showSuccessPopup = false;
-    this.router.navigate(['/tasks']); // Redirigir a la vista de tareas
-  }
-
   constructor(
     private fb: FormBuilder,
     private orderService: OrderService,
-    private router: Router // Inject Router if needed for navigation
-    ) {}
-
-  ngOnInit(): void {
+    private router: Router,
+    private route: ActivatedRoute
+  ) {
+    // Initialize form in constructor
     this.formTask = this.fb.group({
       nombre: ['', Validators.required],
       descripcion: [''],
-      fechaCreacion: [this.getTodayDate()], // Valor inicial oculto
       fechaLimite: [''],
-      estado: ['Pendiente'], // Estado por defecto oculto
-      archivo: [null] // Control para el archivo
+      estado: ['Pendiente'],
+      archivo: [null]
+    });
+  }
+
+  ngOnInit(): void {
+    // Verificar si estamos en modo edición
+    this.route.params.subscribe(params => {
+      if (params['id']) {
+        this.isEditMode = true;
+        this.taskId = params['id'];
+        this.loadTaskData(params['id']);
+      }
+    });
+  }
+
+  private loadTaskData(taskId: string): void {
+    this.orderService.getTaskById(taskId).subscribe({
+      next: (task) => {
+        // Formatear la fecha límite si existe
+        let formattedDate = '';
+        if (task.fechaLimite) {
+          const date = new Date(task.fechaLimite);
+          // Asegurarse de que la fecha esté en el formato correcto para el datepicker
+          const year = date.getFullYear();
+          const month = String(date.getMonth() + 1).padStart(2, '0');
+          const day = String(date.getDate()).padStart(2, '0');
+          formattedDate = `${year}-${month}-${day}`;
+        }
+  
+        this.formTask.patchValue({
+          nombre: task.nombre,
+          descripcion: task.descripcion,
+          fechaLimite: formattedDate,
+          estado: task.estado
+        });
+        
+        // Guardar el nombre del archivo actual si existe
+        if (task.filePath) {
+          // Extraer solo el nombre del archivo de la ruta completa
+          this.currentFileName = task.filePath.split('\\').pop() || task.filePath.split('/').pop() || task.filePath;
+          console.log('Archivo actual cargado:', this.currentFileName);
+        } else {
+          this.currentFileName = '';
+        }
+        
+        // Reinicializar los componentes de Materialize después de cargar los datos
+        setTimeout(() => {
+          this.initializeMaterializeComponents();
+        }, 0);
+      },
+      error: (error) => {
+        console.error('Error al cargar la tarea:', error);
+        // Mostrar mensaje de error al usuario
+        M.toast({html: 'Error al cargar los datos de la tarea', classes: 'red'});
+      }
     });
   }
 
   ngAfterViewInit(): void {
-    this.initializeMaterializeComponents();
+    // Usar setTimeout para asegurar que el DOM esté listo
+    setTimeout(() => {
+      this.initializeMaterializeComponents();
+    }, 0);
   }
 
-  ngOnDestroy(): void {
-    // Destruir instancia de FormSelect para evitar memory leaks
-    if (this.formSelectInstance) {
-      this.formSelectInstance.destroy();
-    }
-  }
-
-  initializeMaterializeComponents(): void {
+  private initializeMaterializeComponents(): void {
     try {
       // Inicializar Datepickers
       const datepickerElems = document.querySelectorAll('.datepicker');
-      M.Datepicker.init(datepickerElems, {
+      const datepickerInstances = M.Datepicker.init(datepickerElems, {
         format: 'yyyy-mm-dd',
         autoClose: true,
+        onSelect: (date: Date) => {
+          const formattedDate = date.toISOString().split('T')[0];
+          this.formTask.patchValue({ fechaLimite: formattedDate });
+        }
       });
+  
+      // Si estamos en modo edición y hay una fecha, establecerla
+      if (this.isEditMode && this.formTask.get('fechaLimite')?.value) {
+        datepickerInstances.forEach((instance: any) => {
+          instance.setDate(new Date(this.formTask.get('fechaLimite')?.value));
+        });
+      }
+
       console.log('Materialize datepickers inicializados.');
 
       // Inicializar Selects
@@ -103,10 +161,18 @@ export class FormTaskComponent implements OnInit, AfterViewInit, OnDestroy {
     let fileList: FileList | null = element.files;
     if (fileList && fileList.length > 0) {
       this.selectedFile = fileList[0];
+      // En modo edición, mantener el nombre del archivo original
+      if (!this.isEditMode) {
+        this.currentFileName = this.selectedFile.name;
+      }
       this.formTask.patchValue({ archivo: this.selectedFile });
       console.log('Archivo seleccionado:', this.selectedFile.name);
     } else {
       this.selectedFile = null;
+      // Solo limpiar el nombre si no estamos en modo edición
+      if (!this.isEditMode) {
+        this.currentFileName = '';
+      }
       this.formTask.patchValue({ archivo: null });
     }
   }
@@ -119,23 +185,31 @@ export class FormTaskComponent implements OnInit, AfterViewInit, OnDestroy {
       return;
     }
 
-    this.uploadStatus = 'uploading'; // Indicar que la subida ha comenzado
+    this.uploadStatus = 'uploading';
     this.uploadProgress = 0;
 
     const formData = new FormData();
-    Object.keys(this.formTask.value).forEach(key => {
-      if (key !== 'archivo' && this.formTask.value[key] !== null) {
-        formData.append(key, this.formTask.value[key]);
-      }
-    });
+    const formValue = this.formTask.value;
+    
+    // Asegurarse de que la fecha límite se formatee correctamente
+    const fechaLimite = formValue.fechaLimite ? new Date(formValue.fechaLimite).toISOString().split('T')[0] : '';
+    
+    // Agregar cada campo al FormData, incluyendo explícitamente la fecha límite
+    formData.append('nombre', formValue.nombre || '');
+    formData.append('descripcion', formValue.descripcion || '');
+    formData.append('fechaLimite', fechaLimite);
+    formData.append('estado', formValue.estado || 'Pendiente');
 
     if (this.selectedFile) {
       formData.append('file', this.selectedFile, this.selectedFile.name);
     }
 
-    console.log('Enviando datos:', this.formTask.value);
+    // Determinar si estamos creando o actualizando
+    const request = this.isEditMode ? 
+      this.orderService.updateOrder(Number(this.taskId), formData) :
+      this.orderService.createOrder(formData);
 
-    this.uploadSubscription = this.orderService.createOrder(formData).subscribe({
+    this.uploadSubscription = request.subscribe({
       next: (event: HttpEvent<any>) => {
         if (event.type === HttpEventType.UploadProgress) {
           if (event.total) {
@@ -183,9 +257,8 @@ export class FormTaskComponent implements OnInit, AfterViewInit, OnDestroy {
     this.formTask.reset({
       nombre: '',
       descripcion: '',
-      fechaCreacion: this.getTodayDate(),
       fechaLimite: '',
-      estado: 'Pendiente', // Resetear a Pendiente
+      estado: 'Pendiente',
       archivo: null
     });
     this.selectedFile = null;
