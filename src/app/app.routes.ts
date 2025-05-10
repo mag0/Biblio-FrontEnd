@@ -15,5 +15,6 @@ export const routes: Routes = [
   { path: 'ocr-viewer', component: OcrViewerComponent, canActivate: [AuthGuard] },
   { path: 'tasks', component: TasksComponent, canActivate: [AuthGuard] },
   { path: 'form-task', component: FormTaskComponent, canActivate: [AuthGuard] },
+  { path: 'form-task/:id', component: FormTaskComponent, canActivate: [AuthGuard] },
   { path: '**', redirectTo: '/login' }
 ];

@@ -1,20 +1,21 @@
-import { Component, OnInit, AfterViewInit } from '@angular/core'; // Re-añadir AfterViewInit
+import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { OrderService } from '../../services/order.service';
 import { RouterLink } from '@angular/router';
 import { saveAs } from 'file-saver';
-import { ConfirmationPopupComponent } from '../confirmation-popup/confirmation-popup.component'; // Importar el nuevo componente
+import { ConfirmationPopupComponent } from '../confirmation-popup/confirmation-popup.component';
+import { AuthService } from '../../services/auth.service'; // Añadir esta importación
 
-declare var M: any; // Re-añadir declaración de Materialize
+declare var M: any;
 
 @Component({
   standalone: true,
   selector: 'app-tasks',
   templateUrl: './tasks.component.html',
   styleUrls: ['./tasks.component.css'],
-  imports: [CommonModule, RouterLink, ConfirmationPopupComponent] // Añadir ConfirmationPopupComponent a los imports
+  imports: [CommonModule, RouterLink, ConfirmationPopupComponent]
 })
-export class TasksComponent implements OnInit, AfterViewInit { // Re-añadir AfterViewInit
+export class TasksComponent implements OnInit, AfterViewInit {
   tasks: any[] = [];
   isLoading: boolean = true;
 
@@ -25,10 +26,35 @@ export class TasksComponent implements OnInit, AfterViewInit { // Re-añadir Aft
   taskToDeleteId: number | null = null;
   taskToDeleteIndex: number | null = null;
 
-  constructor(private orderService: OrderService) {}
+  isLibrarian: boolean = false; // Añadir esta propiedad
+
+  constructor(
+    private orderService: OrderService,
+    private authService: AuthService // Añadir el servicio de autenticación
+  ) {}
 
   ngOnInit(): void {
+    console.log('TasksComponent - Iniciando componente');
     this.loadTasks();
+    // Subscribe to user information before checking role
+    this.authService.getCurrentUser().subscribe({
+      next: (user) => {
+        console.log('Usuario cargado:', user);
+        this.checkUserRole();
+        console.log('TasksComponent - Rol verificado');
+      },
+      error: (error) => {
+        console.error('Error al cargar usuario:', error);
+      }
+    });
+  }
+
+  private checkUserRole(): void {
+    console.log('checkUserRole - Verificando rol del usuario');
+    const userRole = this.authService.getCurrentUserRole();
+    console.log('checkUserRole - Rol obtenido:', userRole);
+    this.isLibrarian = userRole === 'Bibliotecario';
+    console.log('checkUserRole - ¿Es bibliotecario?:', this.isLibrarian);
   }
 
   ngAfterViewInit(): void {

@@ -2,12 +2,14 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, BehaviorSubject, tap } from 'rxjs';
 import { EnvService } from './env.service';
+import { jwtDecode } from 'jwt-decode'; // Changed from import jwt_decode to import { jwtDecode }
 
 export interface User {
   id: string;
   userName: string;
   email: string;
   fullName: string;
+  role?: string; // Añadir la propiedad role (puede ser opcional o requerida)
 }
 
 export interface LoginRequest {
@@ -41,30 +43,58 @@ export class AuthService {
    */
   private loadUserFromStorage(): void {
     const token = localStorage.getItem(this.tokenKey);
-    // TODO: Implementar validación del token y obtención de datos del usuario
     if (token) {
-      // Por ahora solo verificamos la existencia del token
+      try {
+        const decodedToken: any = jwtDecode(token);
+        console.log('Token completo:', token);
+        console.log('Token decodificado completo:', decodedToken);
+        
+        // ASP.NET Core Identity usa este claim para roles
+        const rolesClaim = decodedToken["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
+        console.log('Claims de roles:', rolesClaim);
+        
+        const user: User = {
+          id: decodedToken.id || '',
+          userName: decodedToken.userName || '',
+          email: decodedToken.email || '',
+          fullName: decodedToken.fullName || '',
+          // Los roles pueden venir como array o string
+          role: Array.isArray(rolesClaim) ? rolesClaim[0] : rolesClaim
+        };
+        console.log('Usuario construido desde token:', user);
+        this.currentUserSubject.next(user);
+      } catch (error: any) {
+        console.error('Error al decodificar el token:', error);
+        console.error('Stack del error:', error?.stack);
+        this.currentUserSubject.next(null);
+      }
     }
   }
 
-  /**
-   * Autentica al usuario y almacena su token
-   * @param credentials - Credenciales de acceso
-   * @returns Observable con el token y ID del usuario
-   */
-  login(credentials: LoginRequest): Observable<{ token: string; userId: string }> {
-    return this.http.post<{ token: string; userId: string }>(`${this.apiUrl}/auth/login`, credentials)
+  login(credentials: LoginRequest): Observable<{ token: string; userId: string; role?: string }> {
+    return this.http.post<{ token: string; userId: string; role?: string }>(`${this.apiUrl}/auth/login`, credentials)
       .pipe(
         tap(response => {
-          console.log('Respuesta del backend:', response); // Depurar la respuesta
-          localStorage.setItem(this.tokenKey, response.token); // Guardar el token
-          const user: User = { // Crear un objeto User parcial
-            id: response.userId,
-            userName: '',
-            email: '',
-            fullName: ''
-          };
-          this.currentUserSubject.next(user); // Actualizar el BehaviorSubject
+          localStorage.setItem(this.tokenKey, response.token);
+          try {
+            const decodedToken: any = jwtDecode(response.token);
+            console.log('Token decodificado en login:', decodedToken);
+            
+            const rolesClaim = decodedToken['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'];
+            console.log('Claims de roles en login:', rolesClaim);
+            
+            const user: User = {
+              id: decodedToken.id || '',
+              userName: decodedToken.userName || '',
+              email: decodedToken.email || '',
+              fullName: decodedToken.fullName || '',
+              role: Array.isArray(rolesClaim) ? rolesClaim[0] : rolesClaim
+            };
+            console.log('Usuario construido en login:', user);
+            this.currentUserSubject.next(user);
+          } catch (error) {
+            console.error('Error al decodificar el token en login:', error);
+          }
         })
       );
   }
@@ -124,5 +154,23 @@ export class AuthService {
       });
     }
     return this.currentUser$;
+  }
+
+  /**
+   * Obtiene el rol del usuario actual
+   * @returns string con el rol del usuario o null si no hay usuario o no tiene rol
+   */
+  getCurrentUserRole(): string | null {
+    const currentUser = this.currentUserSubject.value;
+    console.log('getCurrentUserRole - Usuario actual:', currentUser);
+    console.log('getCurrentUserRole - Rol del usuario:', currentUser?.role);
+    return currentUser?.role || null;
+  }
+
+  hasRole(role: string): boolean {
+    const userRole = this.getCurrentUserRole();
+    console.log('hasRole - Rol solicitado:', role);
+    console.log('hasRole - Rol actual del usuario:', userRole);
+    return userRole === role;
   }
 }
