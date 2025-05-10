@@ -39,28 +39,19 @@
                   <p *ngIf="task.fechaLimite"><strong>Fecha Límite:</strong> {{ task.fechaLimite | date:'dd/MM/yyyy' }}</p>
                   <p *ngIf="!task.fechaLimite"><em>No se especificó fecha límite.</em></p>
 
-                  <!-- Archivo Adjunto -->
-                  <div *ngIf="task.filePath" class="file-attachment">
-                    <strong>Archivo Adjunto:</strong>
-                    <button class="btn-flat waves-effect waves-teal btn-small download-btn" 
-                            (click)="downloadFile(task.id, task.fileName, $event)" 
-                            title="Descargar {{ task.fileName }}">
-                      <i class="material-icons left tiny">file_download</i> {{ task.fileName }}
-                    </button>
-                  </div>
-                  <p *ngIf="!task.filePath"><em>No hay archivo adjunto.</em></p>
-
                   <!-- Acciones -->
-                  <div class="task-actions">
-                    <button class="btn-floating btn-small waves-effect waves-light blue"
+                  <div class="task-actions" style="display: flex; gap: 10px;">
+                    <button class="btn waves-effect waves-light blue"
                             (click)="navigateToEdit(task.id, $event)"
                             *ngIf="isLibrarian">
-                      <i class="material-icons">edit</i>
+                      <i class="material-icons left">edit</i>
+                      Editar
                     </button>
                     <button *ngIf="isLibrarian" 
                             (click)="askForDeleteConfirmation(task.id, i, task.name, $event)" 
-                            class="btn-small red">
-                      <i class="material-icons">delete</i>
+                            class="btn waves-effect waves-light red">
+                      <i class="material-icons left">delete</i>
+                      Borrar
                     </button>
                   </div>
                 </div>
@@ -97,28 +88,19 @@
                   <p *ngIf="task.fechaLimite"><strong>Fecha Límite:</strong> {{ task.fechaLimite | date:'dd/MM/yyyy' }}</p>
                   <p *ngIf="!task.fechaLimite"><em>No se especificó fecha límite.</em></p>
 
-                  <!-- Archivo Adjunto -->
-                  <div *ngIf="task.filePath" class="file-attachment">
-                    <strong>Archivo Adjunto:</strong>
-                    <button class="btn-flat waves-effect waves-teal btn-small download-btn" 
-                            (click)="downloadFile(task.id, task.fileName, $event)" 
-                            title="Descargar {{ task.fileName }}">
-                      <i class="material-icons left tiny">file_download</i> {{ task.fileName }}
-                    </button>
-                  </div>
-                  <p *ngIf="!task.filePath"><em>No hay archivo adjunto.</em></p>
-
                   <!-- Acciones -->
-                  <div class="task-actions">
-                    <button class="btn-floating btn-small waves-effect waves-light blue"
+                  <div class="task-actions" style="display: flex; gap: 10px;">
+                    <button class="btn waves-effect waves-light blue"
                             (click)="navigateToEdit(task.id, $event)"
                             *ngIf="isLibrarian">
-                      <i class="material-icons">edit</i>
+                      <i class="material-icons left">edit</i>
+                      Editar
                     </button>
                     <button *ngIf="isLibrarian" 
                             (click)="askForDeleteConfirmation(task.id, i, task.name, $event)" 
-                            class="btn-small red">
-                      <i class="material-icons">delete</i>
+                            class="btn waves-effect waves-light red">
+                      <i class="material-icons left">delete</i>
+                      Borrar
                     </button>
                   </div>
                 </div>
