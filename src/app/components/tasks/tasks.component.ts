@@ -98,10 +98,10 @@ export class TasksComponent implements OnInit {
   getStatusBadgeClass(status: string): string {
   switch (status.toLowerCase()) {
     case 'pendiente': return 'badge-pendiente task-status-badge';
-    case 'en proceso': return 'badge-en-proceso task-status-badge';
+    case 'en progreso': return 'badge-en-proceso task-status-badge';
     case 'en revisión': return 'badge-en-revision task-status-badge';
-    case 'denegado': return 'badge-denegado task-status-badge';
-    case 'completado': return 'badge-completado task-status-badge';
+    case 'denegada': return 'badge-denegado task-status-badge';
+    case 'completada': return 'badge-completado task-status-badge';
     default: return 'badge-pendiente task-status-badge';
   }
 }
