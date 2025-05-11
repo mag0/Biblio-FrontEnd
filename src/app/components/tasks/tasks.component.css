@@ -1,149 +1,144 @@
-/* Contenedor principal */
-.task-list-container {
-  margin-bottom: 80px; /* Espacio para el botón flotante */
+/* Variables CSS (si usas CSS moderno) */
+:root {
+  --color-text-dark: #1c1c1c;
+  --color-text-light: #555;
+  --color-banner-bg: #2f2f2f;
 }
 
-/* Estilos para Collapsible */
-.collapsible {
-  border: none; /* Quitar bordes por defecto si se usa popout */
+/* Estilos generales */
+.task-card-custom {
+  background-color: #c9dcff;
+  border-radius: 10px;
+  padding: 16px 0 16px 16px;
+  margin: 10px 0;
 }
 
-.collapsible-header {
+.task-header {
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  padding: 15px 20px;
-  background-color: var(--color-fondo);
-  border-bottom: 1px solid var(--color-secundario);
-  transition: background-color 0.3s;
-}
-
-.collapsible-header:hover {
-  background-color: var(--color-fondo);
-  opacity: 0.9;
-}
-
-li.active .collapsible-header {
-  background-color: var(--color-primario);
-  opacity: 0.9;
-  border-bottom: 1px solid var(--color-primario);
-  color: white;
-}
-
-.task-icon {
-  margin-right: 15px;
-  color: var(--color-primario);
-}
-
-li.active .collapsible-header .task-icon,
-li.active .collapsible-header .task-title {
-  color: white;
 }
 
 .task-title {
-  font-size: var(--font-size-lg);
-  font-weight: var(--font-weight-medium);
-  color: var(--color-texto-principal);
-  margin-right: auto;
-  flex-grow: 1;
-}
-
-/* Badge de estado (similar al de cards) */
-.task-status-badge {
-  padding: 3px 10px;
-  border-radius: 12px;
-  font-size: 0.8rem;
-  font-weight: 500;
-  color: white;
-  margin-left: 15px;
-  white-space: nowrap;
-  flex-shrink: 0; /* Evita que se encoja */
-}
-
-.status-pending { background-color: var(--color-acento); }
-.status-in-progress { background-color: var(--color-primario); }
-.status-completed { background-color: var(--color-secundario); }
-.status-default { background-color: var(--color-texto-principal); }
-
-/* Cuerpo del Collapsible */
-.collapsible-body {
-  padding: 15px 20px; /* Padding interno */
-  background-color: #fafafa; /* Fondo ligeramente diferente para el cuerpo */
-  border-bottom: 1px solid #ddd; /* Borde inferior para separar items */
-}
-
-.task-details p {
-  margin: 10px 0;
-  color: var(--color-texto-principal);
-  opacity: 0.8;
-}
-
-.task-details strong {
-    color: var(--color-texto-principal);
-}
-
-/* Separadores */
-.divider {
-  margin: 15px 0;
-  background-color: #e0e0e0; /* Color de separador más suave */
-}
-
-/* Sección de archivo */
-.file-section, .file-section-empty {
-  margin-top: 15px;
-}
-
-.section-title {
-  display: flex;
-  align-items: center;
-  font-weight: var(--font-weight-medium);
-  color: var(--color-texto-principal);
-  margin-bottom: 10px;
-}
-
-.section-title .material-icons,
-.file-section-empty .material-icons {
-  margin-right: 8px;
   font-size: 1.2rem;
+  font-weight: 600;
+  margin: 0;
+  color: var(--color-text-dark);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 70%;
 }
 
-.file-info {
+.task-body-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.task-body-texts {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  color: var(--color-text-light);
+}
+
+.task-text {
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+/* Botones de acción */
+.task-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.icon-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.8rem;
+  padding: 8px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  background-color: #f0f0f0; /* Fondo ligeramente más oscuro */
-  padding: 8px 12px;
-  border-radius: 4px;
-  border: 1px solid #e0e0e0;
+  transition: transform 0.2s;
 }
 
-.file-info span {
-  margin-right: 10px;
-  font-style: italic;
-  color: #666;
-  word-break: break-all; /* Para nombres largos */
+.icon-btn:hover {
+  transform: scale(1.1);
 }
 
-.download-btn {
-  flex-shrink: 0;
+.action-buttons {
+  display: flex;
+  gap: 12px;
 }
 
-/* Sección de acciones */
-.task-actions {
-  margin-top: 15px;
-  text-align: right;
+/* Banner de estado */
+.task-status-banner {
+  position: relative;
+  color: white;
+  padding: 6px 12px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  height: 32px;
+  width: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-transform: capitalize;
+  border-radius: 20em 0 0 20em;
 }
 
-.action-btn {
-  margin-left: 10px;
+.status-pendiente {
+  background-color: #424242;
 }
 
-/* Botón flotante (sin cambios) */
-.fixed-action-btn {
-  bottom: 24px;
-  right: 24px;
+.status-denegado {
+  background-color: #d32f2f;
 }
 
-/* Eliminar estilos específicos de .task-card si aún existen */
-.task-card, .card-header, .expand-icon /* etc... */ {
-  /* Asegúrate que no haya reglas de card aquí */
+.status-en-revision {
+  background-color: #f57c00;
 }
+
+.status-en-proceso {
+  background-color: #1976d2;
+}
+
+.status-completado {
+  background-color: #388e3c;
+}
+/* Triángulo izquierdo */
+.task-status-banner.triangle-banner::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  width: 0;
+  height: 0;
+  border-top: 16px solid var(--color-banner-bg);
+  border-bottom: 16px solid var(--color-banner-bg);
+  border-left: 16px solid transparent;
+}
+
+/* Badges de estado */
+.task-status-badge {
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  padding: 4px 10px;
+  border-radius: 5px;
+  color: white;
+  font-size: 0.8rem;
+  font-weight: bold;
+}
+
+/* Estados específicos */
+.badge-pendiente { background-color: #424242; }
+.badge-en-proceso { background-color: #1976d2; }
+.badge-en-revision { background-color: #f57c00; }
+.badge-denegado { background-color: #d32f2f; }
+.badge-completado { background-color: #388e3c; }

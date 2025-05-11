@@ -1,134 +1,74 @@
 <div class="container task-list-container" style="margin-top: 20px;">
-  <div style="display: flex; justify-content: space-between; align-items: center;">
-    <h2 class="blue-text text-darken-2" style="margin: 0;">Lista de Tareas</h2>
-    <a class="btn waves-effect waves-light blue" routerLink="/form-task" title="Crear Nueva Tarea">
-      Agregar Tarea
-      <i class="material-icons right">add</i>
+  <div style="display: flex; justify-content: space-between; align-items: center;" *ngIf="isLibrarian">
+
+    <a class="btn-floating btn-large blue" title="Crear Nueva Tarea">
+      <i class="material-icons" title="Filtrar">filter_alt</i>
+    </a>
+    <a class="btn-floating btn-large blue" routerLink="/form-task" title="Crear Nueva Tarea">
+      <i class="material-icons">add</i>
     </a>
   </div>
 
-  <div *ngIf="isLoading" class="progress blue lighten-4">
+  <div *ngIf="isLoading" class="progress blue lighten-4" style="margin-top: 20px;">
     <div class="indeterminate blue"></div>
   </div>
 
-  <!-- Grid de tareas usando el sistema de grid de Materialize -->
-  <div class="row" *ngIf="!isLoading && tasks.length > 0">
-    <!-- Columna 1 -->
-    <div class="col s6">
-      <div *ngFor="let task of tasks; let i = index">
-        <div class="task-card" *ngIf="i % 2 === 0" style="margin-bottom: 10px;">
-          <ul class="collapsible popout" style="margin: 0;">
-            <li>
-              <div class="collapsible-header waves-effect" style="min-height: 65px; display: flex; align-items: center;">
-                <i class="material-icons task-icon" style="margin-right: 10px;">assignment</i>
-                <span class="task-title truncate" style="flex: 1; max-width: calc(100% - 120px);" title="{{ task.nombre }}">
-                  {{ task.nombre }}
-                </span>
-                <span class="task-status-badge" [ngClass]="getStatusClass(task.estado)" style="margin-left: auto;">
-                  {{ task.estado }}
-                </span>
-              </div>
+  <div class="row" *ngIf="!isLoading && tasks.length > 0" style="margin-top: 20px;">
+    <div class="col s12 m6 l6" *ngFor="let task of tasks; let i = index">
+      <div class="task-card-custom">
+        <!-- Título y estado -->
+        <div class="task-header">
+          <h6 class="task-title">{{ task.nombre }}</h6>
+          <div class="task-status-banner triangle-banner" [ngClass]="{
+            'status-pendiente': task.estado.toLowerCase() === 'pendiente',
+            'status-denegado': task.estado.toLowerCase() === 'denegado',
+            'status-en-revision': task.estado.toLowerCase() === 'en revisión',
+            'status-en-proceso': task.estado.toLowerCase() === 'en proceso',
+            'status-completado': task.estado.toLowerCase() === 'completado'
+          }">{{ task.estado }}</div>
+        </div>
 
-              <div class="collapsible-body">
-                <div class="task-details">
-                  <!-- Descripción -->
-                  <p *ngIf="task.descripcion"><strong>Descripción:</strong> {{ task.descripcion }}</p>
-                  <p *ngIf="!task.descripcion"><em>No hay descripción disponible.</em></p>
-
-                  <!-- Fecha Límite -->
-                  <p *ngIf="task.fechaLimite"><strong>Fecha Límite:</strong> {{ task.fechaLimite | date:'dd/MM/yyyy' }}</p>
-                  <p *ngIf="!task.fechaLimite"><em>No se especificó fecha límite.</em></p>
-
-                  <!-- Acciones -->
-                  <div class="task-actions" style="display: flex; gap: 10px;">
-                    <button class="btn waves-effect waves-light blue"
-                            (click)="navigateToEdit(task.id, $event)"
-                            *ngIf="isLibrarian">
-                      <i class="material-icons left">edit</i>
-                      Editar
-                    </button>
-                    <button *ngIf="isLibrarian" 
-                            (click)="askForDeleteConfirmation(task.id, i, task.name, $event)" 
-                            class="btn waves-effect waves-light red">
-                      <i class="material-icons left">delete</i>
-                      Borrar
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </li>
-          </ul>
+        <!-- Descripción y vencimiento + icono -->
+        <div class="task-body-row">
+          <div class="task-body-texts">
+            <p class="task-text">Creacion: {{ task.fechaCreacion | date:'dd/MM/yyyy' }}</p>
+            <p class="task-text">Vencimiento: {{ task.fechaLimite | date:'dd/MM/yyyy' }}</p>
+          </div>
+          <div class="action-buttons">
+            <button class="icon-btn blue-text" title="Eliminar tarea"
+              (click)="askForDeleteConfirmation(task.id, i, task.name, $event)" *ngIf="isLibrarian">
+              <i class="material-icons red-text">delete</i>
+            </button>
+            <button class="icon-btn blue-text" title="Editar tarea" (click)="navigateToEdit(task.id, $event)"
+              *ngIf="isLibrarian">
+              <i class="material-icons">border_color</i>
+            </button>
+            <button class="icon-btn blue-text" title="Editar tarea" [routerLink]="['/task-detail', task.id]"
+              *ngIf="isLibrarian">
+              <i class="material-icons">visibility</i>
+            </button>
+            <button class="icon-btn blue-text" title="Ver detalles" routerLink="/task-detail"
+              [routerLink]="['/task-detail', task.id]" *ngIf="!isLibrarian">
+              <i class="material-icons medium">chevron_right</i>
+            </button>
+          </div>
         </div>
       </div>
     </div>
-
-    <!-- Columna 2 -->
-    <div class="col s6">
-      <div *ngFor="let task of tasks; let i = index">
-        <div class="task-card" *ngIf="i % 2 !== 0" style="margin-bottom: 10px;">
-          <ul class="collapsible popout" style="margin: 0;">
-            <li>
-              <div class="collapsible-header waves-effect" style="min-height: 65px; display: flex; align-items: center;">
-                <i class="material-icons task-icon" style="margin-right: 10px;">assignment</i>
-                <span class="task-title truncate" style="flex: 1; max-width: calc(100% - 120px);" title="{{ task.nombre }}">
-                  {{ task.nombre }}
-                </span>
-                <span class="task-status-badge" [ngClass]="getStatusClass(task.estado)" style="margin-left: auto;">
-                  {{ task.estado }}
-                </span>
-              </div>
-
-              <div class="collapsible-body">
-                <div class="task-details">
-                  <!-- Descripción -->
-                  <p *ngIf="task.descripcion"><strong>Descripción:</strong> {{ task.descripcion }}</p>
-                  <p *ngIf="!task.descripcion"><em>No hay descripción disponible.</em></p>
-
-                  <!-- Fecha Límite -->
-                  <p *ngIf="task.fechaLimite"><strong>Fecha Límite:</strong> {{ task.fechaLimite | date:'dd/MM/yyyy' }}</p>
-                  <p *ngIf="!task.fechaLimite"><em>No se especificó fecha límite.</em></p>
-
-                  <!-- Acciones -->
-                  <div class="task-actions" style="display: flex; gap: 10px;">
-                    <button class="btn waves-effect waves-light blue"
-                            (click)="navigateToEdit(task.id, $event)"
-                            *ngIf="isLibrarian">
-                      <i class="material-icons left">edit</i>
-                      Editar
-                    </button>
-                    <button *ngIf="isLibrarian" 
-                            (click)="askForDeleteConfirmation(task.id, i, task.name, $event)" 
-                            class="btn waves-effect waves-light red">
-                      <i class="material-icons left">delete</i>
-                      Borrar
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Mensaje si no hay tareas -->
-  <div *ngIf="!isLoading && tasks.length === 0" class="center-align no-tasks-message">
-    <i class="material-icons large grey-text text-lighten-1">inbox</i>
-    <p class="grey-text">No tienes tareas pendientes.</p>
-    <a class="btn waves-effect waves-light blue" routerLink="/form-task">
-      Crea tu primera tarea
-    </a>
   </div>
 </div>
 
+<!-- Mensaje si no hay tareas -->
+<div *ngIf="!isLoading && tasks.length === 0" class="center-align no-tasks-message">
+  <i class="material-icons large grey-text text-lighten-1">inbox</i>
+  <p class="grey-text">No tienes tareas pendientes.</p>
+  <a class="btn waves-effect waves-light blue" routerLink="/form-task">
+    Crea tu primera tarea
+  </a>
+</div>
+
 <!-- Popup de Confirmación -->
-<app-confirmation-popup
-  [isVisible]="showConfirmationPopup"
-  [title]="popupTitle"
-  [question]="popupQuestion"
-  [primaryActionText]="'Eliminar'"
-  [secondaryActionText]="'Cancelar'"
-  (primaryAction)="confirmDelete()"
+<app-confirmation-popup [isVisible]="showConfirmationPopup" [title]="popupTitle" [question]="popupQuestion"
+  [primaryActionText]="'Eliminar'" [secondaryActionText]="'Cancelar'" (primaryAction)="confirmDelete()"
   (secondaryAction)="cancelDelete()">
 </app-confirmation-popup>

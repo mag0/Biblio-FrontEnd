@@ -32,8 +32,8 @@ export class LoginComponent {
     this.authService.login(this.loginData).subscribe({
       next: () => {
         this.isLoading = false;
-        // Redirigir al perfil después de iniciar sesión
-        this.router.navigate(['/profile']);
+        // Redirigir a la vista de tareas después de iniciar sesión
+        this.router.navigate(['/tasks']);
       },
       error: (error) => {
         this.isLoading = false;

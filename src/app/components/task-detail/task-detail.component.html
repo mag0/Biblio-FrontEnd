@@ -1,0 +1,83 @@
+<div class="container">
+    <div class="row">
+        <div class="col s12">
+            <div class="card-panel">
+                <!-- Botón de regreso y título -->
+                <div class="row valign-wrapper">
+                    <div class="col s1">
+                        <a class="btn-floating btn-large waves-effect waves-light blue" (click)="goBack()">
+                            <i class="material-icons">arrow_back</i>
+                        </a>
+                    </div>
+                    <div class="col s11">
+                        <h4 class="center-align">{{ task.nombre }}</h4>
+                    </div>
+                </div>
+
+                <!-- Loader -->
+                <div *ngIf="isLoading" class="center-align">
+                    <div class="preloader-wrapper big active">
+                        <div class="spinner-layer spinner-blue-only">
+                            <div class="circle-clipper left">
+                                <div class="circle"></div>
+                            </div>
+                            <div class="gap-patch">
+                                <div class="circle"></div>
+                            </div>
+                            <div class="circle-clipper right">
+                                <div class="circle"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mensaje de error -->
+                <div *ngIf="errorMessage" class="red-text center-align">
+                    <p>{{ errorMessage }}</p>
+                </div>
+
+                <!-- Contenido de la tarea -->
+                <div *ngIf="!isLoading && !errorMessage && task">
+                    <!-- Información básica -->
+                    <div class="row">
+                        <div class="col s12">
+                            <div class="card">
+                                <div class="card-content">
+                                    <span class="card-title">Información General</span>
+                                    <div class="row">
+                                        <div class="col s12 m6">
+                                            <p><strong>Descripcion:</strong> {{ task.descripcion }}</p>
+                                            <p><strong>Fecha de Creación:</strong> {{ task.fechaCreacion | date:'medium'
+                                                }}
+                                            </p>
+                                            <p><strong>Vencimiento:</strong> {{ task.fechaLimite | date:'medium'
+                                                }}
+                                            </p>
+                                            <p><strong>Estado:</strong>
+                                                <span [class]="getStatusBadgeClass(task.estado)">{{ task.estado
+                                                    }}</span>
+                                            </p>
+                                            <p><strong><i
+                                                        class="material-icons left blue-text">insert_drive_file</i></strong>
+                                                {{
+                                                task.fileName }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Botones de acción -->
+                    <div class="row">
+                        <div class="col s12 center-align">
+                            <a class="waves-effect waves-light btn green right">
+                                Procesar
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

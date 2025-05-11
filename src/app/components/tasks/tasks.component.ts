@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { OrderService } from '../../services/order.service';
 import { RouterLink, Router } from '@angular/router'; // Add Router import
@@ -15,7 +15,7 @@ declare var M: any;
   styleUrls: ['./tasks.component.css'],
   imports: [CommonModule, RouterLink, ConfirmationPopupComponent]
 })
-export class TasksComponent implements OnInit, AfterViewInit {
+export class TasksComponent implements OnInit {
   tasks: any[] = [];
   isLoading: boolean = true;
 
@@ -54,13 +54,8 @@ export class TasksComponent implements OnInit, AfterViewInit {
     console.log('checkUserRole - Verificando rol del usuario');
     const userRole = this.authService.getCurrentUserRole();
     console.log('checkUserRole - Rol obtenido:', userRole);
-    this.isLibrarian = userRole === 'Bibliotecario';
+    this.isLibrarian = userRole === 'Admin';
     console.log('checkUserRole - ¿Es bibliotecario?:', this.isLibrarian);
-  }
-
-  ngAfterViewInit(): void {
-    // La inicialización se hará después de cargar los datos y renderizar
-    // No la llamamos directamente aquí, sino después de obtener los datos.
   }
 
   loadTasks(): void {
@@ -100,14 +95,16 @@ export class TasksComponent implements OnInit, AfterViewInit {
   }
 
   // Método para obtener clases CSS según el estado (se mantiene igual)
-  getStatusClass(status: string): string {
-    switch (status?.toLowerCase()) {
-      case 'pendiente': return 'status-pending';
-      case 'en progreso': return 'status-in-progress'; // Asegúrate que este estado exista o ajústalo
-      case 'completada': return 'status-completed'; // O 'Completado' si ese es el valor exacto
-      default: return 'status-default';
-    }
+  getStatusBadgeClass(status: string): string {
+  switch (status.toLowerCase()) {
+    case 'pendiente': return 'badge-pendiente task-status-badge';
+    case 'en proceso': return 'badge-en-proceso task-status-badge';
+    case 'en revisión': return 'badge-en-revision task-status-badge';
+    case 'denegado': return 'badge-denegado task-status-badge';
+    case 'completado': return 'badge-completado task-status-badge';
+    default: return 'badge-pendiente task-status-badge';
   }
+}
 
   // Método para descargar el archivo (se mantiene igual, pero revisa event.stopPropagation)
   downloadFile(taskId: number, fileName: string | null, event: Event): void {

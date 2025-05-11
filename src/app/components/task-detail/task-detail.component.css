@@ -1,0 +1,82 @@
+.task-status-badge {
+  padding: 5px 10px;
+  border-radius: 4px;
+  color: white;
+  font-weight: 500;
+  display: inline-block;
+  margin-left: 5px;
+}
+
+.badge-pendiente {
+  background-color: #ff9800;
+}
+
+.badge-en-proceso {
+  background-color: #2196F3;
+}
+
+.badge-en-revision {
+  background-color: #9c27b0;
+}
+
+.badge-denegado {
+  background-color: #f44336;
+}
+
+.badge-completado {
+  background-color: #4CAF50;
+}
+
+.card-panel {
+  margin-top: 20px;
+}
+
+.card {
+  margin-top: 10px;
+  box-shadow: none !important;
+  border: none !important;
+}
+
+.card-content {
+  width: 100%;
+  padding: 20px;
+  box-sizing: border-box;
+  overflow-x: hidden;
+}
+
+.card-content p {
+  margin: 10px 0;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  width: 100%;
+  display: flex;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.card-content p strong {
+  display: inline-block;
+  min-width: 100px;
+  margin-right: 10px;
+  flex-shrink: 0;
+}
+
+.card-content p span {
+  flex: 1;
+  min-width: 0;
+  word-break: break-word;
+  max-width: calc(100% - 120px);
+}
+
+.card-action {
+  padding-bottom: 16px;
+}
+
+.btn-floating {
+  margin-right: 15px;
+}
+
+.preloader-wrapper {
+  margin: 20px auto;
+}

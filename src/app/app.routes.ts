@@ -5,6 +5,7 @@ import { FileUploadComponent } from './components/file-upload/file-upload.compon
 import { OcrViewerComponent } from './components/ocr-viewer/ocr-viewer.component';
 import { TasksComponent } from './components/tasks/tasks.component';
 import { FormTaskComponent } from './components/form-task/form-task.component';
+import { TaskDetailComponent } from './components/task-detail/task-detail.component';
 import { AuthGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
@@ -16,5 +17,6 @@ export const routes: Routes = [
   { path: 'tasks', component: TasksComponent, canActivate: [AuthGuard] },
   { path: 'form-task', component: FormTaskComponent, canActivate: [AuthGuard] },
   { path: 'form-task/:id', component: FormTaskComponent, canActivate: [AuthGuard] },
+  { path: 'task-detail/:id', component: TaskDetailComponent, canActivate: [AuthGuard] },
   { path: '**', redirectTo: '/login' }
 ];
