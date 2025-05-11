@@ -21,10 +21,10 @@
           <h6 class="task-title">{{ task.nombre }}</h6>
           <div class="task-status-banner triangle-banner" [ngClass]="{
             'status-pendiente': task.estado.toLowerCase() === 'pendiente',
-            'status-denegado': task.estado.toLowerCase() === 'denegado',
+            'status-denegado': task.estado.toLowerCase() === 'denegada',
             'status-en-revision': task.estado.toLowerCase() === 'en revisión',
-            'status-en-proceso': task.estado.toLowerCase() === 'en proceso',
-            'status-completado': task.estado.toLowerCase() === 'completado'
+            'status-en-proceso': task.estado.toLowerCase() === 'en progreso',
+            'status-completado': task.estado.toLowerCase() === 'completada'
           }">{{ task.estado }}</div>
         </div>
 
