@@ -45,12 +45,14 @@
         <div class="row" *ngIf="isEditMode">
           <div class="input-field col s12">
             <i class="material-icons prefix">assignment</i>
+       
             <select formControlName="estado">
               <option value="" disabled>Selecciona un estado</option>
               <option value="Pendiente">Pendiente</option>
               <option value="En Progreso">En Progreso</option>
               <option value="Completada">Completada</option>
             </select>
+
             <label [class.active]="true">Estado de la tarea</label>
           </div>
         </div>

@@ -54,7 +54,7 @@ export class TasksComponent implements OnInit {
     console.log('checkUserRole - Verificando rol del usuario');
     const userRole = this.authService.getCurrentUserRole();
     console.log('checkUserRole - Rol obtenido:', userRole);
-    this.isLibrarian = userRole === 'Admin';
+    this.isLibrarian = userRole === 'Bibliotecario';
     console.log('checkUserRole - ¿Es bibliotecario?:', this.isLibrarian);
   }
 
