@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { OrderService } from '../../services/order.service';
-import { RouterLink, Router } from '@angular/router'; // Add Router import
-import { saveAs } from 'file-saver';
+import { RouterLink, Router } from '@angular/router';
 import { ConfirmationPopupComponent } from '../confirmation-popup/confirmation-popup.component';
 import { AuthService } from '../../services/auth.service';
 import { FormsModule } from '@angular/forms';
@@ -20,7 +19,7 @@ declare var M: any;
 export class TasksComponent implements OnInit {
   tasks: any[] = [];
   isLoading: boolean = true;
-  selectedEstado: string = ''; // Nuevo estado seleccionado
+  selectedEstado: string = '';
 
   // Propiedades para el popup de confirmación
   showConfirmationPopup: boolean = false;
@@ -72,7 +71,6 @@ export class TasksComponent implements OnInit {
     request.subscribe({
       next: (data: any[]) => {
         this.tasks = data; // Asigna directamente las tareas sin procesar el archivo
-        console.log('Tareas obtenidas:', this.tasks);
         this.isLoading = false;
   
         // Reinicializar collapsible después de que Angular actualice el DOM

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { OrderService } from '../../services/order.service';
 import { AuthService } from '../../services/auth.service';
 import { saveAs } from 'file-saver';
@@ -8,12 +8,12 @@ import { saveAs } from 'file-saver';
 @Component({
   selector: 'app-task-detail',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule],
   templateUrl: './task-detail.component.html',
   styleUrls: ['./task-detail.component.css']
 })
 export class TaskDetailComponent implements OnInit {
-  task: any = null;
+  task: any = {};
   isLoading: boolean = true;
   errorMessage: string = '';
   isLibrarian: boolean = false;
@@ -45,6 +45,7 @@ export class TaskDetailComponent implements OnInit {
 
     this.orderService.getTaskById(taskId).subscribe({
       next: (data: any) => {
+        console.log('Datos de la tarea recibidos:', data);
         this.task = {
           ...data,
           fileName: data.filePath ? data.filePath.split(/[\\/]/).pop() : null
@@ -71,15 +72,18 @@ export class TaskDetailComponent implements OnInit {
   }
 
   downloadFile(taskId: number, fileName: string | null): void {
+    if (!taskId || taskId <= 0) {
+      alert('ID de tarea inválido. No se puede descargar el archivo.');
+      return;
+    }
+  
     if (!fileName) {
       alert('No hay un nombre de archivo válido para descargar.');
       return;
     }
-
+  
     this.orderService.downloadFile(taskId).subscribe({
-      next: (blob) => {
-        saveAs(blob, fileName);
-      },
+      next: (blob) => saveAs(blob, fileName),
       error: (error) => {
         console.error('Error al descargar el archivo:', error);
         alert('No se pudo descargar el archivo.');
