@@ -54,7 +54,7 @@ export class TasksComponent implements OnInit {
     console.log('checkUserRole - Verificando rol del usuario');
     const userRole = this.authService.getCurrentUserRole();
     console.log('checkUserRole - Rol obtenido:', userRole);
-    this.isLibrarian = userRole === 'Bibliotecario';
+    this.isLibrarian = userRole === 'Admin';
     console.log('checkUserRole - ¿Es bibliotecario?:', this.isLibrarian);
   }
 
@@ -93,18 +93,6 @@ export class TasksComponent implements OnInit {
       console.error('Error inicializando Materialize Collapsible:', e);
     }
   }
-
-  // Método para obtener clases CSS según el estado (se mantiene igual)
-  getStatusBadgeClass(status: string): string {
-  switch (status.toLowerCase()) {
-    case 'pendiente': return 'badge-pendiente task-status-badge';
-    case 'en progreso': return 'badge-en-proceso task-status-badge';
-    case 'en revisión': return 'badge-en-revision task-status-badge';
-    case 'denegada': return 'badge-denegado task-status-badge';
-    case 'completada': return 'badge-completado task-status-badge';
-    default: return 'badge-pendiente task-status-badge';
-  }
-}
 
   // Método para descargar el archivo (se mantiene igual, pero revisa event.stopPropagation)
   downloadFile(taskId: number, fileName: string | null, event: Event): void {

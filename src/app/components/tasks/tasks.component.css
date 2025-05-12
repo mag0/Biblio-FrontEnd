@@ -1,143 +1,66 @@
-/* Variables CSS (si usas CSS moderno) */
-:root {
-  --color-text-dark: #1c1c1c;
-  --color-text-light: #555;
-  --color-banner-bg: #2f2f2f;
-}
-
-/* Estilos generales */
-.task-card-custom {
-  background-color: #c9dcff;
-  border-radius: 10px;
-  padding: 16px 0 16px 16px;
-  margin: 10px 0;
-}
-
-.task-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.task-title {
-  font-size: 1.2rem;
-  font-weight: 600;
-  margin: 0;
-  color: var(--color-text-dark);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 70%;
-}
-
-.task-body-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 10px;
-}
-
-.task-body-texts {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  color: var(--color-text-light);
-}
-
-.task-text {
-  margin: 0;
-  font-size: 0.9rem;
-}
-
-/* Botones de acción */
-.task-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 10px;
-  margin-top: 10px;
-}
-
-.icon-btn {
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-size: 1.8rem;
-  padding: 8px;
-  display: flex;
-  align-items: center;
-  transition: transform 0.2s;
-}
-
-.icon-btn:hover {
-  transform: scale(1.1);
-}
-
-.action-buttons {
-  display: flex;
-}
-
-/* Banner de estado */
-.task-status-banner {
+.estado-box {
   position: relative;
-  color: white;
-  padding: 6px 12px;
-  font-size: 0.9rem;
-  font-weight: 500;
-  height: 32px;
-  width: 120px;
+  padding: 10px 20px;
   display: flex;
   align-items: center;
   justify-content: center;
-  text-transform: capitalize;
-  border-radius: 20em 0 0 20em;
+  height: 40px;
+  line-height: 40px;
+  clip-path: polygon(0 0, 90% 0, 100% 50%, 90% 100%, 0 100%);
+  white-space:nowrap
 }
 
+i{
+  cursor: pointer;
+}
+
+.iconos-tareas{
+  font-size: 1.8em;
+  transition: all 0.3s ease;
+}
+
+.iconos-tareas:hover{
+  scale: 1.2;
+  transition: all 0.3s ease;
+}
+
+/* Colores según el estado */
 .status-pendiente {
-  background-color: #424242;
+  background-color: #2e2e2e;
+}
+
+.status-pendiente::after {
+  border-left-color: #fbc02d;
 }
 
 .status-denegado {
   background-color: #d32f2f;
 }
 
-.status-en-revision {
-  background-color: #f57c00;
+.status-denegado::after {
+  border-left-color: #d32f2f;
 }
 
-.status-en-proceso {
+.status-en-revision {
+  background-color: #ff9800;
+}
+
+.status-en-revision::after {
+  border-left-color: #ff9800;
+}
+
+.status-en-progreso {
   background-color: #1976d2;
+}
+
+.status-en-progreso::after {
+  border-left-color: #1976d2;
 }
 
 .status-completado {
   background-color: #388e3c;
 }
-/* Triángulo izquierdo */
-.task-status-banner.triangle-banner::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  width: 0;
-  height: 0;
-  border-top: 16px solid var(--color-banner-bg);
-  border-bottom: 16px solid var(--color-banner-bg);
-  border-left: 16px solid transparent;
-}
 
-/* Badges de estado */
-.task-status-badge {
-  position: absolute;
-  top: -10px;
-  right: -10px;
-  padding: 4px 10px;
-  border-radius: 5px;
-  color: white;
-  font-size: 0.8rem;
-  font-weight: bold;
+.status-completado::after {
+  border-left-color: #388e3c;
 }
-
-/* Estados específicos */
-.badge-pendiente { background-color: #424242; }
-.badge-en-proceso { background-color: #1976d2; }
-.badge-en-revision { background-color: #f57c00; }
-.badge-denegado { background-color: #d32f2f; }
-.badge-completado { background-color: #388e3c; }

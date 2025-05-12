@@ -1,60 +1,71 @@
-<div class="container task-list-container" style="margin-top: 20px;">
-  <div style="display: flex; justify-content: space-between; align-items: center;" *ngIf="isLibrarian">
+<div class="container" style="margin-top: 20px;">
+  <div class="row">
+    <div class="col s12" style="display: flex; justify-content: space-between; align-items: center;">
+      <!-- Contenedor del Filtro con Ícono -->
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <i class="material-icons blue-text" title="Filtrar" style="font-size: 3em;">filter_alt</i>
+        <div style="width: 200px;">
+          <select id="filterEstado" class="browser-default">
+            <option value="" disabled selected>Seleccionar estado</option>
+            <option value="pendiente">Pendiente</option>
+            <option value="denegada">Denegada</option>
+            <option value="revision">En revisión</option>
+            <option value="progreso">En progreso</option>
+            <option value="completada">Completada</option>
+          </select>
+        </div>
+      </div>
 
-    <a class="btn-floating btn-large blue" title="Crear Nueva Tarea">
-      <i class="material-icons" title="Filtrar">filter_alt</i>
-    </a>
-    <a class="btn-floating btn-large blue" routerLink="/form-task" title="Crear Nueva Tarea">
-      <i class="material-icons">add</i>
-    </a>
-  </div>
+      <div style="display: flex; align-items: center; gap: 10px;" *ngIf="isLibrarian">
+        <i class="material-icons blue-text" routerLink="/form-task" title="Agregar" style="font-size: 3em;">add</i>
+      </div>
+    </div>
 
-  <div *ngIf="isLoading" class="progress blue lighten-4" style="margin-top: 20px;">
-    <div class="indeterminate blue"></div>
-  </div>
 
-  <div class="row" *ngIf="!isLoading && tasks.length > 0" style="margin-top: 20px;">
-    <div class="col s12 m6 l6" *ngFor="let task of tasks; let i = index">
-      <div class="task-card-custom">
-        <!-- Título y estado -->
-        <div class="task-header">
-          <h6 class="task-title">{{ task.nombre }}</h6>
-          <div class="task-status-banner triangle-banner" [ngClass]="{
+    <div class="row" *ngIf="!isLoading && tasks.length > 0">
+      <div class="col s12 m12 l12 xl6" *ngFor="let task of tasks; let i = index">
+        <div class="card" style="background-color: #B9CFFF;">
+          <div class="card-content row" style="padding-bottom: 0px;">
+            <div class="col s8">
+              <span class="card-title">{{ task.nombre }}</span>
+            </div>
+            <div class=" estado-box white-text valign-wrapper right-align p3" style="padding: 10px;" [ngClass]="{
             'status-pendiente': task.estado.toLowerCase() === 'pendiente',
             'status-denegado': task.estado.toLowerCase() === 'denegada',
             'status-en-revision': task.estado.toLowerCase() === 'en revisión',
-            'status-en-proceso': task.estado.toLowerCase() === 'en progreso',
+            'status-en-progreso': task.estado.toLowerCase() === 'en progreso',
             'status-completado': task.estado.toLowerCase() === 'completada'
-          }">{{ task.estado }}</div>
-        </div>
-
-        <!-- Descripción y vencimiento + icono -->
-        <div class="task-body-row">
-          <div class="task-body-texts">
-            <p class="task-text">Creacion: {{ task.fechaCreacion | date:'dd/MM/yyyy' }}</p>
-            <p class="task-text">Vencimiento: {{ task.fechaLimite | date:'dd/MM/yyyy' }}</p>
+          }">{{ task.estado }}
+            </div>
           </div>
-          <div class="action-buttons">
-            <button class="icon-btn blue-text" title="Eliminar tarea"
-              (click)="askForDeleteConfirmation(task.id, i, task.name, $event)" *ngIf="isLibrarian">
-              <i class="material-icons red-text">delete</i>
-            </button>
-            <button class="icon-btn blue-text" title="Editar tarea" (click)="navigateToEdit(task.id, $event)"
-              *ngIf="isLibrarian">
-              <i class="material-icons">border_color</i>
-            </button>
-            <button class="icon-btn blue-text" title="Editar tarea" [routerLink]="['/task-detail', task.id]"
-              *ngIf="isLibrarian">
-              <i class="material-icons">visibility</i>
-            </button>
-            <button class="icon-btn blue-text" title="Ver detalles" routerLink="/task-detail"
-              [routerLink]="['/task-detail', task.id]" *ngIf="!isLibrarian">
-              <i class="material-icons medium">chevron_right</i>
-            </button>
+          <div class="card-content row" style="padding-top: 0px;">
+            <div class=" col s6">
+              <p><strong>Creación:</strong> {{ task.fechaCreacion | date:'dd/MM/yyyy' }}</p>
+              <p><strong>Vencimiento:</strong> {{ task.fechaLimite | date:'dd/MM/yyyy' }}</p>
+            </div>
+            <div class="action-buttons right-align">
+              <button class="btn-flat blue-text" title="Editar tarea" (click)="navigateToEdit(task.id, $event)"
+                *ngIf="isLibrarian">
+                <i class="material-icons iconos-tareas">border_color</i>
+              </button>
+              <button class="btn-flat blue-text" title="Eliminar tarea"
+                (click)="askForDeleteConfirmation(task.id, i, task.name, $event)" *ngIf="isLibrarian">
+                <i class="material-icons red-text iconos-tareas">delete</i>
+              </button>
+              <button class="btn-flat" title="Editar tarea" [routerLink]="['/task-detail', task.id]"
+                *ngIf="isLibrarian">
+                <i class="material-icons blue-text iconos-tareas">visibility</i>
+              </button>
+              <button class="btn-flat" title="Ver detalles" [routerLink]="['/task-detail', task.id]"
+                *ngIf="!isLibrarian">
+                <i class="material-icons blue-text iconos-tareas" style="font-size: 3em;">chevron_right</i>
+              </button>
+            </div>
           </div>
         </div>
       </div>
     </div>
+
   </div>
 </div>
 
