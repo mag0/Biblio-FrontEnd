@@ -2,12 +2,9 @@
   <div class="container">
     <!-- Título alineado a la izquierda -->
     <a [routerLink]="['/tasks']" class="brand-logo left blue-text">BiblioAccess</a>
-    <a href="#" data-target="mobile-demo" class="sidenav-trigger right">
-      <i class="material-icons white-text">menu</i>
-    </a>
 
-    <!-- Icono de perfil con menú desplegable -->
-    <ul class="right align-center hide-on-med-and-down center-align">
+    <!-- Icono de perfil alineado a la derecha en todas las pantallas -->
+    <ul class="right">
       <li>
         <a class="dropdown-trigger white-text" data-target="profile-dropdown">
           <i class="material-icons blue-text large">account_circle</i>
@@ -23,20 +20,4 @@
       <li><a (click)="logout()" class="white-text"><i class="material-icons left">exit_to_app</i>Cerrar Sesión</a></li>
     </ul>
   </div>
-
-  <!-- Menú móvil -->
-  <ul class="sidenav" id="mobile-demo">
-    <li>
-      <a [routerLink]="['/tasks']" class="black-text">Tasks</a>
-    </li>
-    <li>
-      <a [routerLink]="['/form-task']" class="black-text">Form task</a>
-    </li>
-    <li>
-      <a [routerLink]="['/profile']" class="black-text">Perfil</a>
-    </li>
-    <li>
-      <a (click)="logout()" class="black-text">Cerrar Sesión</a>
-    </li>
-  </ul>
 </nav>

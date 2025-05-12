@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
 })
 export class OrderService {
   // URL base para las operaciones relacionadas con las tareas/órdenes.
-  private apiUrl = 'https://localhost:44342/api/tarea';
+  private apiUrl = 'https://localhost:44342/api/Order';
 
   constructor(private http: HttpClient) {}
 

@@ -5,13 +5,13 @@
       <div style="display: flex; align-items: center; gap: 10px;">
         <i class="material-icons blue-text" title="Filtrar" style="font-size: 3em;">filter_alt</i>
         <div style="width: 200px;">
-          <select id="filterEstado" class="browser-default">
-            <option value="" disabled selected>Seleccionar estado</option>
-            <option value="pendiente">Pendiente</option>
-            <option value="denegada">Denegada</option>
-            <option value="revision">En revisión</option>
-            <option value="progreso">En progreso</option>
-            <option value="completada">Completada</option>
+          <select id="filterEstado" class="browser-default" [(ngModel)]="selectedEstado" (change)="loadTasks()">
+            <option value="" selected>Seleccionar estado</option>
+            <option value="Pendiente">Pendiente</option>
+            <option value="Denegada">Denegada</option>
+            <option value="En Revision">En revisión</option>
+            <option value="En Progreso">En progreso</option>
+            <option value="Completada">Completada</option>
           </select>
         </div>
       </div>

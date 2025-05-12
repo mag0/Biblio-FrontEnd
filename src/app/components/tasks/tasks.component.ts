@@ -5,6 +5,8 @@ import { RouterLink, Router } from '@angular/router'; // Add Router import
 import { saveAs } from 'file-saver';
 import { ConfirmationPopupComponent } from '../confirmation-popup/confirmation-popup.component';
 import { AuthService } from '../../services/auth.service';
+import { FormsModule } from '@angular/forms';
+import { OrderManagmentService } from '../../services/orderManagment.service';
 
 declare var M: any;
 
@@ -13,11 +15,12 @@ declare var M: any;
   selector: 'app-tasks',
   templateUrl: './tasks.component.html',
   styleUrls: ['./tasks.component.css'],
-  imports: [CommonModule, RouterLink, ConfirmationPopupComponent]
+  imports: [CommonModule, RouterLink, ConfirmationPopupComponent, FormsModule]
 })
 export class TasksComponent implements OnInit {
   tasks: any[] = [];
   isLoading: boolean = true;
+  selectedEstado: string = ''; // Nuevo estado seleccionado
 
   // Propiedades para el popup de confirmación
   showConfirmationPopup: boolean = false;
@@ -26,16 +29,16 @@ export class TasksComponent implements OnInit {
   taskToDeleteId: number | null = null;
   taskToDeleteIndex: number | null = null;
 
-  isLibrarian: boolean = false; // Añadir esta propiedad
+  isLibrarian: boolean = false;
 
   constructor(
     private orderService: OrderService,
     private authService: AuthService,
-    private router: Router // Add Router injection
+    private orderManagmentService: OrderManagmentService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
-    console.log('TasksComponent - Iniciando componente');
     this.loadTasks();
     // Subscribe to user information before checking role
     this.authService.getCurrentUser().subscribe({
@@ -59,17 +62,20 @@ export class TasksComponent implements OnInit {
   }
 
   loadTasks(): void {
-    this.isLoading = true;
-    this.orderService.getOrders().subscribe({
+    this.isLoading = true; // Indica que la carga está en proceso
+  
+    // Si hay un estado seleccionado, filtrar por estado; si no, obtener todas las tareas
+    const request = this.selectedEstado 
+      ? this.orderManagmentService.getOrdersByState(this.selectedEstado) 
+      : this.orderService.getOrders();
+  
+    request.subscribe({
       next: (data: any[]) => {
-        this.tasks = data.map(task => ({
-          ...task,
-          fileName: task.filePath ? task.filePath.split(/[\\/]/).pop() : null
-          // Ya no necesitamos isExpanded
-        }));
+        this.tasks = data; // Asigna directamente las tareas sin procesar el archivo
         console.log('Tareas obtenidas:', this.tasks);
         this.isLoading = false;
-        // Es crucial reinicializar collapsible DESPUÉS de que Angular actualice el DOM
+  
+        // Reinicializar collapsible después de que Angular actualice el DOM
         setTimeout(() => this.initializeCollapsible(), 0);
       },
       error: error => {
@@ -94,27 +100,6 @@ export class TasksComponent implements OnInit {
     }
   }
 
-  // Método para descargar el archivo (se mantiene igual, pero revisa event.stopPropagation)
-  downloadFile(taskId: number, fileName: string | null, event: Event): void {
-    event.stopPropagation(); // MUY IMPORTANTE: Evita que el collapsible se cierre/abra al hacer clic en el botón
-
-    if (!fileName) {
-      alert('No hay un nombre de archivo válido para descargar.');
-      return;
-    }
-    console.log(`Iniciando descarga para tarea ID: ${taskId}, archivo: ${fileName}`);
-    this.orderService.downloadFile(taskId).subscribe({
-      next: (blob) => {
-        saveAs(blob, fileName);
-        console.log('Descarga iniciada.');
-      },
-      error: (error) => {
-        console.error('Error al descargar el archivo:', error);
-        alert('No se pudo descargar el archivo. Verifica la consola.');
-      }
-    });
-  }
-
   // Método para solicitar confirmación antes de eliminar
   askForDeleteConfirmation(taskId: number, index: number, taskName: string, event: Event): void {
     event.stopPropagation(); // Evita que el collapsible se cierre/abra
@@ -130,7 +115,6 @@ export class TasksComponent implements OnInit {
     if (this.taskToDeleteId !== null && this.taskToDeleteIndex !== null) {
       this.orderService.deleteOrder(this.taskToDeleteId).subscribe({
         next: () => {
-          console.log(`Tarea ${this.taskToDeleteId} eliminada.`);
           // En lugar de splice, recargamos las tareas
           this.loadTasks(); 
           this.resetDeleteState();
@@ -150,7 +134,6 @@ export class TasksComponent implements OnInit {
 
   // Método que se ejecuta al cancelar la eliminación desde el popup
   cancelDelete(): void {
-    console.log('Eliminación cancelada.');
     this.resetDeleteState();
     // Recargar la lista de tareas al cancelar
     this.loadTasks();
