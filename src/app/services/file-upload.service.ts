@@ -52,6 +52,17 @@ export class FileUploadService {
   }
 
   /**
+   * @param orderId
+   * @param processor
+   * @returns
+   */
+  newProcessOcr(id: number, processor: string = 'Azure'): Observable<any> {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+  
+    return this.http.post<any>(`${this.apiUrl}/ocr/${processor}`, id, { headers });
+  }
+
+  /**
    * Comprueba si el tipo MIME del archivo está dentro de los tipos permitidos.
    * Tipos válidos: 'application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'.
    * @param file - El archivo a verificar.

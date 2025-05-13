@@ -42,9 +42,7 @@ export class TasksComponent implements OnInit {
     // Subscribe to user information before checking role
     this.authService.getCurrentUser().subscribe({
       next: (user) => {
-        console.log('Usuario cargado:', user);
         this.checkUserRole();
-        console.log('TasksComponent - Rol verificado');
       },
       error: (error) => {
         console.error('Error al cargar usuario:', error);
@@ -53,11 +51,8 @@ export class TasksComponent implements OnInit {
   }
 
   private checkUserRole(): void {
-    console.log('checkUserRole - Verificando rol del usuario');
     const userRole = this.authService.getCurrentUserRole();
-    console.log('checkUserRole - Rol obtenido:', userRole);
     this.isLibrarian = userRole === 'Admin';
-    console.log('checkUserRole - ¿Es bibliotecario?:', this.isLibrarian);
   }
 
   loadTasks(): void {
@@ -88,10 +83,6 @@ export class TasksComponent implements OnInit {
       const elems = document.querySelectorAll('.collapsible');
       if (elems && elems.length > 0) {
         M.Collapsible.init(elems, { accordion: false }); // Usar accordion: false para popout
-        console.log('Collapsible inicializado.');
-      } else {
-        // Puede que no haya tareas, así que no es un error necesariamente
-        console.log('No se encontraron elementos .collapsible para inicializar (puede que no haya tareas).');
       }
     } catch (e) {
       console.error('Error inicializando Materialize Collapsible:', e);

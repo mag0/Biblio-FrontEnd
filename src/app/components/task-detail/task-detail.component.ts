@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { OrderService } from '../../services/order.service';
 import { AuthService } from '../../services/auth.service';
 import { saveAs } from 'file-saver';
+import { FileUploadService } from '../../services/file-upload.service';
 
 @Component({
   selector: 'app-task-detail',
@@ -18,11 +19,17 @@ export class TaskDetailComponent implements OnInit {
   errorMessage: string = '';
   isLibrarian: boolean = false;
 
+  uploadProgress: number = 0;
+  uploadStatus: 'idle' | 'uploading' | 'success' | 'error' = 'idle';
+  ocrResponse: any = null; // Para almacenar la respuesta JSON del OCR
+  selectedOcrProcessor: string = 'Azure'; // Valor por defecto
+
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private orderService: OrderService,
-    private authService: AuthService
+    private authService: AuthService,
+    private fileUploadService: FileUploadService
   ) {}
 
   ngOnInit(): void {
@@ -45,7 +52,6 @@ export class TaskDetailComponent implements OnInit {
 
     this.orderService.getTaskById(taskId).subscribe({
       next: (data: any) => {
-        console.log('Datos de la tarea recibidos:', data);
         this.task = {
           ...data,
           fileName: data.filePath ? data.filePath.split(/[\\/]/).pop() : null
@@ -87,6 +93,31 @@ export class TaskDetailComponent implements OnInit {
       error: (error) => {
         console.error('Error al descargar el archivo:', error);
         alert('No se pudo descargar el archivo.');
+      }
+    });
+  }
+
+  processOcr(orderId: number): void {
+    this.uploadStatus = 'uploading';
+    this.uploadProgress = 0;
+    this.ocrResponse = null;
+  
+    this.fileUploadService.newProcessOcr(orderId, this.selectedOcrProcessor).subscribe({
+      next: (response) => {
+        this.uploadStatus = 'success';
+        this.uploadProgress = 100;
+        this.ocrResponse = response;
+  
+        // Guardar los datos OCR en localStorage para que estén disponibles en la nueva vista
+        localStorage.setItem('ocrData', JSON.stringify(response));
+  
+        // Redirigir al visualizador OCR
+        this.router.navigate(['/ocr-viewer']);
+      },
+      error: (error) => {
+        console.error('Error al procesar el archivo con OCR:', error);
+        this.errorMessage = 'Error al procesar el archivo con OCR. Por favor, intente nuevamente.';
+        this.uploadStatus = 'error';
       }
     });
   }

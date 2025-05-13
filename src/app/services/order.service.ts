@@ -26,8 +26,6 @@ export class OrderService {
    * @returns Un Observable que emite eventos HTTP, incluida la respuesta final.
    */
   createOrder(formData: FormData): Observable<any> {
-    // *** Añade este console.log para depurar ***
-    console.log(`OrderService: Intentando POST a: ${this.apiUrl}`);
     // La llamada POST debe usar solo this.apiUrl y observar los eventos
     return this.http.post(this.apiUrl, formData, {
       reportProgress: true, // Para seguir el progreso de la subida
@@ -42,7 +40,7 @@ export class OrderService {
    */
   downloadFile(id: number): Observable<Blob> {
     const downloadUrl = `${this.apiUrl}/download/${id}`;
-    console.log(`OrderService: Intentando GET para descarga desde: ${downloadUrl}`);
+
     return this.http.get(downloadUrl, {
       responseType: 'blob'
     });
@@ -55,7 +53,7 @@ export class OrderService {
    */
   deleteOrder(id: number): Observable<any> {
     const deleteUrl = `${this.apiUrl}/${id}`;
-    console.log(`OrderService: Intentando DELETE a: ${deleteUrl}`);
+
     return this.http.delete(deleteUrl);
   }
 

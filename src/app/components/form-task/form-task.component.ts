@@ -1,5 +1,5 @@
-import { Component, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormControl } from '@angular/forms';
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { OrderService } from '../../services/order.service';
 import { HttpEventType, HttpResponse, HttpEvent, HttpErrorResponse } from '@angular/common/http';
 import { Subscription } from 'rxjs';
@@ -87,7 +87,6 @@ export class FormTaskComponent implements OnInit {
         if (task.filePath) {
           // Extraer solo el nombre del archivo de la ruta completa
           this.currentFileName = task.filePath.split('\\').pop() || task.filePath.split('/').pop() || task.filePath;
-          console.log('Archivo actual cargado:', this.currentFileName);
         } else {
           this.currentFileName = '';
         }
@@ -132,13 +131,10 @@ export class FormTaskComponent implements OnInit {
         });
       }
 
-      console.log('Materialize datepickers inicializados.');
-
       // Inicializar Selects
       const selectElems = document.querySelectorAll('select');
       if (selectElems.length > 0) {
         this.formSelectInstance = M.FormSelect.init(selectElems)[0];
-        console.log('Materialize selects inicializados.');
       } else {
         console.warn('No se encontraron elementos <select> para inicializar.');
       }
@@ -166,7 +162,6 @@ export class FormTaskComponent implements OnInit {
         this.currentFileName = this.selectedFile.name;
       }
       this.formTask.patchValue({ archivo: this.selectedFile });
-      console.log('Archivo seleccionado:', this.selectedFile.name);
     } else {
       this.selectedFile = null;
       // Solo limpiar el nombre si no estamos en modo edición
@@ -216,7 +211,6 @@ export class FormTaskComponent implements OnInit {
             this.uploadProgress = Math.round(100 * event.loaded / event.total);
           }
         } else if (event instanceof HttpResponse) {
-          console.log('Respuesta completa:', event.body);
           this.uploadStatus = 'success'; // Marcar como éxito
           // alert('Tarea creada con éxito.'); // Reemplazado por popup
           this.showSuccessPopup = true; // Mostrar el popup de éxito

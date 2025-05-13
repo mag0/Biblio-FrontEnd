@@ -1,3 +1,9 @@
+@font-face {
+  font-family: 'Material Icons';
+  src: url('https://fonts.gstatic.com/s/materialicons/v143/flUhRq6tzZclQEJ-Vdg-IuiaDsNc.woff2') format('woff2');
+  font-display: swap;
+}
+
 :root {
   /* Colores principales de la aplicación */
   --color-negro: #100C05;

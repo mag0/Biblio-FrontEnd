@@ -46,12 +46,9 @@ export class AuthService {
     if (token) {
       try {
         const decodedToken: any = jwtDecode(token);
-        console.log('Token completo:', token);
-        console.log('Token decodificado completo:', decodedToken);
         
         // ASP.NET Core Identity usa este claim para roles
         const rolesClaim = decodedToken["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
-        console.log('Claims de roles:', rolesClaim);
         
         const user: User = {
           id: decodedToken.id || '',
@@ -61,7 +58,6 @@ export class AuthService {
           // Los roles pueden venir como array o string
           role: Array.isArray(rolesClaim) ? rolesClaim[0] : rolesClaim
         };
-        console.log('Usuario construido desde token:', user);
         this.currentUserSubject.next(user);
       } catch (error: any) {
         console.error('Error al decodificar el token:', error);
@@ -78,10 +74,8 @@ export class AuthService {
           localStorage.setItem(this.tokenKey, response.token);
           try {
             const decodedToken: any = jwtDecode(response.token);
-            console.log('Token decodificado en login:', decodedToken);
             
             const rolesClaim = decodedToken['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'];
-            console.log('Claims de roles en login:', rolesClaim);
             
             const user: User = {
               id: decodedToken.id || '',
@@ -90,7 +84,6 @@ export class AuthService {
               fullName: decodedToken.fullName || '',
               role: Array.isArray(rolesClaim) ? rolesClaim[0] : rolesClaim
             };
-            console.log('Usuario construido en login:', user);
             this.currentUserSubject.next(user);
           } catch (error) {
             console.error('Error al decodificar el token en login:', error);
@@ -144,7 +137,6 @@ export class AuthService {
     if (!this.currentUserSubject.value) {
       this.getUserProfile().subscribe({
         next: (userData) => {
-          console.log('Datos del usuario recibidos:', userData);
           this.currentUserSubject.next(userData); // Actualizar el BehaviorSubject
         },
         error: (error) => {
@@ -162,15 +154,11 @@ export class AuthService {
    */
   getCurrentUserRole(): string | null {
     const currentUser = this.currentUserSubject.value;
-    console.log('getCurrentUserRole - Usuario actual:', currentUser);
-    console.log('getCurrentUserRole - Rol del usuario:', currentUser?.role);
     return currentUser?.role || null;
   }
 
   hasRole(role: string): boolean {
     const userRole = this.getCurrentUserRole();
-    console.log('hasRole - Rol solicitado:', role);
-    console.log('hasRole - Rol actual del usuario:', userRole);
     return userRole === role;
   }
 }

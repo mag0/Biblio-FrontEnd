@@ -38,7 +38,6 @@ export class ProfileComponent implements OnInit {
 
     this.authService.getCurrentUser().subscribe({
       next: (userData) => {
-        console.log('Datos del usuario recibidos:', userData);
         this.user = userData; // Asignar los datos a la propiedad `user`
         this.isLoading = false; // Marcar como completada la carga
       },

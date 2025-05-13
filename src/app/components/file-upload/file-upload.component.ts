@@ -112,7 +112,6 @@ export class FileUploadComponent{
         this.uploadStatus = 'success';
         this.uploadProgress = 100;
         this.ocrResponse = response;
-        console.log('Respuesta OCR:', response);
         
         // Guardar los datos OCR en localStorage para que estén disponibles en el visualizador
         localStorage.setItem('ocrData', JSON.stringify(response));
