@@ -58,8 +58,8 @@ export class FileUploadService {
    */
   newProcessOcr(id: number, processor: string = 'Azure'): Observable<any> {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
-  
-    return this.http.post<any>(`${this.apiUrl}/ocr/${processor}`, id, { headers });
+    // El backend espera el 'id' como parámetro de consulta, no en el cuerpo para este endpoint específico.
+    return this.http.post<any>(`${this.apiUrl}/ocr/${processor}?id=${id}`, null, { headers });
   }
 
   /**
