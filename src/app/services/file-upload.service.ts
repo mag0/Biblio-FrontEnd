@@ -39,7 +39,7 @@ export class FileUploadService {
    * @param file - El archivo PDF que se va a procesar.
    * @returns Un Observable que emite la respuesta JSON del servidor tras el procesamiento.
    */
-  processOcr(file: File, processor: string = 'Azure'): Observable<any> {
+  processOcr(file: File, processor: string = 'Local'): Observable<any> {
     const formData = new FormData();
     formData.append('file', file, file.name);
 
@@ -56,10 +56,10 @@ export class FileUploadService {
    * @param processor
    * @returns
    */
-  newProcessOcr(id: number, processor: string = 'Azure'): Observable<any> {
+  newProcessOcr(id: number, processor: string = 'Local'): Observable<any> {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     // El backend espera el 'id' como parámetro de consulta, no en el cuerpo para este endpoint específico.
-    return this.http.post<any>(`${this.apiUrl}/ocr/${processor}?id=${id}`, null, { headers });
+    return this.http.post<any>(`${this.apiUrl}/ocr/${processor}?id=${id}`, processor, { headers });
   }
 
   /**

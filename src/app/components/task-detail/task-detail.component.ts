@@ -22,7 +22,7 @@ export class TaskDetailComponent implements OnInit {
   uploadProgress: number = 0;
   uploadStatus: 'idle' | 'uploading' | 'success' | 'error' = 'idle';
   ocrResponse: any = null; // Para almacenar la respuesta JSON del OCR
-  selectedOcrProcessor: string = 'Azure'; // Valor por defecto
+  selectedOcrProcessor: string = 'Local'; // Valor por defecto
 
   constructor(
     private route: ActivatedRoute,
