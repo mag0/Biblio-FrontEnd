@@ -18,6 +18,8 @@ export class NavBarComponent implements OnInit, AfterViewInit {
   title = 'BiblioAccess';
   isAuthenticated = false;
   mobileMenuOpen = false;
+  isMenuOpen = false;
+  isLibrarian: boolean = false;
 
   constructor(private authService: AuthService, private router: Router) {}
 
@@ -31,6 +33,15 @@ export class NavBarComponent implements OnInit, AfterViewInit {
       }
     });
 
+    this.authService.getCurrentUser().subscribe({
+      next: (user) => {
+        this.checkUserRole(user);
+      },
+      error: (error) => {
+        console.error('Error al cargar usuario:', error);
+      }
+    });
+
     if (!this.authService.isAuthenticated()) {
       this.router.navigate(['/login']);
       return;
@@ -40,11 +51,25 @@ export class NavBarComponent implements OnInit, AfterViewInit {
     this.isAuthenticated = this.authService.isAuthenticated();
   }
 
+  private checkUserRole(user: any): void {
+    const userRole = user?.role;
+    this.isLibrarian = userRole === 'Admin';
+  }
+
   ngAfterViewInit(): void {
     if (this.isAuthenticated) {
       this.initializeMaterializeElements();
     }
   }
+
+  toggleMenu() {
+    this.isMenuOpen = !this.isMenuOpen;
+  }
+
+  closeMenu() {
+    this.isMenuOpen = false; // Cierra el menú
+  }
+  
 
   private initializeMaterializeElements(): void {
     // Inicializar sidenav

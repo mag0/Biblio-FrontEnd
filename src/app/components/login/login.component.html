@@ -1,39 +1,33 @@
+<div class="flex items-center justify-center h-screen">
+  <div class="w-full max-w-md bg-white shadow-lg rounded-lg border-2 border-blue-500 p-6">
 
-<div class="row valign-wrapper" style="height: calc(100vh - 64px); margin: 0;">
-  <div class="col s12 m6 offset-m3 l4 offset-l4">
-    <div class="card z-depth-2" style="border: 2px solid #1976D2; border-radius: 8px;">
-      <div class="card-content">
-        <h2 class="card-title center-align blue-text text-darken-2" style="font-size: 2.5rem; margin-bottom: 1.5rem;">
-          ¡Bienvenido a BiblioAccess!</h2>
-        <p class="center-align grey-text text-darken-1">Accede a tu cuenta para disfrutar de todas nuestras funciones
-        </p>
-
-        <div *ngIf="errorMessage" class="card-panel red lighten-4 red-text text-darken-4">
-          {{ errorMessage }}
-        </div>
-
-        <form (ngSubmit)="onSubmit()" #loginForm="ngForm">
-          <!-- Correo Electrónico -->
-          <div class="input-field">
-            <input type="email" id="email" name="email" [(ngModel)]="loginData.email" required email class="validate">
-            <label for="email">Correo Electrónico</label>
-          </div>
-
-          <!-- Contraseña -->
-          <div class="input-field">
-            <input type="password" id="password" name="password" [(ngModel)]="loginData.password" required minlength="6"
-              class="validate">
-            <label for="password">Contraseña</label>
-          </div>
-
-          <!-- Botón de envío -->
-          <div class="center">
-            <button type="submit" [disabled]="loginForm.invalid || isLoading" class="btn waves-effect waves-light blue">
-              <span>Iniciar Sesión</span>
-            </button>
-          </div>
-        </form>
-      </div>
+    <div class="flex justify-center mb-4">
+      <img src="wirin.png" alt="Logo Wirin">
     </div>
+
+    <div *ngIf="errorMessage" class="bg-red-100 text-red-700 p-2 rounded-md text-center">
+      {{ errorMessage }}
+    </div>
+
+    <form (ngSubmit)="onSubmit()" #loginForm="ngForm">
+      <div class="mb-4">
+        <label for="email" class="block text-gray-700">Correo Electrónico</label>
+        <input type="email" id="email" name="email" [(ngModel)]="loginData.email" required email
+          class="w-full border border-gray-300 rounded-md p-2 focus:ring-blue-500 focus:border-blue-500">
+      </div>
+
+      <div class="mb-4">
+        <label for="password" class="block text-gray-700">Contraseña</label>
+        <input type="password" id="password" name="password" [(ngModel)]="loginData.password" required minlength="6"
+          class="w-full border border-gray-300 rounded-md p-2 focus:ring-blue-500 focus:border-blue-500">
+      </div>
+
+      <div class="text-center">
+        <button type="submit" [disabled]="loginForm.invalid || isLoading"
+          class="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600">
+          Iniciar Sesión
+        </button>
+      </div>
+    </form>
   </div>
 </div>

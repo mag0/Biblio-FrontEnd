@@ -39,36 +39,34 @@ export class TasksComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadTasks();
-    // Subscribe to user information before checking role
+  
     this.authService.getCurrentUser().subscribe({
       next: (user) => {
-        this.checkUserRole();
+        this.checkUserRole(user);
       },
       error: (error) => {
         console.error('Error al cargar usuario:', error);
       }
     });
   }
-
-  private checkUserRole(): void {
-    const userRole = this.authService.getCurrentUserRole();
+  
+  private checkUserRole(user: any): void {
+    const userRole = user?.role;
     this.isLibrarian = userRole === 'Admin';
   }
 
   loadTasks(): void {
-    this.isLoading = true; // Indica que la carga está en proceso
+    this.isLoading = true; 
   
-    // Si hay un estado seleccionado, filtrar por estado; si no, obtener todas las tareas
     const request = this.selectedEstado 
       ? this.orderManagmentService.getOrdersByState(this.selectedEstado) 
       : this.orderService.getOrders();
   
     request.subscribe({
       next: (data: any[]) => {
-        this.tasks = data; // Asigna directamente las tareas sin procesar el archivo
+        this.tasks = data;
         this.isLoading = false;
   
-        // Reinicializar collapsible después de que Angular actualice el DOM
         setTimeout(() => this.initializeCollapsible(), 0);
       },
       error: error => {
@@ -82,7 +80,7 @@ export class TasksComponent implements OnInit {
     try {
       const elems = document.querySelectorAll('.collapsible');
       if (elems && elems.length > 0) {
-        M.Collapsible.init(elems, { accordion: false }); // Usar accordion: false para popout
+        M.Collapsible.init(elems, { accordion: false });
       }
     } catch (e) {
       console.error('Error inicializando Materialize Collapsible:', e);
@@ -91,7 +89,7 @@ export class TasksComponent implements OnInit {
 
   // Método para solicitar confirmación antes de eliminar
   askForDeleteConfirmation(taskId: number, index: number, taskName: string, event: Event): void {
-    event.stopPropagation(); // Evita que el collapsible se cierre/abra
+    event.stopPropagation();
     this.taskToDeleteId = taskId;
     this.taskToDeleteIndex = index;
     this.popupTitle = 'Confirmar Eliminación';
@@ -104,10 +102,8 @@ export class TasksComponent implements OnInit {
     if (this.taskToDeleteId !== null && this.taskToDeleteIndex !== null) {
       this.orderService.deleteOrder(this.taskToDeleteId).subscribe({
         next: () => {
-          // En lugar de splice, recargamos las tareas
           this.loadTasks(); 
           this.resetDeleteState();
-          // Ya no es necesario reinicializar collapsible aquí, loadTasks lo hará
         },
         error: error => {
           console.error('Error al eliminar la tarea:', error);
@@ -124,7 +120,6 @@ export class TasksComponent implements OnInit {
   // Método que se ejecuta al cancelar la eliminación desde el popup
   cancelDelete(): void {
     this.resetDeleteState();
-    // Recargar la lista de tareas al cancelar
     this.loadTasks();
   }
 
@@ -145,7 +140,7 @@ export class TasksComponent implements OnInit {
 
   // Añadir este método para manejar la edición
   navigateToEdit(taskId: number, event: Event): void {
-    event.stopPropagation(); // Prevenir que el collapsible se abra/cierre
+    event.stopPropagation(); 
     this.router.navigate(['/form-task', taskId]);
   }
 }

@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AuthService, User } from '../../services/auth.service';
 import { Router, RouterModule } from '@angular/router';
-import { UserService } from '../../services/user.service';
 
 @Component({
   selector: 'app-profile',
@@ -12,46 +11,39 @@ import { UserService } from '../../services/user.service';
   templateUrl: './profile.component.html',
 })
 export class ProfileComponent implements OnInit {
-  user: User | null = null; // Usuario cargado desde el API
-  isLoading: boolean = true; // Indicador de carga
-  errorMessage: string = ''; // Mensaje de error si ocurre algún fallo
+  user: User | null = null;
+  isLoading: boolean = true;
+  errorMessage: string = '';
 
-  constructor(private authService: AuthService, private userService: UserService, private router: Router) {}
+  constructor(private authService: AuthService, private router: Router) {}
 
   ngOnInit(): void {
-    // Verificar si el usuario está autenticado
     if (!this.authService.isAuthenticated()) {
       this.router.navigate(['/login']);
       return;
     }
 
-    // Cargar el perfil del usuario
     this.loadUserProfile();
   }
 
-  /**
-   * Cargar los datos del perfil del usuario desde el backend
-   */
   loadUserProfile(): void {
     this.isLoading = true;
     this.errorMessage = '';
 
     this.authService.getCurrentUser().subscribe({
       next: (userData) => {
-        this.user = userData; // Asignar los datos a la propiedad `user`
-        this.isLoading = false; // Marcar como completada la carga
+        this.user = userData;
+        console.log('Perfil cargado:', this.user);
+        this.isLoading = false;
       },
       error: (error) => {
         console.error('Error al cargar el perfil:', error);
         this.errorMessage = 'No se pudo cargar la información del perfil.';
-        this.isLoading = false; // Terminar el estado de carga
+        this.isLoading = false;
       },
     });
   }
 
-  /**
-   * Cerrar sesión del usuario
-   */
   logout(): void {
     this.authService.logout();
     this.router.navigate(['/login']);

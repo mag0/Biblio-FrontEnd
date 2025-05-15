@@ -1,23 +1,32 @@
-<nav class="nav-wrapper white sticky top-0 z-depth-1" *ngIf="isAuthenticated">
-  <div class="container">
-    <!-- Título alineado a la izquierda -->
-    <a [routerLink]="['/tasks']" class="brand-logo left blue-text">BiblioAccess</a>
+<nav class="bg-white shadow-md sticky top-0 w-full" *ngIf="isAuthenticated">
+  <div class="max-w-6xl mx-auto flex justify-between items-center p-4">
+    <!-- Logo alineado a la izquierda -->
+    <a [routerLink]="['/tasks']">
+      <img src="wirin.png" alt="BiblioAccess Logo" class="h-18">
+    </a>
 
-    <!-- Icono de perfil alineado a la derecha en todas las pantallas -->
-    <ul class="right">
-      <li>
-        <a class="dropdown-trigger white-text" data-target="profile-dropdown">
-          <i class="material-icons blue-text large">account_circle</i>
-        </a>
-      </li>
-    </ul>
+    <!-- Botón del menú hamburguesa -->
+    <div class="relative">
+      <button class="text-blue-500 text-3xl focus:outline-none" (click)="toggleMenu()">
+        <i class="fas fa-user-circle text-blue-500 text-5xl"></i>
+      </button>
 
-    <!-- Menú desplegable del perfil -->
-    <ul id="profile-dropdown" class="dropdown-content blue">
-      <li><a [routerLink]="['/tasks']" class="white-text"><i class="material-icons left">list</i>Tasks</a></li>
-      <li><a [routerLink]="['/profile']" class="white-text"><i class="material-icons left">person</i>Perfil</a></li>
-      <li class="divider" tabindex="-1"></li>
-      <li><a (click)="logout()" class="white-text"><i class="material-icons left">exit_to_app</i>Cerrar Sesión</a></li>
-    </ul>
+      <!-- Menú desplegable alineado -->
+      <div *ngIf="isMenuOpen"
+        class="absolute right-0 top-full mt-2 max-w-[90vw] w-64 bg-blue-500 text-white shadow-md rounded-md overflow-hidden">
+        <ul class="p-2">
+          <li><a [routerLink]="['/tasks']" class="block p-2 hover:bg-blue-600" (click)="closeMenu()">📋 Tasks</a></li>
+          <li><a [routerLink]="['/users-view']" class="block p-2 hover:bg-blue-600" (click)="closeMenu()"
+              *ngIf="isLibrarian">👥
+              Usuarios</a>
+          </li>
+          <li><a [routerLink]="['/profile']" class="block p-2 hover:bg-blue-600" (click)="closeMenu()">👤 Perfil</a>
+          </li>
+
+          <li class="border-t border-blue-300 my-2"></li>
+          <li><a (click)="logout()" class="block p-2 hover:bg-blue-600" (click)="closeMenu()">🚪 Cerrar Sesión</a></li>
+        </ul>
+      </div>
+    </div>
   </div>
 </nav>

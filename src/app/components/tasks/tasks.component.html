@@ -1,84 +1,88 @@
-<div class="container" style="margin-top: 20px;">
-  <div class="row">
-    <div class="col s12" style="display: flex; justify-content: space-between; align-items: center;">
-      <!-- Contenedor del Filtro con Ícono -->
-      <div style="display: flex; align-items: center; gap: 10px;">
-        <i class="material-icons blue-text" title="Filtrar" style="font-size: 3em;">filter_alt</i>
-        <div style="width: 200px;">
-          <select id="filterEstado" class="browser-default" [(ngModel)]="selectedEstado" (change)="loadTasks()">
-            <option value="" selected>Seleccionar estado</option>
-            <option value="Pendiente">Pendiente</option>
-            <option value="Denegada">Denegada</option>
-            <option value="En Revision">En revisión</option>
-            <option value="En Progreso">En progreso</option>
-            <option value="Completada">Completada</option>
-          </select>
-        </div>
-      </div>
+<div class="max-w-5xl mx-auto mt-5">
+  <!-- Barra de filtros y botón de agregar tarea -->
+  <div class="flex justify-between items-center">
 
-      <div style="display: flex; align-items: center; gap: 10px;" *ngIf="isLibrarian">
-        <i class="material-icons blue-text" routerLink="/form-task" title="Agregar" style="font-size: 3em;">add</i>
-      </div>
+    <!-- Filtro de estado -->
+    <div class="w-56 flex items-center border border-gray-300 bg-white rounded-md shadow-sm">
+      <i class="fa-solid fas fa-filter text-blue-500 text-xl px-3"></i>
+      <select id="filterEstado"
+        class="cursor-pointer w-full p-2 bg-transparent focus:ring-blue-500 focus:border-blue-500 appearance-none"
+        [(ngModel)]="selectedEstado" (change)="loadTasks()">
+        <option value="" selected>Seleccionar estado</option>
+        <option value="Pendiente">Pendiente</option>
+        <option value="Denegada">Denegada</option>
+        <option value="En Revisión">En Revisión</option>
+        <option value="En Progreso">En Progreso</option>
+        <option value="Completada">Completada</option>
+      </select>
     </div>
 
-
-    <div class="row" *ngIf="!isLoading && tasks.length > 0">
-      <div class="col s12 m12 l12 xl6" *ngFor="let task of tasks; let i = index">
-        <div class="card" style="background-color: #B9CFFF;">
-          <div class="card-content row" style="padding-bottom: 0px;">
-            <div class="col s8">
-              <span class="card-title">{{ task.nombre }}</span>
-            </div>
-            <div class=" estado-box white-text valign-wrapper right-align p3" style="padding: 10px;" [ngClass]="{
-            'status-pendiente': task.estado.toLowerCase() === 'pendiente',
-            'status-denegado': task.estado.toLowerCase() === 'denegada',
-            'status-en-revision': task.estado.toLowerCase() === 'en revisión',
-            'status-en-progreso': task.estado.toLowerCase() === 'en progreso',
-            'status-completado': task.estado.toLowerCase() === 'completada'
-          }">{{ task.estado }}
-            </div>
-          </div>
-          <div class="card-content row" style="padding-top: 0px;">
-            <div class=" col s6">
-              <p><strong>Creación:</strong> {{ task.fechaCreacion | date:'dd/MM/yyyy' }}</p>
-              <p><strong>Vencimiento:</strong> {{ task.fechaLimite | date:'dd/MM/yyyy' }}</p>
-            </div>
-            <div class="action-buttons right-align">
-              <button class="btn-flat blue-text" title="Editar tarea" (click)="navigateToEdit(task.id, $event)"
-                *ngIf="isLibrarian">
-                <i class="material-icons iconos-tareas">border_color</i>
-              </button>
-              <button class="btn-flat blue-text" title="Eliminar tarea"
-                (click)="askForDeleteConfirmation(task.id, i, task.name, $event)" *ngIf="isLibrarian">
-                <i class="material-icons red-text iconos-tareas">delete</i>
-              </button>
-              <button class="btn-flat" title="Editar tarea" [routerLink]="['/task-detail', task.id]"
-                *ngIf="isLibrarian">
-                <i class="material-icons blue-text iconos-tareas">visibility</i>
-              </button>
-              <button class="btn-flat" title="Ver detalles" [routerLink]="['/task-detail', task.id]"
-                *ngIf="!isLibrarian">
-                <i class="material-icons blue-text iconos-tareas" style="font-size: 3em;">chevron_right</i>
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
+    <!-- Botón agregar tarea -->
+    <div class="flex items-center gap-4" *ngIf="isLibrarian">
+      <a routerLink="/form-task"
+        class="flex items-center bg-blue-500 text-white px-4 py-2 rounded-md cursor-pointer hover:bg-blue-600 transition duration-200"
+        title="Agregar">
+        <i class="fas fa-plus text-white text-xl"></i>
+        <span class="ml-2">Agregar Tarea</span>
+      </a>
     </div>
 
   </div>
+
+  <!-- Lista de tareas -->
+  <div *ngIf="!isLoading && tasks.length > 0" class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+    <div *ngFor="let task of tasks; let i = index" class="bg-blue-200 rounded-md shadow p-6">
+
+      <div class="flex justify-between items-center rounded-l-md">
+        <span class="text-xl font-bold">{{ task.nombre }}</span>
+        <div class="px-3 py-1 text-white rounded-md" [ngClass]="{
+            'bg-yellow-500': task.estado.toLowerCase() === 'pendiente',
+            'bg-red-500': task.estado.toLowerCase() === 'denegada',
+            'bg-orange-500': task.estado.toLowerCase() === 'en revisión',
+            'bg-blue-500': task.estado.toLowerCase() === 'en progreso',
+            'bg-green-500': task.estado.toLowerCase() === 'completada'
+          }">
+          {{ task.estado }}
+        </div>
+      </div>
+
+      <div class="flex justify-between items-center mt-3">
+        <div>
+          <p><strong>Creación:</strong> {{ task.fechaCreacion | date:'dd/MM/yyyy' }}</p>
+          <p><strong>Vencimiento:</strong> {{ task.fechaLimite | date:'dd/MM/yyyy' }}</p>
+        </div>
+
+        <div class="flex gap-3">
+          <button class="text-blue-500 hover:text-blue-700 transition duration-200" title="Editar tarea"
+            (click)="navigateToEdit(task.id, $event)" *ngIf="isLibrarian">
+            <i class="fas fa-edit text-2xl"></i>
+          </button>
+          <button class="text-red-500 hover:text-red-700 transition duration-200" title="Eliminar tarea"
+            (click)="askForDeleteConfirmation(task.id, i, task.name, $event)" *ngIf="isLibrarian">
+            <i class="fas fa-trash-alt text-2xl"></i>
+          </button>
+          <button class="text-blue-500 hover:text-blue-700 transition duration-200" title="Ver detalles"
+            [routerLink]="['/task-detail', task.id]" *ngIf="isLibrarian">
+            <i class="fas fa-eye text-2xl"></i>
+          </button>
+          <button class="text-blue-500 hover:text-blue-700 transition duration-200" title="Ver detalles"
+            [routerLink]="['/task-detail', task.id]" *ngIf="!isLibrarian">
+            <i class="fas fa-chevron-right text-2xl"></i>
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Mensaje cuando no hay tareas -->
+  <div *ngIf="!isLoading && tasks.length === 0" class="flex flex-col items-center text-gray-500 mt-20">
+    <i class="fas fa-folder-open text-blue-500 text-6xl"></i>
+    <p class="text-4xl">No hay tareas</p>
+  </div>
 </div>
 
-<!-- Mensaje si no hay tareas -->
-<div *ngIf="!isLoading && tasks.length === 0" class="center-align no-tasks-message">
-  <i class="material-icons large grey-text text-lighten-1">inbox</i>
-  <p class="grey-text">No tienes tareas pendientes.</p>
-  <a class="btn waves-effect waves-light blue" routerLink="/form-task">
-    Crea tu primera tarea
-  </a>
-</div>
-
-<!-- Popup de Confirmación -->
+<!-- Confirmación de eliminación -->
 <app-confirmation-popup [isVisible]="showConfirmationPopup" [title]="popupTitle" [question]="popupQuestion"
   [primaryActionText]="'Eliminar'" [secondaryActionText]="'Cancelar'" (primaryAction)="confirmDelete()"
   (secondaryAction)="cancelDelete()">

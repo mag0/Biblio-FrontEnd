@@ -1,126 +1,70 @@
-<div class="container" style="margin-top: 40px; margin-bottom: 40px;">
-  <div class="card z-depth-3">
-    <div class="card-content">
-      <span class="card-title blue-text text-darken-3 center-align" style="margin-bottom: 25px; font-weight: 400;">
-        <i class="material-icons medium" style="vertical-align: middle; margin-right: 8px;">
-          {{isEditMode ? 'edit' : 'note_add'}}
-        </i>
-        {{isEditMode ? 'Editar Tarea' : 'Crear Nueva Tarea'}}
-      </span>
+<div class="max-w-3xl mx-auto mt-24 bg-white shadow-lg rounded-lg border border-blue-500 p-6 relative">
 
-      <form [formGroup]="formTask" (ngSubmit)="onSubmit()">
-        <!-- Fila 1: Nombre -->
-        <div class="row">
-          <div class="input-field col s12">
-            <i class="material-icons prefix">title</i>
-            <input id="nombre" type="text" formControlName="nombre" class="validate">
-            <label for="nombre" [class.active]="isEditMode || formTask.get('nombre')?.value">Nombre de la Tarea</label>
-            <span class="helper-text red-text" *ngIf="formTask.get('nombre')?.invalid && formTask.get('nombre')?.touched">
-              El nombre es requerido.
-            </span>
-          </div>
-        </div>
-
-        <!-- Fila 2: Descripción -->
-        <div class="row">
-          <div class="input-field col s12">
-            <i class="material-icons prefix">description</i>
-            <textarea id="descripcion" class="materialize-textarea" formControlName="descripcion" 
-                      style="min-height: 80px;"></textarea>
-            <label for="descripcion" [class.active]="isEditMode || formTask.get('descripcion')?.value">Descripción (Opcional)</label>
-          </div>
-        </div>
-
-        <!-- Fila 3: Fecha Límite -->
-        <div class="row">
-          <div class="input-field col s12">
-            <i class="material-icons prefix">event_busy</i>
-            <input id="fechaLimite" type="text" class="datepicker" formControlName="fechaLimite" 
-                   [value]="formTask.get('fechaLimite')?.value">
-            <label for="fechaLimite" [class.active]="formTask.get('fechaLimite')?.value">Fecha Límite (Opcional)</label>
-          </div>
-        </div>
-
-        <!-- Estado field - solo visible en modo edición -->
-        <div class="row" *ngIf="isEditMode">
-          <div class="input-field col s12">
-            <i class="material-icons prefix">assignment</i>
-       
-            <select formControlName="estado">
-              <option value="" disabled>Selecciona un estado</option>
-              <option value="Pendiente">Pendiente</option>
-              <option value="En Progreso">En Progreso</option>
-              <option value="Completada">Completada</option>
-            </select>
-
-            <label [class.active]="true">Estado de la tarea</label>
-          </div>
-        </div>
-
-        <!-- Fila 4: Input de Archivo -->
-        <div class="row" style="margin-bottom: 0;">
-          <div class="file-field input-field col s12">
-            <div class="btn blue darken-1 waves-effect waves-light">
-              <span>
-                <i class="material-icons left">attach_file</i>
-                {{isEditMode ? 'Cambiar Archivo' : 'Adjuntar Archivo'}}
-              </span>
-              <input type="file" id="archivo" (change)="onFileSelected($event)" [attr.readonly]="isEditMode">
-            </div>
-            <div class="file-path-wrapper">
-              <input class="file-path validate" type="text" 
-                     [value]="currentFileName"
-                     [readonly]="true"
-                     [placeholder]="isEditMode ? 
-                       (currentFileName ? 'Archivo actual: ' + currentFileName : 'No hay archivo adjunto') : 
-                       'Selecciona un archivo (Opcional)'">
-            </div>
-          </div>
-        </div>
-
-        <!-- Fila 5: Indicadores de Progreso y Estado -->
-        <div class="row" style="min-height: 60px; margin-top: 0;"> <!-- Espacio reservado para indicadores -->
-          <div class="col s12">
-            <!-- Indicador de progreso de carga -->
-            <div *ngIf="uploadStatus === 'uploading'" style="margin-top: 10px;">
-              <div class="progress blue lighten-4">
-                <div class="determinate blue" [style.width.%]="uploadProgress"></div>
-              </div>
-              <p class="center-align blue-text text-darken-2" style="margin-top: 5px;">Subiendo archivo... {{ uploadProgress }}%</p>
-            </div>
-
-            <!-- Mensajes de estado de envío -->
-            <div *ngIf="uploadStatus === 'success'" class="card-panel green lighten-4 green-text text-darken-4 center-align feedback-panel">
-              <i class="material-icons tiny" style="vertical-align: middle;">check_circle</i> Tarea creada y archivo subido con éxito.
-            </div>
-            <div *ngIf="uploadStatus === 'error'" class="card-panel red lighten-4 red-text text-darken-4 center-align feedback-panel">
-               <i class="material-icons tiny" style="vertical-align: middle;">error</i> Error al crear la tarea o subir el archivo. Por favor, inténtalo de nuevo.
-            </div>
-          </div>
-        </div>
-
-        <!-- Fila 6: Botón de Envío -->
-        <div class="row">
-          <div class="col s12 center-align" style="margin-top: 20px;"> <!-- Margen superior antes del botón -->
-            <button class="btn-large waves-effect waves-light blue darken-2" type="submit" [disabled]="formTask.invalid || uploadStatus === 'uploading'">
-              <i class="material-icons left">save</i> <!-- Icono de guardar -->
-              Guardar Tarea
-            </button>
-          </div>
-        </div>
-
-      </form>
-    </div>
+  <div class="flex items-center justify-center text-blue-500 text-xl font-semibold mb-4">
+    <i class="fas" [ngClass]="{'fa-edit': isEditMode, 'fa-plus': !isEditMode}"></i>
+    <span class="ml-2">{{isEditMode ? 'Editar Tarea' : 'Crear Nueva Tarea'}}</span>
   </div>
+
+  <form [formGroup]="formTask" (ngSubmit)="onSubmit()">
+
+    <div class="mb-4">
+      <label for="nombre" class="block text-gray-700">Nombre de la Tarea</label>
+      <div class="flex items-center border border-gray-300 rounded-md p-2">
+        <input id="nombre" type="text" formControlName="nombre" class="w-full focus:outline-none">
+      </div>
+      <span class="text-red-500 text-sm" *ngIf="formTask.get('nombre')?.invalid && formTask.get('nombre')?.touched">
+        El nombre es requerido.
+      </span>
+    </div>
+
+    <div class="mb-4">
+      <label for="descripcion" class="block text-gray-700">Descripción (Opcional)</label>
+      <textarea id="descripcion" formControlName="descripcion"
+        class="w-full border border-gray-300 rounded-md p-2 focus:outline-none"></textarea>
+    </div>
+
+    <div class="mb-4">
+      <label for="fechaLimite" class="block text-gray-700">Fecha Límite (Opcional)</label>
+      <input id="fechaLimite" type="date" formControlName="fechaLimite"
+        class="w-full border border-gray-300 rounded-md p-2 focus:outline-none">
+    </div>
+
+    <div class="mb-4" *ngIf="isEditMode">
+      <label for="estado" class="block text-gray-700">Estado de la tarea</label>
+      <select id="estado" formControlName="estado"
+        class="w-full border border-gray-300 rounded-md p-2 focus:outline-none">
+        <option value="" disabled>Selecciona un estado</option>
+        <option value="Pendiente">Pendiente</option>
+        <option value="En Revisión">En Revisión</option>
+        <option value="En Progreso">En Progreso</option>
+        <option value="Denegada">Denegada</option>
+        <option value="Completada">Completada</option>
+      </select>
+    </div>
+
+    <div class="mb-4 flex items-center gap-2">
+      <div class="flex items-center bg-blue-500 text-white px-4 py-2 rounded-md cursor-pointer w-fit"
+        onclick="document.getElementById('archivo').click()">
+        <span>{{ isEditMode ? 'Cambiar Archivo' : 'Adjuntar Archivo' }}</span>
+        <input type="file" id="archivo" (change)="onFileSelected($event)" class="hidden">
+      </div>
+      <span id="file-name" class="text-gray-700">{{ currentFileName || 'No hay archivo seleccionado' }}</span>
+    </div>
+
+    <div class="flex justify-between items-center mt-6">
+      <button type="button" (click)="goBack()" class="bg-red-500 text-white py-2 px-4 rounded-md hover:bg-gray-600">
+        Volver
+      </button>
+      <button type="submit" [disabled]="formTask.invalid || uploadStatus === 'uploading'"
+        class="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600">
+        Guardar Tarea
+      </button>
+    </div>
+
+  </form>
 </div>
 
-<!-- Popup de Éxito -->
-<app-confirmation-popup
-  [isVisible]="showSuccessPopup"
-  [title]="successPopupTitle"
-  [question]="successPopupMessage"
-  [primaryActionText]="successConfirmButtonText" 
-  [secondaryActionText]="successCancelButtonText" 
-  (primaryAction)="createNewTask()" 
-  (secondaryAction)="goToTasks()"> 
+<app-confirmation-popup [isVisible]="showSuccessPopup" [title]="successPopupTitle" [question]="successPopupMessage"
+  [primaryActionText]="successConfirmButtonText" [secondaryActionText]="successCancelButtonText"
+  (primaryAction)="createNewTask()" (secondaryAction)="goToTasks()">
 </app-confirmation-popup>

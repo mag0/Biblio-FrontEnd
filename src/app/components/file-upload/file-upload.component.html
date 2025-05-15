@@ -3,7 +3,6 @@
     <div class="card-content">
       <div class="row" style="align-items: flex-start;">
         <div class="col s12 m12 l12">
-          <!-- Input para seleccionar archivo -->
           <div class="file-field input-field" style="margin-bottom: 0;">
             <div class="btn blue">
               <span>Seleccionar Archivo</span>
@@ -19,9 +18,9 @@
       </div>
       <div class="row" style="align-items: flex-start;">
         <div class="col s12 m12 l12">
-          <!-- Selector de tipo de procesamiento OCR -->
           <div class="input-field" style="margin-top: 0;">
-            <select #ocrProcessor [(ngModel)]="selectedOcrProcessor" id="ocrProcessor" name="ocrProcessor" materialize="material_select">
+            <select #ocrProcessor [(ngModel)]="selectedOcrProcessor" id="ocrProcessor" name="ocrProcessor"
+              materialize="material_select">
               <option value="Azure">Azure</option>
               <option value="Local">Local</option>
             </select>
@@ -31,9 +30,10 @@
       </div>
       <div class="row" style="align-items: flex-start;">
         <div class="col s12 m12 l12">
-          <!-- Imagen de previsualización o información del archivo -->
           <div *ngIf="!selectedFile" class="center-align">
-            <img class="responsive-img" src="https://dummyimage.com/500x500/cccccc/000000&text=Aun no se ha cargado ningun archivo" alt="No Image Available">
+            <img class="responsive-img"
+              src="https://dummyimage.com/500x500/cccccc/000000&text=Aun no se ha cargado ningun archivo"
+              alt="No Image Available">
           </div>
           <div *ngIf="selectedFile" class="card-panel grey lighten-5" style="margin-bottom: 0;">
             <div class="row valign-wrapper" style="margin-bottom: 0;">
@@ -42,7 +42,8 @@
               </div>
               <div class="col s10">
                 <p class="blue-text text-darken-2 truncate" style="margin-bottom: 0;">{{ selectedFile.name }}</p>
-                <p class="grey-text text-darken-1" style="margin-bottom: 0;">{{ (selectedFile.size / 1024).toFixed(2) }} KB</p>
+                <p class="grey-text text-darken-1" style="margin-bottom: 0;">{{ (selectedFile.size / 1024).toFixed(2) }}
+                  KB</p>
               </div>
             </div>
           </div>
@@ -52,7 +53,8 @@
       <div *ngIf="uploadStatus === 'uploading'" class="progress" style="margin-top: 16px;">
         <div class="determinate blue lighten-2" [style.width.%]="uploadProgress"></div>
       </div>
-      <p *ngIf="uploadStatus === 'uploading'" class="center-align grey-text text-darken-1">{{ uploadProgress }}% Completado</p>
+      <p *ngIf="uploadStatus === 'uploading'" class="center-align grey-text text-darken-1">{{ uploadProgress }}%
+        Completado</p>
       <!-- Mensaje de éxito -->
       <div *ngIf="uploadStatus === 'success'" class="card-panel green lighten-5 center-align">
         <p class="green-text text-darken-3">¡Archivo subido correctamente!</p>
@@ -60,7 +62,8 @@
       <!-- Respuesta JSON del OCR -->
       <div *ngIf="ocrResponse" class="card-panel blue lighten-5">
         <h6 class="blue-text text-darken-3">Respuesta OCR:</h6>
-        <pre class="grey darken-4 white-text p-3" style="max-height: 150px; overflow:auto; border-radius: 4px;">{{ ocrResponse | json }}</pre>
+        <pre class="grey darken-4 white-text p-3"
+          style="max-height: 150px; overflow:auto; border-radius: 4px;">{{ ocrResponse | json }}</pre>
       </div>
       <!-- Mensaje de error -->
       <div *ngIf="errorMessage" class="card-panel red lighten-4 center-align">
@@ -68,10 +71,15 @@
       </div>
       <!-- Botones de acción -->
       <div class="row" style="margin-top: 24px; display: flex; flex-wrap: wrap; gap: 8px; justify-content: center;">
-        <button *ngIf="selectedFile && uploadStatus !== 'uploading' && uploadStatus !== 'success'" (click)="uploadFile()" class="btn blue waves-effect waves-light">Subir Archivo</button>
-        <button *ngIf="selectedFile && uploadStatus !== 'uploading' && selectedFile.type === 'application/pdf'" (click)="processOcr()" class="btn green waves-effect waves-light">Procesar OCR con {{selectedOcrProcessor}}</button>
-        <button *ngIf="selectedFile || uploadStatus === 'success' || uploadStatus === 'error'" (click)="resetForm()" class="btn grey waves-effect waves-light">Reiniciar</button>
-        <button *ngIf="ocrResponse" (click)="goToOcrViewer()" class="btn purple waves-effect waves-light">Ver Resultados OCR</button>
+        <button *ngIf="selectedFile && uploadStatus !== 'uploading' && uploadStatus !== 'success'"
+          (click)="uploadFile()" class="btn blue waves-effect waves-light">Subir Archivo</button>
+        <button *ngIf="selectedFile && uploadStatus !== 'uploading' && selectedFile.type === 'application/pdf'"
+          (click)="processOcr()" class="btn green waves-effect waves-light">Procesar OCR con
+          {{selectedOcrProcessor}}</button>
+        <button *ngIf="selectedFile || uploadStatus === 'success' || uploadStatus === 'error'" (click)="resetForm()"
+          class="btn grey waves-effect waves-light">Reiniciar</button>
+        <button *ngIf="ocrResponse" (click)="goToOcrViewer()" class="btn purple waves-effect waves-light">Ver Resultados
+          OCR</button>
       </div>
     </div>
   </div>

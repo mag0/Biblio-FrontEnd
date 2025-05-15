@@ -112,7 +112,7 @@ export class TaskDetailComponent implements OnInit {
         localStorage.setItem('ocrData', JSON.stringify(response));
   
         // Redirigir al visualizador OCR
-        this.router.navigate(['/ocr-viewer']);
+        this.router.navigate(['/ocr-viewer/' + orderId]);
       },
       error: (error) => {
         console.error('Error al procesar el archivo con OCR:', error);

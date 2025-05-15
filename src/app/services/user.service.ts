@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class UserService {
-  private apiUrl = 'https://localhost:44342/User'; // URL del controlador backend
+  private apiUrl = 'https://localhost:44342/api/User'; // URL del controlador backend
 
   constructor(private http: HttpClient) {}
 
@@ -17,5 +17,9 @@ export class UserService {
    */
   getUserById(id: string): Observable<any> {
     return this.http.get(`${this.apiUrl}/${id}`);
+  }
+
+  getAll(): Observable<any[]> {
+    return this.http.get<any[]>(this.apiUrl);
   }
 }

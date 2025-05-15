@@ -1,27 +1,5 @@
-.estado-box {
-  position: relative;
-  padding: 10px 20px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 40px;
-  line-height: 40px;
-  clip-path: polygon(0 0, 90% 0, 100% 50%, 90% 100%, 0 100%);
-  white-space:nowrap
-}
-
 i{
   cursor: pointer;
-}
-
-.iconos-tareas{
-  font-size: 1.8em;
-  transition: all 0.3s ease;
-}
-
-.iconos-tareas:hover{
-  scale: 1.2;
-  transition: all 0.3s ease;
 }
 
 /* Colores según el estado */

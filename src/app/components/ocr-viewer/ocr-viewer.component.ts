@@ -1,7 +1,10 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
+import { OrderManagmentService } from '../../services/orderManagment.service';
+import { ActivatedRoute } from '@angular/router';
+import { AuthService } from '../../services/auth.service';
 
 interface OcrPage {
   number: number;
@@ -33,7 +36,7 @@ interface OcrResponse {
 @Component({
   selector: 'app-ocr-viewer',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterLink],
   templateUrl: './ocr-viewer.component.html',
   styleUrl: './ocr-viewer.component.css'
 })
@@ -42,8 +45,14 @@ export class OcrViewerComponent implements OnInit {
   currentPage: number = 1;
   isEditing: boolean = false;
   editingText: string = '';
+  user: any;
+  errorMessage: string = '';
   
-  constructor(private route: ActivatedRoute, private router: Router) {}
+  constructor(private router: Router, 
+    private orderManagmentService:OrderManagmentService,
+    private route: ActivatedRoute,
+    private authService: AuthService
+  ) {}
   
   ngOnInit(): void {
     // Si no hay datos OCR y se accede directamente a la ruta, podríamos
@@ -57,6 +66,22 @@ export class OcrViewerComponent implements OnInit {
         this.router.navigate(['/upload']);
       }
     }
+
+    this.authService.getCurrentUser().subscribe({
+      next: (userData) => {
+        this.user = userData;
+        console.log(this.user);
+      },
+      error: (error) => {
+        console.error('Error al cargar el perfil:', error);
+        this.errorMessage = 'No se pudo cargar la información del perfil.';
+      },
+    })
+  }
+
+  finalizarOcr(): void {
+    this.orderManagmentService.changeStatusToReview(Number(this.route.snapshot.paramMap.get('id')),1);
+    this.router.navigate(['/tasks']);
   }
   
   /**

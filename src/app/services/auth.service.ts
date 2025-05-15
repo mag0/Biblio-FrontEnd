@@ -138,6 +138,7 @@ export class AuthService {
       this.getUserProfile().subscribe({
         next: (userData) => {
           this.currentUserSubject.next(userData); // Actualizar el BehaviorSubject
+          console.log('Perfil cargado:', userData); // Agregar esta línea para depuració
         },
         error: (error) => {
           console.error('Error al cargar el perfil:', error);
