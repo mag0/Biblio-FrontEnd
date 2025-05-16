@@ -40,20 +40,9 @@ export class TasksComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    console.log("🟢 Iniciando ngOnInit...");
-    
-    console.log("🔹 Rol antes de asignarlo:");
-    console.log("isBibliotecario:", this.isBibliotecario);
-    console.log("isAlumno:", this.isAlumno);
-  
     this.loadTasks();
-  
     this.isBibliotecario = this.authService.hasRole('Bibliotecario') || this.authService.hasRole('Admin');
     this.isAlumno = this.authService.hasRole('Alumno');
-  
-    console.log("✅ Roles después de asignarlos:");
-    console.log("isBibliotecario:", this.isBibliotecario);
-    console.log("isAlumno:", this.isAlumno);
   }
 
   loadTasks(): void {

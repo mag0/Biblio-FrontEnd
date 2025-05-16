@@ -40,13 +40,8 @@ export class ConfirmationPopupComponent {
   @HostListener('document:click', ['$event'])
   onClick(event: MouseEvent) {
     const target = event.target as HTMLElement;
-    // Check if the click is outside the popup content area
     if (this.isVisible && !target.closest('.popup-content')) {
-       // Check if the click is not on the trigger button/element that opened the popup
-       // This prevents immediate closing if the popup is opened by a click
-       // A more robust solution might involve passing the opener element reference
-       // For now, we assume clicks outside the content area are meant to close it.
-      this.closePopup(); // Solo cierra, no emite evento por defecto
+      this.closePopup();
     }
   }
 }
