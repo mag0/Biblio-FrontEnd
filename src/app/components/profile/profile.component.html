@@ -11,16 +11,12 @@
   </div>
 
   <div *ngIf="user && !isLoading">
-    <div class="mt-6 bg-gray-100 p-4 rounded-lg shadow-md">
+    <div class="mt-6 p-4">
       <h6 class="text-lg font-semibold text-blue-600">Información Personal</h6>
       <p class="text-gray-700"><strong>Nombre Completo:</strong> {{ user.fullName }}</p>
       <p class="text-gray-700"><strong>Nombre de Usuario:</strong> {{ user.userName }}</p>
       <p class="text-gray-700"><strong>Correo Electrónico:</strong> {{ user.email }}</p>
-    </div>
-
-    <div class="mt-4 bg-gray-100 p-4 rounded-lg shadow-md">
-      <h6 class="text-lg font-semibold text-blue-600">Información de Cuenta</h6>
-      <p class="text-gray-700"><strong>ID de Usuario:</strong> {{ user.id }}</p>
+      <p class="text-gray-700"><strong>Rol:</strong> {{ user.role }}</p>
     </div>
   </div>
 

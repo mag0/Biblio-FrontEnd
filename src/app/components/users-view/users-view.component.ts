@@ -11,7 +11,7 @@ import { CommonModule } from '@angular/common';
 })
 export class UsersViewComponent {
   users: any[] = [];
-  expandedUserId: number | null = null; // 🔹 Controla qué usuario está expandido
+  expandedUserId: string | null = null;
 
   constructor(private userService: UserService) {}
 
@@ -27,7 +27,7 @@ export class UsersViewComponent {
     }) 
   }
 
-  toggleUser(userId: number): void {
+  toggleUser(userId: string): void {
     this.expandedUserId = this.expandedUserId === userId ? null : userId;
   }
 }

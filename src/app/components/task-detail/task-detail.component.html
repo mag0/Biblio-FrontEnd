@@ -1,4 +1,4 @@
-<div class="max-w-4xl mx-auto mt-16 bg-white shadow-lg rounded-lg border border-blue-500 p-6">
+<div class="container max-w-4xl mx-auto mt-16 bg-white shadow-lg rounded-lg border border-blue-500 p-6">
 
     <div class="flex items-center gap-4">
         <button class="bg-blue-500 text-white p-3 rounded-full hover:bg-blue-600 transition" (click)="goBack()">
@@ -38,7 +38,7 @@
             </div>
         </div>
 
-        <div class="flex justify-center mt-6">
+        <div class="flex justify-center mt-6" *ngIf="!isAlumno">
             <button class="bg-green-500 text-white px-6 py-2 rounded-md hover:bg-green-600 transition"
                 (click)="processOcr(task.id)">
                 Procesar

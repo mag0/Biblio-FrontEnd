@@ -15,6 +15,27 @@ button{
   cursor: pointer;
 }
 
+/* Colores según el estado */
+.status-pendiente {
+  background-color: #2e2e2e;
+}
+
+.status-denegado {
+  background-color: #d32f2f;
+}
+
+.status-en-revision {
+  background-color: #ff9800;
+}
+
+.status-en-progreso {
+  background-color: #1976d2;
+}
+
+.status-completado {
+  background-color: #388e3c;
+}
+
 :root {
   /* Colores principales de la aplicación */
   --color-negro: #100C05;

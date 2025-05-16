@@ -21,8 +21,9 @@ export class TaskDetailComponent implements OnInit {
 
   uploadProgress: number = 0;
   uploadStatus: 'idle' | 'uploading' | 'success' | 'error' = 'idle';
-  ocrResponse: any = null; // Para almacenar la respuesta JSON del OCR
-  selectedOcrProcessor: string = 'Local'; // Valor por defecto
+  ocrResponse: any = null;
+  selectedOcrProcessor: string = 'Local';
+  isAlumno = true;
 
   constructor(
     private route: ActivatedRoute,
@@ -35,6 +36,7 @@ export class TaskDetailComponent implements OnInit {
   ngOnInit(): void {
     this.checkUserRole();
     this.loadTaskDetails();
+    this.isAlumno = this.authService.getCurrentUserRole() === 'Alumno';
   }
 
   private checkUserRole(): void {
@@ -68,12 +70,12 @@ export class TaskDetailComponent implements OnInit {
 
   getStatusBadgeClass(status: string): string {
     switch (status.toLowerCase()) {
-      case 'pendiente': return 'badge-pendiente task-status-badge';
-      case 'en proceso': return 'badge-en-proceso task-status-badge';
-      case 'en revisión': return 'badge-en-revision task-status-badge';
-      case 'denegado': return 'badge-denegado task-status-badge';
-      case 'completado': return 'badge-completado task-status-badge';
-      default: return 'badge-pendiente task-status-badge';
+      case 'pendiente': return 'status-pendiente task-status-badge';
+      case 'en proceso': return 'status-en-proceso task-status-badge';
+      case 'en revisión': return 'status-en-revision task-status-badge';
+      case 'denegada': return 'status-denegado task-status-badge';
+      case 'completada': return 'status-completado task-status-badge';
+      default: return 'status-pendiente task-status-badge';
     }
   }
 

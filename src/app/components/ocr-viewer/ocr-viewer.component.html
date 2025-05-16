@@ -1,10 +1,20 @@
-<div class="max-w-5xl mx-auto mt-10 bg-white shadow-lg rounded-lg border border-blue-500 p-6">
+<div class="container max-w-5xl mx-auto mt-10 bg-white shadow-lg rounded-lg border border-blue-500 p-6">
   <div class="flex justify-between items-center mb-6">
     <h5 class="text-xl font-semibold text-blue-600">Visualizador OCR</h5>
     <div class="flex gap-4">
-      <button (click)="finalizarOcr()" class="bg-green-500 text-white px-4 py-2 rounded-md">
+      <button *ngIf="!isToRevision()" (click)="finalizarProceso()" class="bg-green-500 text-white px-4 py-2 rounded-md">
         <i class="fas fa-check"></i>
-        Finalizar
+        Finalizar proceso
+      </button>
+    </div>
+    <div class="flex gap-4" *ngIf="isToRevision()">
+      <button (click)="denegarResultado()" class="bg-red-500 text-white px-4 py-2 rounded-md">
+        <i class="fas fa-times"></i>
+        Denegar resultado
+      </button>
+      <button (click)="finalizarRevision()" class="bg-green-500 text-white px-4 py-2 rounded-md">
+        <i class="fas fa-check"></i>
+        Finalizar revisión
       </button>
     </div>
   </div>

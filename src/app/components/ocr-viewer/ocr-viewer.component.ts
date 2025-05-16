@@ -5,6 +5,9 @@ import { Router, RouterLink } from '@angular/router';
 import { OrderManagmentService } from '../../services/orderManagment.service';
 import { ActivatedRoute } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { tap } from 'rxjs/operators';
+import { OrderService } from '../../services/order.service';
+
 
 interface OcrPage {
   number: number;
@@ -47,41 +50,82 @@ export class OcrViewerComponent implements OnInit {
   editingText: string = '';
   user: any;
   errorMessage: string = '';
+  isRevision = false;
   
   constructor(private router: Router, 
     private orderManagmentService:OrderManagmentService,
     private route: ActivatedRoute,
-    private authService: AuthService
+    private authService: AuthService,
+    private orderService: OrderService
   ) {}
   
   ngOnInit(): void {
-    // Si no hay datos OCR y se accede directamente a la ruta, podríamos
-    // recuperar los datos de un servicio o localStorage
     if (!this.ocrData) {
       const storedData = localStorage.getItem('ocrData');
       if (storedData) {
         this.ocrData = JSON.parse(storedData);
       } else {
-        // Si no hay datos, redirigir a la página de carga
         this.router.navigate(['/upload']);
       }
     }
-
+  
+    const taskId = this.route.snapshot.paramMap.get('id') ?? ''; 
+    
+    this.orderService.getTaskById(taskId).subscribe(task => {
+      this.isRevision = task?.estado === 'En Revisión';
+    });
+  
     this.authService.getCurrentUser().subscribe({
       next: (userData) => {
         this.user = userData;
-        console.log(this.user);
       },
       error: (error) => {
         console.error('Error al cargar el perfil:', error);
         this.errorMessage = 'No se pudo cargar la información del perfil.';
       },
-    })
+    });
   }
 
-  finalizarOcr(): void {
-    this.orderManagmentService.changeStatusToReview(Number(this.route.snapshot.paramMap.get('id')),1);
-    this.router.navigate(['/tasks']);
+  finalizarProceso(): void {
+    this.authService.getCurrentUser().pipe(
+      tap(user => {
+        this.user = user;
+        this.orderManagmentService.changeStatusToReview(
+          Number(this.route.snapshot.paramMap.get('id')),
+          this.user?.id
+        );
+  
+        this.router.navigate(['/tasks']);
+      })
+    ).subscribe();
+  }
+
+  denegarResultado(): void {
+    this.authService.getCurrentUser().pipe(
+      tap(user => {
+        this.user = user;
+        this.orderManagmentService.changeStatusToDenied(
+          Number(this.route.snapshot.paramMap.get('id')),
+          this.user?.id
+        );
+  
+        this.router.navigate(['/tasks']);
+      })
+    ).subscribe();
+  }
+
+  finalizarRevision(): void {
+    this.authService.getCurrentUser().pipe(
+      tap(user => {
+        this.user = user;
+        this.orderManagmentService.changeStatusToCompleted(
+          Number(this.route.snapshot.paramMap.get('id')),
+          this.user?.id
+        );
+  
+        this.router.navigate(['/tasks']);
+      })
+    ).subscribe();
   }
   
   /**
@@ -176,4 +220,9 @@ export class OcrViewerComponent implements OnInit {
     this.ocrData.metadata.statistics.averageWordsPerPage = 
       totalWords / this.ocrData.metadata.totalPages;
   }
+
+  isToRevision(): boolean {
+    return this.isRevision;
+  }
+
 }

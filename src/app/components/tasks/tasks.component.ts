@@ -28,7 +28,9 @@ export class TasksComponent implements OnInit {
   taskToDeleteId: number | null = null;
   taskToDeleteIndex: number | null = null;
 
-  isLibrarian: boolean = false;
+  isRol: string = '';
+  isBibliotecario: boolean = false;
+  isAlumno: boolean = false;
 
   constructor(
     private orderService: OrderService,
@@ -38,25 +40,24 @@ export class TasksComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    console.log("🟢 Iniciando ngOnInit...");
+    
+    console.log("🔹 Rol antes de asignarlo:");
+    console.log("isBibliotecario:", this.isBibliotecario);
+    console.log("isAlumno:", this.isAlumno);
+  
     this.loadTasks();
   
-    this.authService.getCurrentUser().subscribe({
-      next: (user) => {
-        this.checkUserRole(user);
-      },
-      error: (error) => {
-        console.error('Error al cargar usuario:', error);
-      }
-    });
-  }
+    this.isBibliotecario = this.authService.hasRole('Bibliotecario') || this.authService.hasRole('Admin');
+    this.isAlumno = this.authService.hasRole('Alumno');
   
-  private checkUserRole(user: any): void {
-    const userRole = user?.role;
-    this.isLibrarian = userRole === 'Admin';
+    console.log("✅ Roles después de asignarlos:");
+    console.log("isBibliotecario:", this.isBibliotecario);
+    console.log("isAlumno:", this.isAlumno);
   }
 
   loadTasks(): void {
-    this.isLoading = true; 
+    this.isLoading = true;
   
     const request = this.selectedEstado 
       ? this.orderManagmentService.getOrdersByState(this.selectedEstado) 
@@ -64,9 +65,18 @@ export class TasksComponent implements OnInit {
   
     request.subscribe({
       next: (data: any[]) => {
-        this.tasks = data;
-        this.isLoading = false;
+        let filteredTasks = data;
   
+        if (this.authService.hasRole('Voluntario')) {
+          filteredTasks = filteredTasks.filter(task => task.estado.toLowerCase() === 'pendiente');
+        } else if (this.authService.hasRole('Voluntario Administrativo')) {
+          filteredTasks = filteredTasks.filter(task => task.estado.toLowerCase() !== 'completada');
+        } else if (this.authService.hasRole('Alumno')) {
+          filteredTasks = filteredTasks.filter(task => task.estado.toLowerCase() === 'completada');
+        }
+  
+        this.tasks = filteredTasks;
+        this.isLoading = false;
         setTimeout(() => this.initializeCollapsible(), 0);
       },
       error: error => {
@@ -74,6 +84,17 @@ export class TasksComponent implements OnInit {
         this.isLoading = false;
       }
     });
+  }
+
+  getStatusBadgeClass(status: string): string {
+    switch (status.toLowerCase()) {
+      case 'pendiente': return 'status-pendiente task-status-badge';
+      case 'en proceso': return 'status-en-proceso task-status-badge';
+      case 'en revisión': return 'status-en-revision task-status-badge';
+      case 'denegada': return 'status-denegado task-status-badge';
+      case 'completada': return 'status-completado task-status-badge';
+      default: return 'status-pendiente task-status-badge';
+    }
   }
 
   initializeCollapsible(): void {
@@ -132,13 +153,10 @@ export class TasksComponent implements OnInit {
     this.popupQuestion = '';
   }
 
-  // Método deleteTask ahora solo llama a askForDeleteConfirmation
-  // Lo mantenemos por si se usa en otro lugar, pero la lógica principal está en askForDeleteConfirmation
   deleteTask(taskId: number, index: number, taskName: string, event: Event): void {
-     this.askForDeleteConfirmation(taskId, index, taskName, event);
+    this.askForDeleteConfirmation(taskId, index, taskName, event);
   }
 
-  // Añadir este método para manejar la edición
   navigateToEdit(taskId: number, event: Event): void {
     event.stopPropagation(); 
     this.router.navigate(['/form-task', taskId]);

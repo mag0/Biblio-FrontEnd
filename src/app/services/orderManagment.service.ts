@@ -45,6 +45,8 @@ export class OrderManagmentService {
    * @returns Un Observable con la respuesta de la API.
    */
   changeStatusToReview(idTarea: number, idUsuario: number): Observable<any> {
+    console.log(idTarea);
+    console.log(idUsuario);
     return this.http.put(`${this.apiUrl}/revision?idTarea=${idTarea}&idUsuario=${idUsuario}`, {});
   }
 

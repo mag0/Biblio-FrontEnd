@@ -1,44 +1,4 @@
-i{
-  cursor: pointer;
-}
-
-/* Colores según el estado */
-.status-pendiente {
-  background-color: #2e2e2e;
-}
-
-.status-pendiente::after {
-  border-left-color: #fbc02d;
-}
-
-.status-denegado {
-  background-color: #d32f2f;
-}
-
-.status-denegado::after {
-  border-left-color: #d32f2f;
-}
-
-.status-en-revision {
-  background-color: #ff9800;
-}
-
-.status-en-revision::after {
-  border-left-color: #ff9800;
-}
-
-.status-en-progreso {
-  background-color: #1976d2;
-}
-
-.status-en-progreso::after {
-  border-left-color: #1976d2;
-}
-
-.status-completado {
-  background-color: #388e3c;
-}
-
-.status-completado::after {
-  border-left-color: #388e3c;
-}
+/* .clip-pointed {
+  clip-path: polygon(0% 0%, 85% 0%, 98% 50%, 85% 100%, 0% 100%);
+  padding-right: 1.5em;
+} */

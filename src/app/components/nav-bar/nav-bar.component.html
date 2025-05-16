@@ -1,19 +1,17 @@
 <nav class="bg-white shadow-md sticky top-0 w-full" *ngIf="isAuthenticated">
   <div class="max-w-6xl mx-auto flex justify-between items-center p-4">
-    <!-- Logo alineado a la izquierda -->
+
     <a [routerLink]="['/tasks']">
       <img src="wirin.png" alt="BiblioAccess Logo" class="h-18">
     </a>
 
-    <!-- Botón del menú hamburguesa -->
     <div class="relative">
       <button class="text-blue-500 text-3xl focus:outline-none" (click)="toggleMenu()">
         <i class="fas fa-user-circle text-blue-500 text-5xl"></i>
       </button>
 
-      <!-- Menú desplegable alineado -->
       <div *ngIf="isMenuOpen"
-        class="absolute right-0 top-full mt-2 max-w-[90vw] w-64 bg-blue-500 text-white shadow-md rounded-md overflow-hidden">
+        class="absolute z-50 right-0 top-full mt-2 max-w-[90vw] w-64 bg-blue-500 text-white shadow-md rounded-md overflow-hidden">
         <ul class="p-2">
           <li><a [routerLink]="['/tasks']" class="block p-2 hover:bg-blue-600" (click)="closeMenu()">📋 Tasks</a></li>
           <li><a [routerLink]="['/users-view']" class="block p-2 hover:bg-blue-600" (click)="closeMenu()"

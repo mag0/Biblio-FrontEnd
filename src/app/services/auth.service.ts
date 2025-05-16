@@ -30,6 +30,8 @@ export class AuthService {
   private currentUserSubject = new BehaviorSubject<User | null>(null);
   public currentUser$ = this.currentUserSubject.asObservable();
   private tokenKey = 'auth_token';
+  private userRoleSubject = new BehaviorSubject<string | null>(null);
+  public userRole$ = this.userRoleSubject.asObservable();
 
   constructor(private http: HttpClient, private envService: EnvService) {
     this.apiUrl = this.envService.getApiUrl(); // URL de la API desde el servicio de entorno
@@ -51,7 +53,7 @@ export class AuthService {
         const rolesClaim = decodedToken["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
         
         const user: User = {
-          id: decodedToken.id || '',
+          id: decodedToken.sub || '',
           userName: decodedToken.userName || '',
           email: decodedToken.email || '',
           fullName: decodedToken.fullName || '',
@@ -59,6 +61,7 @@ export class AuthService {
           role: Array.isArray(rolesClaim) ? rolesClaim[0] : rolesClaim
         };
         this.currentUserSubject.next(user);
+        this.userRoleSubject.next(user.role || null);
       } catch (error: any) {
         console.error('Error al decodificar el token:', error);
         console.error('Stack del error:', error?.stack);
@@ -68,38 +71,67 @@ export class AuthService {
   }
 
   login(credentials: LoginRequest): Observable<{ token: string; userId: string; role?: string }> {
+    console.log("🟢 Iniciando proceso de login...");
+
     return this.http.post<{ token: string; userId: string; role?: string }>(`${this.apiUrl}/auth/login`, credentials)
       .pipe(
         tap(response => {
+          console.log("✅ Respuesta de login recibida:", response);
+
+          // Guardar el token en localStorage
           localStorage.setItem(this.tokenKey, response.token);
+          console.log("🔹 Token guardado en localStorage");
+
           try {
             const decodedToken: any = jwtDecode(response.token);
-            
+            console.log("✅ Token decodificado correctamente:", decodedToken);
+
+            // Extraer el rol del usuario
             const rolesClaim = decodedToken['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'];
             
             const user: User = {
-              id: decodedToken.id || '',
+              id: decodedToken.sub || '',
               userName: decodedToken.userName || '',
               email: decodedToken.email || '',
               fullName: decodedToken.fullName || '',
               role: Array.isArray(rolesClaim) ? rolesClaim[0] : rolesClaim
             };
+
+            console.log("✅ Usuario reconstruido:", user);
+
+            // Actualizar el estado del usuario en la aplicación
             this.currentUserSubject.next(user);
+            console.log("🔄 `currentUserSubject` actualizado.");
+
+            this.userRoleSubject.next(user.role || null);
+            console.log("🔄 `userRoleSubject` actualizado. Rol actual:", this.userRoleSubject.value);
+
           } catch (error) {
-            console.error('Error al decodificar el token en login:', error);
+            console.error("❌ Error al decodificar el token en login:", error);
           }
         })
       );
-  }
+}
 
   /**
    * Cierra la sesión y limpia los datos de autenticación
    */
   logout(): void {
-    // Eliminar el token del localStorage
+    console.log("🔴 Cerrando sesión...");
+    
+    // Mostrar el rol antes de cerrar sesión
+    console.log("🔹 Rol antes de logout:", this.userRoleSubject.value);
+  
+    // Eliminar el token del almacenamiento local
     localStorage.removeItem(this.tokenKey);
-    // Actualizar el BehaviorSubject con null
+  
+    // Resetear el estado del usuario y del rol
     this.currentUserSubject.next(null);
+    this.userRoleSubject.next(null);
+  
+    // Confirmar que el rol ha sido reiniciado
+    console.log("✅ Sesión cerrada, usuario y rol reiniciados.");
+    console.log("🔹 Rol después de logout:", this.userRoleSubject.value);
   }
 
   /**
@@ -138,7 +170,6 @@ export class AuthService {
       this.getUserProfile().subscribe({
         next: (userData) => {
           this.currentUserSubject.next(userData); // Actualizar el BehaviorSubject
-          console.log('Perfil cargado:', userData); // Agregar esta línea para depuració
         },
         error: (error) => {
           console.error('Error al cargar el perfil:', error);
@@ -154,12 +185,10 @@ export class AuthService {
    * @returns string con el rol del usuario o null si no hay usuario o no tiene rol
    */
   getCurrentUserRole(): string | null {
-    const currentUser = this.currentUserSubject.value;
-    return currentUser?.role || null;
+    return this.userRoleSubject.value;
   }
 
   hasRole(role: string): boolean {
-    const userRole = this.getCurrentUserRole();
-    return userRole === role;
+    return this.getCurrentUserRole() === role;
   }
 }
