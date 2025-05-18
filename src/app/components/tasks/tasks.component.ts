@@ -51,17 +51,18 @@ export class TasksComponent implements OnInit {
     const request = this.selectedEstado 
       ? this.orderManagmentService.getOrdersByState(this.selectedEstado) 
       : this.orderService.getOrders();
-  
+
     request.subscribe({
       next: (data: any[]) => {
         let filteredTasks = data;
   
         if (this.authService.hasRole('Voluntario')) {
-          filteredTasks = filteredTasks.filter(task => task.estado.toLowerCase() === 'pendiente');
+          filteredTasks = filteredTasks.filter(task => task.status.toLowerCase() === 'pendiente');
         } else if (this.authService.hasRole('Voluntario Administrativo')) {
-          filteredTasks = filteredTasks.filter(task => task.estado.toLowerCase() !== 'completada');
+          console.log('Entro al voluntario administrativo');
+          filteredTasks = filteredTasks.filter(task => task.status.toLowerCase() !== 'completada');
         } else if (this.authService.hasRole('Alumno')) {
-          filteredTasks = filteredTasks.filter(task => task.estado.toLowerCase() === 'completada');
+          filteredTasks = filteredTasks.filter(task => task.status.toLowerCase() === 'completada');
         }
   
         this.tasks = filteredTasks;

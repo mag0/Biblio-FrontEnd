@@ -4,7 +4,7 @@
         <button class="bg-blue-500 text-white p-3 rounded-full hover:bg-blue-600 transition" (click)="goBack()">
             <i class="fas fa-arrow-left text-lg"></i>
         </button>
-        <h4 class="text-xl font-semibold text-center flex-1">{{ task.nombre }}</h4>
+        <h4 class="text-xl font-semibold text-center flex-1">{{ task.name }}</h4>
     </div>
 
     <div *ngIf="isLoading" class="flex justify-center mt-6">
@@ -20,12 +20,12 @@
             <span class="block text-lg font-semibold">Información General</span>
             <div class="mt-8">
                 <p><strong>Descripción:</strong> {{ task.descripcion }}</p>
-                <p class="mt-3"><strong>Fecha de Creación:</strong> {{ task.fechaCreacion | date:'medium' }}</p>
-                <p class="mt-3"><strong>Vencimiento:</strong> {{ task.fechaLimite | date:'medium' }}</p>
+                <p class="mt-3"><strong>Fecha de Creación:</strong> {{ task.creationDate | date:'medium' }}</p>
+                <p class="mt-3"><strong>Vencimiento:</strong> {{ task.limitDate | date:'medium' }}</p>
                 <p class="flex items-center mt-3">
                     <strong>Estado:</strong>
-                    <span class="ml-2 px-3 py-1 text-white rounded-md" [ngClass]="getStatusBadgeClass(task.estado)">
-                        {{ task.estado }}
+                    <span class="ml-2 px-3 py-1 text-white rounded-md" [ngClass]="getStatusBadgeClass(task.status)">
+                        {{ task.status }}
                     </span>
                 </p>
                 <p class="flex items-center mt-3">
@@ -37,13 +37,17 @@
                 </p>
             </div>
         </div>
-
-        <div class="flex justify-center mt-6" *ngIf="!isAlumno">
+        <div class="flex justify-center mt-6" *ngIf="!isAlumno && !isCompleted">
             <button class="bg-green-500 text-white px-6 py-2 rounded-md hover:bg-green-600 transition"
-                (click)="processOcr(task.id)">
+                (click)="processOcr(task.id, false)" *ngIf="isRevision || isDenegated">
+                Revisar
+            </button>
+            <button class="bg-green-500 text-white px-6 py-2 rounded-md hover:bg-green-600 transition"
+                (click)="processOcr(task.id, true)" *ngIf="!isRevision">
                 Procesar
             </button>
         </div>
+
     </div>
 
 </div>

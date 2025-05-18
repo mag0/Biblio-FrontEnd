@@ -151,11 +151,11 @@ export class AuthService {
     if (!this.currentUserSubject.value) {
       this.getUserProfile().subscribe({
         next: (userData) => {
-          this.currentUserSubject.next(userData); // Actualizar el BehaviorSubject
+          this.currentUserSubject.next(userData);
         },
         error: (error) => {
           console.error('Error al cargar el perfil:', error);
-          this.currentUserSubject.next(null); // Actualizar el BehaviorSubject
+          this.currentUserSubject.next(null);
         },
       });
     }

@@ -8,35 +8,43 @@
   <form [formGroup]="formTask" (ngSubmit)="onSubmit()">
 
     <div class="mb-4">
-      <label for="nombre" class="block text-gray-700">Nombre de la Tarea</label>
+      <label for="name" class="block text-gray-700">Nombre de la Tarea</label>
       <div class="flex items-center border border-gray-300 rounded-md p-2">
-        <input id="nombre" type="text" formControlName="nombre" class="w-full focus:outline-none">
+        <input id="name" type="text" formControlName="name" class="w-full focus:outline-none">
       </div>
-      <span class="text-red-500 text-sm" *ngIf="formTask.get('nombre')?.invalid && formTask.get('nombre')?.touched">
+      <span class="text-red-500 text-sm" *ngIf="formTask.get('name')?.invalid && formTask.get('name')?.touched">
         El nombre es requerido.
       </span>
     </div>
 
     <div class="mb-4">
-      <label for="descripcion" class="block text-gray-700">Descripción (Opcional)</label>
-      <textarea id="descripcion" formControlName="descripcion"
+      <label for="description" class="block text-gray-700">Descripción (Opcional)</label>
+      <textarea id="description" formControlName="description"
         class="w-full border border-gray-300 rounded-md p-2 focus:outline-none"></textarea>
+      <span class="text-red-500 text-sm"
+        *ngIf="formTask.get('description')?.invalid && formTask.get('description')?.touched">
+        El email es requerido.
+      </span>
     </div>
 
     <div class="mb-4">
       <label for="fechaLimite" class="block text-gray-700">Fecha Límite (Opcional)</label>
-      <input id="fechaLimite" type="date" formControlName="fechaLimite"
+      <input id="limitDate" type="date" formControlName="limitDate"
         class="w-full border border-gray-300 rounded-md p-2 focus:outline-none">
+      <span class="text-red-500 text-sm"
+        *ngIf="formTask.get('limitDate')?.invalid && formTask.get('limitDate')?.touched">
+        El email es requerido.
+      </span>
     </div>
 
     <div class="mb-4" *ngIf="isEditMode">
-      <label for="estado" class="block text-gray-700">Estado de la tarea</label>
-      <select id="estado" formControlName="estado"
+      <label for="status" class="block text-gray-700">Estado de la tarea</label>
+      <select id="status" formControlName="status"
         class="w-full border border-gray-300 rounded-md p-2 focus:outline-none">
         <option value="" disabled>Selecciona un estado</option>
         <option value="Pendiente">Pendiente</option>
         <option value="En Revisión">En Revisión</option>
-        <option value="En Progreso">En Progreso</option>
+        <option value="En Proceso">En Proceso</option>
         <option value="Denegada">Denegada</option>
         <option value="Completada">Completada</option>
       </select>

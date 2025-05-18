@@ -10,7 +10,7 @@
         <option value="Pendiente">Pendiente</option>
         <option value="Denegada">Denegada</option>
         <option value="En Revisión">En Revisión</option>
-        <option value="En Progreso">En Progreso</option>
+        <option value="En Proceso">En Proceso</option>
         <option value="Completada">Completada</option>
       </select>
     </div>
@@ -30,17 +30,17 @@
     <div *ngFor="let task of tasks; let i = index" class="bg-blue-200 rounded-md shadow p-6">
 
       <div class="flex justify-between items-center rounded-l-md">
-        <span class="text-xl font-bold">{{ task.nombre }}</span>
-        <div *ngIf="!isAlumno" class="px-3 py-1 text-white bg-blue-500 clip-pointed w-32 text-center rounded-r-full"
-          [ngClass]="getStatusBadgeClass(task.estado)">
-          {{ task.estado }}
+        <span class="text-xl font-bold">{{ task.name }}</span>
+        <div *ngIf="!isAlumno" class="px-3 py-1 text-white clip-pointed w-32 text-center rounded-r-full"
+          [ngClass]="getStatusBadgeClass(task.status)">
+          {{ task.status }}
         </div>
       </div>
 
       <div class="flex justify-between items-center mt-3">
         <div>
-          <p><strong>Creación:</strong> {{ task.fechaCreacion | date:'dd/MM/yyyy' }}</p>
-          <p><strong>Vencimiento:</strong> {{ task.fechaLimite | date:'dd/MM/yyyy' }}</p>
+          <p><strong>Fecha de creacion:</strong> {{ task.creationDate | date:'dd/MM/yyyy' }}</p>
+          <p><strong>Vencimiento:</strong> {{ task.limitDate | date:'dd/MM/yyyy' }}</p>
         </div>
 
         <div class="flex gap-3" *ngIf="isBibliotecario">
@@ -49,7 +49,7 @@
             <i class="fas fa-edit text-2xl"></i>
           </button>
           <button class="text-red-500 hover:text-red-700 transition duration-200" title="Eliminar tarea"
-            (click)="deleteTask(task.id, i, task.nombre, $event)">
+            (click)="deleteTask(task.id, i, task.name, $event)">
             <i class="fas fa-trash-alt text-2xl"></i>
           </button>
           <button class="text-blue-500 hover:text-blue-700 transition duration-200" title="Ver detalles"
