@@ -11,18 +11,22 @@
       </button>
 
       <div *ngIf="isMenuOpen"
-        class="absolute z-50 right-0 top-full mt-2 max-w-[90vw] w-64 bg-blue-500 text-white shadow-md rounded-md overflow-hidden">
+        class="absolute z-50 bg-white right-0 top-full mt-2 max-w-[90vw] w-64 border-2 border-blue-500 text-blue-700 shadow-md rounded-md overflow-hidden">
         <ul class="p-2">
-          <li><a [routerLink]="['/tasks']" class="block p-2 hover:bg-blue-600" (click)="closeMenu()">📋 Tasks</a></li>
-          <li><a [routerLink]="['/users-view']" class="block p-2 hover:bg-blue-600" (click)="closeMenu()"
-              *ngIf="isLibrarian">👥
+          <li><a [routerLink]="['/tasks']" class="block p-2 ml-2 rounded-md hover:bg-blue-200"
+              (click)="closeMenu()">Tasks</a></li>
+          <li><a [routerLink]="['/users-view']" class="block ml-2 p-2 rounded-md hover:bg-blue-200"
+              (click)="closeMenu()" *ngIf="isLibrarian">
               Usuarios</a>
           </li>
-          <li><a [routerLink]="['/profile']" class="block p-2 hover:bg-blue-600" (click)="closeMenu()">👤 Perfil</a>
+          <li><a [routerLink]="['/profile']" class="block ml-2 p-2 rounded-md hover:bg-blue-200"
+              (click)="closeMenu()">Perfil</a>
           </li>
 
-          <li class="border-t border-blue-300 my-2"></li>
-          <li><a (click)="logout()" class="block p-2 hover:bg-blue-600" (click)="closeMenu()">🚪 Cerrar Sesión</a></li>
+          <li class="border-t border-blue-500 my-2"></li>
+          <li><a (click)="logout()" class="block p-2 cursor-pointer rounded-md hover:bg-blue-200"
+              (click)="closeMenu()">Cerrar
+              Sesión</a></li>
         </ul>
       </div>
     </div>

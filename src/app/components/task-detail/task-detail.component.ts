@@ -32,6 +32,8 @@ export class TaskDetailComponent implements OnInit {
   isRevision = false;
   isCompleted = false;
   isDenegated = false;
+  isEarring = false;
+  isProcess = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -54,6 +56,8 @@ export class TaskDetailComponent implements OnInit {
     this.orderService.getTaskById(this.taskId).subscribe({
       next: (task) => {
         this.statusTask = task.status;
+        this.isEarring = this.statusTask === 'Pendiente';
+        this.isProcess = this.statusTask === 'En Proceso';
         this.isRevision = this.statusTask === 'En Revisión';
         this.isDenegated = this.statusTask === 'Denegada';
         this.isCompleted = this.statusTask === 'Completada';

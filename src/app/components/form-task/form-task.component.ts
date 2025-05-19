@@ -126,7 +126,7 @@ export class FormTaskComponent implements OnInit {
     const formValue = this.formTask.value;
 
     const fechaLimite = formValue.limitDate ? new Date(formValue.limitDate).toISOString().split('T')[0] : '';
-    const fechaCreacion = new Date().toLocaleDateString('es-ES');
+    const fechaCreacion = new Date().toISOString().split('T')[0];
 
     formData.append('name', formValue.name || '');
     formData.append('description', formValue.description || '');

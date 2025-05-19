@@ -57,10 +57,10 @@ export class TasksComponent implements OnInit {
         let filteredTasks = data;
   
         if (this.authService.hasRole('Voluntario')) {
-          filteredTasks = filteredTasks.filter(task => task.status.toLowerCase() === 'pendiente');
+          filteredTasks = filteredTasks.filter(task => task.status.toLowerCase() !== 'completada'
+          && task.status.toLowerCase() !== 'en revisión' && task.status.toLowerCase() !== 'en proceso');
         } else if (this.authService.hasRole('Voluntario Administrativo')) {
-          console.log('Entro al voluntario administrativo');
-          filteredTasks = filteredTasks.filter(task => task.status.toLowerCase() !== 'completada');
+          filteredTasks = filteredTasks.filter(task => task.status.toLowerCase() === 'en revisión');
         } else if (this.authService.hasRole('Alumno')) {
           filteredTasks = filteredTasks.filter(task => task.status.toLowerCase() === 'completada');
         }

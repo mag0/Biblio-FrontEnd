@@ -13,9 +13,9 @@
         </button>
 
         <div *ngIf="expandedUserId === user.id" class="p-4 border-t border-gray-300">
-            <p class="text-gray-700"><strong>Correo Electrónico:</strong> {{ user.email }}</p>
             <p class="text-gray-700"><strong>Nombre de Usuario:</strong> {{ user.userName }}</p>
-            <p class="text-gray-700"><strong>Rol:</strong> {{ user.role }}</p>
+            <p class="text-gray-700"><strong>Correo Electrónico:</strong> {{ user.email }}</p>
+            <!-- <p class="text-gray-700"><strong>Rol:</strong> {{ user.role }}</p> -->
 
             <div class="flex justify-end gap-2 mt-4">
                 <button class="bg-yellow-500 text-white px-3 py-1 rounded-md hover:bg-yellow-600 transition">

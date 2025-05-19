@@ -9,12 +9,12 @@
 
     <p class="text-gray-700">{{ question }}</p>
 
-    <div class="flex justify-end gap-4 mt-4">
+    <div class="flex justify-center gap-4 mt-4">
       <button class="bg-gray-400 text-white px-4 py-2 rounded-md hover:bg-gray-500" (click)="onSecondaryAction()">
-        <i class="fas fa-times mr-2"></i>{{ secondaryActionText }}
+        {{ secondaryActionText }}
       </button>
       <button class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600" (click)="onPrimaryAction()">
-        <i class="fas fa-check mr-2"></i>{{ primaryActionText }}
+        {{ primaryActionText }}
       </button>
     </div>
 

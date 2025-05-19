@@ -12,7 +12,6 @@
 
   <div *ngIf="user && !isLoading">
     <div class="mt-6 p-4">
-      <h6 class="text-lg font-semibold text-blue-600">Información Personal</h6>
       <p class="text-gray-700"><strong>Nombre Completo:</strong> {{ user.fullName }}</p>
       <p class="text-gray-700"><strong>Nombre de Usuario:</strong> {{ user.userName }}</p>
       <p class="text-gray-700"><strong>Correo Electrónico:</strong> {{ user.email }}</p>
@@ -20,11 +19,11 @@
     </div>
   </div>
 
-  <div class="flex justify-center mt-6">
+  <!-- <div class="flex justify-center mt-6">
     <button (click)="loadUserProfile()"
       class="bg-blue-500 text-white px-6 py-2 rounded-md hover:bg-blue-600 transition">
       Actualizar Datos
     </button>
-  </div>
+  </div> -->
 
 </div>
