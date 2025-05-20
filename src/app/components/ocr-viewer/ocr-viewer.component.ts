@@ -52,6 +52,9 @@ export class OcrViewerComponent implements OnInit {
   errorMessage: string = '';
   isRevision = false;
   taskId: number = 0;
+pagesPerView: number = 5;
+totalPages: number = 0;
+
   
   constructor(private router: Router, 
     private orderManagmentService:OrderManagmentService,

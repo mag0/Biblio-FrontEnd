@@ -13,6 +13,8 @@
       <div *ngIf="isMenuOpen"
         class="absolute z-50 bg-white right-0 top-full mt-2 max-w-[90vw] w-64 border-2 border-blue-500 text-blue-700 shadow-md rounded-md overflow-hidden">
         <ul class="p-2">
+          <li>{{userName}}</li>
+          <li class="border-t border-blue-500 my-2"></li>
           <li><a [routerLink]="['/tasks']" class="block p-2 ml-2 rounded-md hover:bg-blue-200"
               (click)="closeMenu()">Tasks</a></li>
           <li><a [routerLink]="['/users-view']" class="block ml-2 p-2 rounded-md hover:bg-blue-200"
