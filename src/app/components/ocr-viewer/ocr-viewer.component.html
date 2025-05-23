@@ -8,7 +8,7 @@
       </button>
     </div>
     <div class="flex gap-4" *ngIf="isToRevision()">
-      <button (click)="denegarResultado()" class="bg-red-500 text-white px-4 py-2 rounded-md">
+      <button (click)="denegarResultado()" class="bg-orange-500 text-white px-4 py-2 rounded-md">
         <i class="fas fa-times"></i>
         Denegar resultado
       </button>
@@ -53,10 +53,24 @@
   </div>
 
   <div *ngIf="ocrData" class="flex justify-center gap-2 mt-4">
-    <button *ngFor="let page of ocrData.pages" (click)="goToPage(page.number)"
+    <!-- Botón para retroceder -->
+    <button *ngIf="currentPage > 1" (click)="goToPage(currentPage - 1)"
+      class="bg-gray-300 px-3 py-1 rounded-md hover:bg-blue-600 transition">
+      ←
+    </button>
+
+    <!-- Páginas visibles -->
+    <button *ngFor="let page of ocrData.pages.slice(currentPage - 1, currentPage - 1 + pagesPerView)"
+      (click)="goToPage(page.number)"
       [ngClass]="{'bg-blue-500 text-white': currentPage === page.number, 'bg-gray-300': currentPage !== page.number}"
       class="px-3 py-1 rounded-md hover:bg-blue-600 transition">
       {{ page.number }}
+    </button>
+
+    <!-- Botón para avanzar -->
+    <button *ngIf="currentPage + pagesPerView <= totalPages" (click)="goToPage(currentPage + 1)"
+      class="bg-gray-300 px-3 py-1 rounded-md hover:bg-blue-600 transition">
+      →
     </button>
   </div>
 </div>

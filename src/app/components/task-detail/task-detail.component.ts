@@ -5,6 +5,8 @@ import { OrderService } from '../../services/order.service';
 import { AuthService } from '../../services/auth.service';
 import { saveAs } from 'file-saver';
 import { FileUploadService } from '../../services/file-upload.service';
+import { tap } from 'rxjs';
+import { OrderManagmentService } from '../../services/orderManagment.service';
 
 @Component({
   selector: 'app-task-detail',
@@ -18,25 +20,52 @@ export class TaskDetailComponent implements OnInit {
   isLoading: boolean = true;
   errorMessage: string = '';
   isLibrarian: boolean = false;
+  user: any;
+  statusTask: string = '';
+  taskId: number = 0;
 
   uploadProgress: number = 0;
   uploadStatus: 'idle' | 'uploading' | 'success' | 'error' = 'idle';
   ocrResponse: any = null;
   selectedOcrProcessor: string = 'Local';
   isAlumno = true;
+  isRevision = false;
+  isCompleted = false;
+  isDenegated = false;
+  isEarring = false;
+  isProcess = false;
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private orderService: OrderService,
     private authService: AuthService,
-    private fileUploadService: FileUploadService
+    private fileUploadService: FileUploadService,
+    private orderManagmentService: OrderManagmentService
   ) {}
 
   ngOnInit(): void {
+    this.taskId = Number(this.route.snapshot.paramMap.get('id'));
     this.checkUserRole();
     this.loadTaskDetails();
+    this.getStatus();
     this.isAlumno = this.authService.getCurrentUserRole() === 'Alumno';
+  }
+
+  getStatus(): void {
+    this.orderService.getTaskById(this.taskId).subscribe({
+      next: (task) => {
+        this.statusTask = task.status;
+        this.isEarring = this.statusTask === 'Pendiente';
+        this.isProcess = this.statusTask === 'En Proceso';
+        this.isRevision = this.statusTask === 'En Revisión';
+        this.isDenegated = this.statusTask === 'Denegada';
+        this.isCompleted = this.statusTask === 'Completada';
+      },
+      error: (err) => {
+        console.error('Error al obtener la tarea:', err);
+      }
+    });
   }
 
   private checkUserRole(): void {
@@ -45,14 +74,13 @@ export class TaskDetailComponent implements OnInit {
   }
 
   loadTaskDetails(): void {
-    const taskId = this.route.snapshot.paramMap.get('id');
-    if (!taskId) {
+    if (!this.taskId) {
       this.errorMessage = 'ID de tarea no válido';
       this.isLoading = false;
       return;
     }
 
-    this.orderService.getTaskById(taskId).subscribe({
+    this.orderService.getTaskById(this.taskId).subscribe({
       next: (data: any) => {
         this.task = {
           ...data,
@@ -99,10 +127,19 @@ export class TaskDetailComponent implements OnInit {
     });
   }
 
-  processOcr(orderId: number): void {
+  processOcr(orderId: number, condition: boolean): void {
     this.uploadStatus = 'uploading';
     this.uploadProgress = 0;
     this.ocrResponse = null;
+
+    if(condition){
+      this.orderManagmentService.changeStatus(orderId, 'En Proceso').subscribe({
+      error: (err) => {
+        console.error('Error al cambiar el estado:', err);
+      }
+    });
+    }
+    
   
     this.fileUploadService.newProcessOcr(orderId, this.selectedOcrProcessor).subscribe({
       next: (response) => {

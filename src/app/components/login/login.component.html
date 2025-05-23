@@ -1,5 +1,5 @@
 <div class="flex items-center justify-center h-screen">
-  <div class="w-full max-w-md bg-white shadow-lg rounded-lg border-2 border-blue-500 p-6">
+  <div class="w-full max-w-md bg-blue-200 shadow-lg rounded-lg p-6">
 
     <div class="flex justify-center mb-4">
       <img src="wirin.png" alt="Logo Wirin">
@@ -13,18 +13,18 @@
       <div class="mb-4">
         <label for="email" class="block text-gray-700">Correo Electrónico</label>
         <input type="email" id="email" name="email" [(ngModel)]="loginData.email" required email
-          class="w-full border border-gray-300 rounded-md p-2 focus:ring-blue-500 focus:border-blue-500">
+          class="bg-white w-full border border-gray-300 rounded-md p-2 focus:ring-blue-500 focus:border-blue-500">
       </div>
 
       <div class="mb-4">
         <label for="password" class="block text-gray-700">Contraseña</label>
         <input type="password" id="password" name="password" [(ngModel)]="loginData.password" required minlength="6"
-          class="w-full border border-gray-300 rounded-md p-2 focus:ring-blue-500 focus:border-blue-500">
+          class="bg-white w-full border border-gray-300 rounded-md p-2 focus:ring-blue-500 focus:border-blue-500">
       </div>
 
       <div class="text-center">
         <button type="submit" [disabled]="loginForm.invalid || isLoading"
-          class="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600">
+          class="w-full bg-orange-500 text-white py-2 rounded-md hover:bg-orange-600">
           Iniciar Sesión
         </button>
       </div>

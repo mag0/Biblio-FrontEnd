@@ -72,7 +72,7 @@ export class OrderService {
    * @param id El ID de la tarea a obtener.
    * @returns Un Observable que emite los datos de la tarea.
    */
-  getTaskById(id: string): Observable<any> {
+  getTaskById(id: number): Observable<any> {
     return this.http.get<any>(`${this.apiUrl}/${id}`);
   }
 }

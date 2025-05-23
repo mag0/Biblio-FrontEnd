@@ -1,5 +1,5 @@
-<main class="container px-4 max-w-5xl mx-auto mt-5" role="main">
-  <div class="flex justify-between items-center">
+<div class="container px-4 max-w-5xl mx-auto mt-5">
+  <div class="flex justify-between items-center flex-wrap" *ngIf="isBibliotecario">
 
     <div class="w-56 flex items-center border border-gray-300 bg-white rounded-md shadow-sm">
       <i class="fa-solid fas fa-filter text-blue-500 text-xl px-3" aria-hidden="true"></i>
@@ -13,15 +13,21 @@
         <option value="Pendiente">Pendiente</option>
         <option value="Denegada">Denegada</option>
         <option value="En Revisión">En Revisión</option>
-        <option value="En Progreso">En Progreso</option>
+        <option value="En Proceso">En Proceso</option>
         <option value="Completada">Completada</option>
       </select>
     </div>
 
-    <div class="flex items-center gap-4" *ngIf="isBibliotecario">
+    <div class="flex items-center border border-gray-300 bg-white rounded-md shadow-sm w-56">
+      <i class="fa-solid fas fa-search text-blue-500 text-xl px-3"></i>
+      <input type="text" placeholder="Buscar tarea..."
+        class="w-full p-2 bg-transparent focus:ring-0 focus:border-transparent outline-none">
+    </div>
+
+    <div class="flex items-center gap-4">
       <a routerLink="/form-task"
         class="flex items-center bg-blue-500 text-white px-4 py-2 rounded-md cursor-pointer hover:bg-blue-600 transition duration-200 focus:outline-none focus:ring-2 focus:ring-blue-700 focus:ring-offset-2"
-        aria-label="Agregar nueva tarea">
+        ariaLabel="Agregar nueva tarea">
         <i class="fas fa-plus text-white text-xl" aria-hidden="true"></i>
         <span class="ml-2">Agregar Tarea</span>
       </a>
@@ -30,47 +36,46 @@
   </div>
 
   <div *ngIf="isLoading" aria-live="polite" class="flex justify-center mt-6">
-    <div class="animate-spin rounded-full h-10 w-10 border-t-2 border-blue-500" aria-label="Cargando..."></div>
+    <div class="animate-spin rounded-full h-10 w-10 border-t-2 border-blue-500" ariaLabel="Cargando..."></div>
     <span class="sr-only">Cargando tareas</span>
   </div>
 
-  <div *ngIf="!isLoading && tasks.length > 0" class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6" role="list" aria-label="Lista de tareas">
+  <div *ngIf="!isLoading && tasks.length > 0" class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6" role="list" ariaLabel="Lista de tareas">
     <div *ngFor="let task of tasks; let i = index" class="bg-blue-200 rounded-md shadow p-6" role="listitem">
 
       <div class="flex justify-between items-center rounded-l-md">
-        <span class="text-xl font-bold">{{ task.nombre }}</span>
-        <div *ngIf="!isAlumno" class="px-3 py-1 text-white bg-blue-500 clip-pointed w-32 text-center rounded-r-full"
-          [ngClass]="getStatusBadgeClass(task.estado)">
-          {{ task.estado }}
+        <span class="text-xl font-bold">{{ task.name }}</span>
+        <div *ngIf="!isAlumno" class="px-3 py-1 text-white clip-pointed w-32 text-center rounded-r-full"
+          [ngClass]="getStatusBadgeClass(task.status)">
+          {{ task.status }}
         </div>
       </div>
 
       <div class="flex justify-between items-center mt-3">
         <div>
-          <p><strong>Creación:</strong> {{ task.fechaCreacion | date:'dd/MM/yyyy' }}</p>
-          <p><strong>Vencimiento:</strong> {{ task.fechaLimite | date:'dd/MM/yyyy' }}</p>
+          <!-- <p><strong>Fecha de creacion:</strong> {{ task.creationDate | date:'dd/MM/yyyy' }}</p> -->
+          <p><strong>Vencimiento:</strong> {{ task.limitDate | date:'dd/MM/yyyy' }}</p>
         </div>
 
         <div class="flex gap-3" *ngIf="isBibliotecario">
           <button class="text-blue-500 hover:text-blue-700 transition duration-200 p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 rounded" 
-            aria-label="Editar tarea {{task.nombre}}"
+            ariaLabel="Editar tarea {{task.nombre}}"
             (click)="navigateToEdit(task.id, $event)">
             <i class="fas fa-edit text-2xl" aria-hidden="true"></i>
           </button>
-          <button class="text-red-500 hover:text-red-700 transition duration-200 p-2 focus:outline-none focus:ring-2 focus:ring-red-500 rounded" 
-            aria-label="Eliminar tarea {{task.nombre}}"
-            (click)="deleteTask(task.id, i, task.nombre, $event)">
-            <i class="fas fa-trash-alt text-2xl" aria-hidden="true"></i>
+          <button class="text-red-500 hover:text-red-700 transition duration-200" title="Eliminar tarea"
+            (click)="deleteTask(task.id, i, task.name, $event)">
+            <i class="fas fa-trash-alt text-2xl"></i>
           </button>
           <button class="text-blue-500 hover:text-blue-700 transition duration-200 p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 rounded" 
-            aria-label="Ver detalles de tarea {{task.nombre}}"
+            ariaLabel="Ver detalles de tarea {{task.nombre}}"
             [routerLink]="['/task-detail', task.id]">
             <i class="fas fa-eye text-2xl" aria-hidden="true"></i>
           </button>
         </div>
         <div class="flex gap-3" *ngIf="!isBibliotecario">
           <button class="text-blue-500 hover:text-blue-700 transition duration-200 p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 rounded" 
-            aria-label="Ver detalles de tarea {{task.nombre}}"
+            ariaLabel="Ver detalles de tarea {{task.nombre}}"
             [routerLink]="['/task-detail', task.id]">
             <i class="fas fa-chevron-right text-2xl" aria-hidden="true"></i>
           </button>
@@ -86,10 +91,10 @@
     <i class="fas fa-folder-open text-blue-500 text-6xl" aria-hidden="true"></i>
     <p class="text-4xl">No hay tareas</p>
   </div>
-</main>
+
 
 <!-- Confirmación de eliminación -->
 <app-confirmation-popup [isVisible]="showConfirmationPopup" [title]="popupTitle" [question]="popupQuestion"
   [primaryActionText]="'Eliminar'" [secondaryActionText]="'Cancelar'" (primaryAction)="confirmDelete()"
-  (secondaryAction)="cancelDelete()" role="dialog" aria-modal="true" aria-labelledby="popup-title">
+  (secondaryAction)="cancelDelete()" role="dialog" aria-modal="true" ariaLabelledby="popup-title">
 </app-confirmation-popup>

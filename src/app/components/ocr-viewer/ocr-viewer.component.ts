@@ -51,6 +51,10 @@ export class OcrViewerComponent implements OnInit {
   user: any;
   errorMessage: string = '';
   isRevision = false;
+  taskId: number = 0;
+pagesPerView: number = 5;
+totalPages: number = 0;
+
   
   constructor(private router: Router, 
     private orderManagmentService:OrderManagmentService,
@@ -60,6 +64,8 @@ export class OcrViewerComponent implements OnInit {
   ) {}
   
   ngOnInit(): void {
+    this.taskId = Number(this.route.snapshot.paramMap.get('id'));
+
     if (!this.ocrData) {
       const storedData = localStorage.getItem('ocrData');
       if (storedData) {
@@ -68,11 +74,10 @@ export class OcrViewerComponent implements OnInit {
         this.router.navigate(['/upload']);
       }
     }
-  
-    const taskId = this.route.snapshot.paramMap.get('id') ?? ''; 
     
-    this.orderService.getTaskById(taskId).subscribe(task => {
-      this.isRevision = task?.estado === 'En Revisión';
+    this.orderService.getTaskById(this.taskId).subscribe(task => {
+      this.isRevision = task?.status === 'En Revisión';
+      console.log('Estado de la tarea:', task?.status);
     });
   
     this.authService.getCurrentUser().subscribe({
@@ -87,45 +92,36 @@ export class OcrViewerComponent implements OnInit {
   }
 
   finalizarProceso(): void {
-    this.authService.getCurrentUser().pipe(
-      tap(user => {
-        this.user = user;
-        this.orderManagmentService.changeStatusToReview(
-          Number(this.route.snapshot.paramMap.get('id')),
-          this.user?.id
-        );
-  
-        this.router.navigate(['/tasks']);
-      })
-    ).subscribe();
+    this.orderManagmentService.changeStatus(this.taskId, 'En Revisión').subscribe({
+      next: () => {
+        this.router.navigate(['/tasks/']);
+      },
+      error: (err) => {
+        console.error('Error al cambiar el estado:', err);
+      }
+    });
   }
 
   denegarResultado(): void {
-    this.authService.getCurrentUser().pipe(
-      tap(user => {
-        this.user = user;
-        this.orderManagmentService.changeStatusToDenied(
-          Number(this.route.snapshot.paramMap.get('id')),
-          this.user?.id
-        );
-  
-        this.router.navigate(['/tasks']);
-      })
-    ).subscribe();
+    this.orderManagmentService.changeStatus(this.taskId, 'Denegada').subscribe({
+      next: () => {
+        this.router.navigate(['/tasks/']);
+      },
+      error: (err) => {
+        console.error('Error al cambiar el estado:', err);
+      }
+    })
   }
 
   finalizarRevision(): void {
-    this.authService.getCurrentUser().pipe(
-      tap(user => {
-        this.user = user;
-        this.orderManagmentService.changeStatusToCompleted(
-          Number(this.route.snapshot.paramMap.get('id')),
-          this.user?.id
-        );
-  
-        this.router.navigate(['/tasks']);
-      })
-    ).subscribe();
+    this.orderManagmentService.changeStatus(this.taskId, 'Completada').subscribe({
+      next: () => {
+        this.router.navigate(['/tasks/']);
+      },
+      error: (err) => {
+        console.error('Error al cambiar el estado:', err);
+      }
+    })
   }
   
   /**

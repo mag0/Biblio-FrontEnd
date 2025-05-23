@@ -39,11 +39,11 @@ export class FormTaskComponent implements OnInit {
   ) {
     // Inicializar formulario en el constructor
     this.formTask = this.fb.group({
-      nombre: ['', Validators.required],
-      descripcion: [''],
-      fechaLimite: [''],
-      estado: ['Pendiente'],
-      archivo: [null]
+      name: ['', Validators.required],
+      description: [''],
+      limitDate: [''],
+      status: ['Pendiente'],
+      file: [null]
     });
   }
 
@@ -62,12 +62,12 @@ export class FormTaskComponent implements OnInit {
     window.history.back(); // Regresa a la página anterior
   }
 
-  private loadTaskData(taskId: string): void {
+  private loadTaskData(taskId: number): void {
     this.orderService.getTaskById(taskId).subscribe({
       next: (task) => {
         let formattedDate = '';
-        if (task.fechaLimite) {
-          const date = new Date(task.fechaLimite);
+        if (task.limitDate) {
+          const date = new Date(task.limitDate);
           const year = date.getFullYear();
           const month = String(date.getMonth() + 1).padStart(2, '0');
           const day = String(date.getDate()).padStart(2, '0');
@@ -75,10 +75,10 @@ export class FormTaskComponent implements OnInit {
         }
 
         this.formTask.patchValue({
-          nombre: task.nombre,
-          descripcion: task.descripcion,
-          fechaLimite: formattedDate,
-          estado: task.estado
+          name: task.name,
+          description: task.description,
+          limitDate: formattedDate,
+          status: task.status
         });
 
         if (task.filePath) {
@@ -125,12 +125,14 @@ export class FormTaskComponent implements OnInit {
     const formData = new FormData();
     const formValue = this.formTask.value;
 
-    const fechaLimite = formValue.fechaLimite ? new Date(formValue.fechaLimite).toISOString().split('T')[0] : '';
+    const fechaLimite = formValue.limitDate ? new Date(formValue.limitDate).toISOString().split('T')[0] : '';
+    const fechaCreacion = new Date().toISOString().split('T')[0];
 
-    formData.append('nombre', formValue.nombre || '');
-    formData.append('descripcion', formValue.descripcion || '');
-    formData.append('fechaLimite', fechaLimite);
-    formData.append('estado', formValue.estado || 'Pendiente');
+    formData.append('name', formValue.name || '');
+    formData.append('description', formValue.description || '');
+    formData.append('limitDate', fechaLimite);
+    formData.append('status', formValue.status || 'Pendiente');
+    formData.append('createdAt', fechaCreacion);
 
     if (this.selectedFile) {
       formData.append('file', this.selectedFile, this.selectedFile.name);
@@ -178,11 +180,11 @@ export class FormTaskComponent implements OnInit {
 
   private resetFormAndState(): void {
     this.formTask.reset({
-      nombre: '',
-      descripcion: '',
-      fechaLimite: '',
-      estado: 'Pendiente',
-      archivo: null
+      name: '',
+      description: '',
+      limitDate: '',
+      status: 'Pendiente',
+      file: null
     });
 
     this.selectedFile = null;

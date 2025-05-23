@@ -1,42 +1,59 @@
-<div class="container max-w-3xl mx-auto mt-24 bg-white shadow-lg rounded-lg border border-blue-500 p-6">
+<div class="container max-w-3xl mx-auto mt-10 shadow-lg rounded-lg bg-blue-200 p-6">
 
   <div class="flex items-center justify-center text-blue-500 text-xl font-semibold mb-4">
-    <i class="fas" [ngClass]="{'fa-edit': isEditMode, 'fa-plus': !isEditMode}"></i>
     <span class="ml-2">{{isEditMode ? 'Editar Tarea' : 'Crear Nueva Tarea'}}</span>
   </div>
 
   <form [formGroup]="formTask" (ngSubmit)="onSubmit()">
 
     <div class="mb-4">
-      <label for="nombre" class="block text-gray-700">Nombre de la Tarea</label>
-      <div class="flex items-center border border-gray-300 rounded-md p-2">
-        <input id="nombre" type="text" formControlName="nombre" class="w-full focus:outline-none">
+      <label for="name" class="block text-black">Titulo de la Tarea</label>
+      <div class="flex items-center bg-white rounded-md p-2">
+        <input id="name" type="text" formControlName="name" placeholder="Ingresá un titulo"
+          class="w-full focus:outline-none">
       </div>
-      <span class="text-red-500 text-sm" *ngIf="formTask.get('nombre')?.invalid && formTask.get('nombre')?.touched">
+      <span class="text-red-500 text-sm" *ngIf="formTask.get('name')?.invalid && formTask.get('name')?.touched">
         El nombre es requerido.
       </span>
     </div>
 
     <div class="mb-4">
-      <label for="descripcion" class="block text-gray-700">Descripción (Opcional)</label>
-      <textarea id="descripcion" formControlName="descripcion"
-        class="w-full border border-gray-300 rounded-md p-2 focus:outline-none"></textarea>
+      <label for="description" class="block text-black-700">Descripción</label>
+      <textarea id="description" formControlName="description" placeholder="Agrega una breve descripción"
+        class="w-full bg-white rounded-md p-2 focus:outline-none"></textarea>
+      <span class="text-red-500 text-sm"
+        *ngIf="formTask.get('description')?.invalid && formTask.get('description')?.touched">
+        El email es requerido.
+      </span>
     </div>
 
     <div class="mb-4">
-      <label for="fechaLimite" class="block text-gray-700">Fecha Límite (Opcional)</label>
-      <input id="fechaLimite" type="date" formControlName="fechaLimite"
-        class="w-full border border-gray-300 rounded-md p-2 focus:outline-none">
+      <label for="fechaLimite" class="block text-black-700">Fecha Límite</label>
+      <input id="limitDate" type="date" formControlName="limitDate"
+        class="w-full bg-white rounded-md p-2 focus:outline-none">
+      <span class="text-red-500 text-sm"
+        *ngIf="formTask.get('limitDate')?.invalid && formTask.get('limitDate')?.touched">
+        La fecha limite es requerida.
+      </span>
+    </div>
+
+    <div class="mb-4" *ngIf="!isEditMode">
+      <label class="block text-white-700">Estudiante</label>
+      <select id="studient" class="w-full bg-white rounded-md p-2 focus:outline-none">
+        <option value="" selected disabled>Selecciona al solicitante</option>
+        <option value="">Jose Gonzales</option>
+        <option value="">Miguel Nuñez</option>
+        <option value="">Martin Gago</option>
+      </select>
     </div>
 
     <div class="mb-4" *ngIf="isEditMode">
-      <label for="estado" class="block text-gray-700">Estado de la tarea</label>
-      <select id="estado" formControlName="estado"
-        class="w-full border border-gray-300 rounded-md p-2 focus:outline-none">
+      <label for="status" class="block text-black-700">Estado de la tarea</label>
+      <select id="status" formControlName="status" class="w-full bg-white rounded-md p-2 focus:outline-none">
         <option value="" disabled>Selecciona un estado</option>
         <option value="Pendiente">Pendiente</option>
+        <option value="En Proceso">En Proceso</option>
         <option value="En Revisión">En Revisión</option>
-        <option value="En Progreso">En Progreso</option>
         <option value="Denegada">Denegada</option>
         <option value="Completada">Completada</option>
       </select>
@@ -52,7 +69,8 @@
     </div>
 
     <div class="flex justify-between items-center mt-6">
-      <button type="button" (click)="goBack()" class="bg-red-500 text-white py-2 px-4 rounded-md hover:bg-gray-600">
+      <button type="button" (click)="goBack()"
+        class="bg-orange-500 text-white py-2 px-4 rounded-md hover:bg-orange-600">
         Volver
       </button>
       <button type="submit" [disabled]="formTask.invalid || uploadStatus === 'uploading'"

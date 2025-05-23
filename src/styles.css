@@ -7,11 +7,7 @@
   font-display: swap;
 }
 
-i{
-  cursor: pointer;
-}
-
-button{
+i, button, select{
   cursor: pointer;
 }
 
@@ -31,9 +27,8 @@ button{
   color: #000000;
 }
 
-.status-en-progreso {
-  background-color: #1976d2;
-  color: #ffffff;
+.status-en-proceso {
+  background-color: #571cc4;
 }
 
 .status-completado {
