@@ -49,13 +49,12 @@ export class CardTaskComponent {
   }
 
   deleteTask(taskId: number, taskName: string, event: Event): void {
-    console.log('Eliminar tarea:', taskId, taskName);
     this.askForDeleteConfirmation(taskId, taskName, event);
   }
 
   navigateToEdit(taskId: number, event: Event): void {
     event.stopPropagation(); 
-    this.router.navigate(['/form-task', taskId]);
+    this.router.navigate(['/update-task', taskId]);
   }
 
   async confirmDelete(){

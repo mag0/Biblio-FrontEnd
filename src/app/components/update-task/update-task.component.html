@@ -1,0 +1,12 @@
+<div *ngIf="!taskData" class="flex justify-center items-center min-h-screen">
+  <div class="animate-spin rounded-full h-10 w-10 border-t-2 border-blue-500"></div>
+</div>
+
+<app-form-task *ngIf="taskData" [isEditMode]="true" [taskId]="taskId" [taskData]="taskData"
+  (formSubmitted)="onFormSubmit($event)">
+</app-form-task>
+
+<app-confirmation-popup [isVisible]="showConfirmPopup" title="Confirmar Actualización"
+  question="¿Estás seguro de que deseas actualizar esta tarea?" primaryActionText="Actualizar"
+  secondaryActionText="Cancelar" (primaryAction)="onConfirmSubmit()" (secondaryAction)="showConfirmPopup = false">
+</app-confirmation-popup>

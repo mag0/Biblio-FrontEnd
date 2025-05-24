@@ -13,7 +13,7 @@
           class="w-full focus:outline-none">
       </div>
       <span class="text-red-500 text-sm" *ngIf="formTask.get('name')?.invalid && formTask.get('name')?.touched">
-        El nombre es requerido.
+        {{ getErrorMessage('name') }}
       </span>
     </div>
 
@@ -23,7 +23,7 @@
         class="w-full bg-white rounded-md p-2 focus:outline-none"></textarea>
       <span class="text-red-500 text-sm"
         *ngIf="formTask.get('description')?.invalid && formTask.get('description')?.touched">
-        El email es requerido.
+        {{ getErrorMessage('description') }}
       </span>
     </div>
 
@@ -33,7 +33,7 @@
         class="w-full bg-white rounded-md p-2 focus:outline-none">
       <span class="text-red-500 text-sm"
         *ngIf="formTask.get('limitDate')?.invalid && formTask.get('limitDate')?.touched">
-        La fecha limite es requerida.
+        {{ getErrorMessage('limitDate') }}
       </span>
     </div>
 
@@ -57,6 +57,9 @@
         <option value="Denegada">Denegada</option>
         <option value="Completada">Completada</option>
       </select>
+      <span class="text-red-500 text-sm" *ngIf="formTask.get('status')?.invalid && formTask.get('status')?.touched">
+        {{ getErrorMessage('status') }}
+      </span>
     </div>
 
     <div class="mb-4 flex items-center gap-2">
@@ -66,6 +69,9 @@
         <input type="file" id="archivo" (change)="onFileSelected($event)" class="hidden">
       </div>
       <span id="file-name" class="text-gray-700">{{ currentFileName || 'No hay archivo seleccionado' }}</span>
+      <span class="text-red-500 text-sm" *ngIf="!isEditMode && !selectedFile && formTask.get('file')?.touched">
+        {{ getErrorMessage('file') }}
+      </span>
     </div>
 
     <div class="flex justify-between items-center mt-6">
@@ -73,16 +79,11 @@
         class="bg-orange-500 text-white py-2 px-4 rounded-md hover:bg-orange-600">
         Volver
       </button>
-      <button type="submit" [disabled]="formTask.invalid || uploadStatus === 'uploading'"
-        class="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600">
+      <button type="submit"
+        class="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 disabled:bg-gray-400 disabled:cursor-not-allowed">
         Guardar Tarea
       </button>
     </div>
 
   </form>
 </div>
-
-<app-confirmation-popup [isVisible]="showSuccessPopup" [title]="successPopupTitle" [question]="successPopupMessage"
-  [primaryActionText]="successConfirmButtonText" [secondaryActionText]="successCancelButtonText"
-  (primaryAction)="createNewTask()" (secondaryAction)="goToTasks()">
-</app-confirmation-popup>

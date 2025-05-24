@@ -1,0 +1,7 @@
+<app-form-task [isEditMode]="false" (formSubmitted)="onFormSubmit($event)">
+</app-form-task>
+
+<app-confirmation-popup [isVisible]="showConfirmPopup" title="Confirmar Creación"
+    question="¿Estás seguro de que deseas crear esta tarea?" primaryActionText="Crear" secondaryActionText="Cancelar"
+    (primaryAction)="onConfirmSubmit()" (secondaryAction)="showConfirmPopup = false">
+</app-confirmation-popup>

@@ -14,17 +14,14 @@ i, button, select{
 /* Colores según el estado */
 .status-pendiente {
   background-color: #2e2e2e;
-  color: #ffffff;
 }
 
 .status-denegado {
   background-color: #d32f2f;
-  color: #ffffff;
 }
 
 .status-en-revision {
   background-color: #ff9800;
-  color: #000000;
 }
 
 .status-en-proceso {
@@ -33,7 +30,6 @@ i, button, select{
 
 .status-completado {
   background-color: #388e3c;
-  color: #ffffff;
 }
 
 /* Clase para elementos solo visibles para lectores de pantalla */
