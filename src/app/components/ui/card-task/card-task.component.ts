@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, Router } from '@angular/router';
-import { ConfirmationPopupComponent } from '../../confirmation-popup/confirmation-popup.component';
+import { ConfirmationPopupComponent } from '../confirmation-popup/confirmation-popup.component';
 import { OrderService } from '../../../services/order.service';
 
 @Component({
@@ -10,6 +10,7 @@ import { OrderService } from '../../../services/order.service';
   templateUrl: './card-task.component.html',
   styleUrl: './card-task.component.css'
 })
+
 export class CardTaskComponent {
   @Input() task: any;
   @Input() isBibliotecario: boolean = false;

@@ -5,7 +5,7 @@ import { HttpEventType, HttpResponse, HttpEvent, HttpErrorResponse } from '@angu
 import { Subscription } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
-import { ConfirmationPopupComponent } from '../confirmation-popup/confirmation-popup.component';
+import { ConfirmationPopupComponent } from '../ui/confirmation-popup/confirmation-popup.component';
 
 @Component({
   standalone: true,
