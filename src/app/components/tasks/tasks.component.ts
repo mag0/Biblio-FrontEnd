@@ -28,7 +28,7 @@ export class TasksComponent implements OnInit {
     private orderService: OrderService,
     private authService: AuthService,
     private orderManagmentService: OrderManagmentService,
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.loadTasks();
@@ -40,25 +40,24 @@ export class TasksComponent implements OnInit {
 
   async loadTasks(): Promise<void> {
     this.isLoading = true;
-  console.log("loadTasks");
 
-    const request = this.selectedEstado 
-      ? this.orderManagmentService.getOrdersByState(this.selectedEstado) 
+    const request = this.selectedEstado
+      ? this.orderManagmentService.getOrdersByState(this.selectedEstado)
       : this.orderService.getOrders();
 
     await request.subscribe({
       next: (data: any[]) => {
         let filteredTasks = data;
-  
+
         if (this.isVoluntario) {
           filteredTasks = filteredTasks.filter(task => task.status.toLowerCase() !== 'completada'
-          && task.status.toLowerCase() !== 'en revisión' && task.status.toLowerCase() !== 'en proceso');
+            && task.status.toLowerCase() !== 'en revisión' && task.status.toLowerCase() !== 'en proceso');
         } else if (this.isRevisor) {
           filteredTasks = filteredTasks.filter(task => task.status.toLowerCase() === 'en revisión');
         } else if (this.isAlumno) {
           filteredTasks = filteredTasks.filter(task => task.status.toLowerCase() === 'completada');
         }
-  
+
         this.tasks = filteredTasks;
         this.isLoading = false;
       },
@@ -68,5 +67,5 @@ export class TasksComponent implements OnInit {
       }
     });
   }
-  
+
 }

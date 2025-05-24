@@ -15,12 +15,12 @@ export class CardTaskComponent {
   @Input() isBibliotecario: boolean = false;
   @Input() isAlumno: boolean = false;
   @Input() onLoadTasks: () => void = () => {};
-    // Propiedades para el popup de confirmación
-    showConfirmationPopup: boolean = false;
-    popupTitle: string = '';
-    popupQuestion: string = '';
-    taskToDeleteId: number | null = null;
-    taskToDeleteIndex: number | null = null;
+
+  showConfirmationPopup: boolean = false;
+  popupTitle: string = '';
+  popupQuestion: string = '';
+  taskToDeleteId: number | null = null;
+  taskToDeleteIndex: number | null = null;
 
   constructor(private router: Router,
     private orderService: OrderService,

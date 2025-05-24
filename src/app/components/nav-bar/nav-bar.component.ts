@@ -55,7 +55,7 @@ export class NavBarComponent implements OnInit, AfterViewInit {
   private checkUserRole(user: any): void {
     const userRole = user?.role;
     const userName = user?.fullName;
-    console.log('User Role:', user); // Agrega esta línea para depuración
+
     this.isLibrarian = userRole === 'Admin' || userRole === 'Bibliotecario';
     this.userName = userName || '';
   }
