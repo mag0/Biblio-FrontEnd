@@ -28,7 +28,7 @@
                 </p>
                 <p class="flex items-center mt-3">
                     <button class="text-blue-500 hover:text-blue-600 transition"
-                        (click)="downloadFile(task.id, task.fileName)" 
+                        (click)="downloadFile(task.id, task.fileName)"
                         ariaLabel="Descargar archivo {{ task.fileName }}">
                         <i class="fas fa-download text-blue-500 text-2xl" aria-hidden="true"></i>
                     </button>
@@ -59,14 +59,10 @@
             </button>
         </div>
         <div class="flex justify-between items-center mt-6" *ngIf="!isAlumno && isCompleted">
-            <button type="button" (click)="goBack()"
-                class="bg-orange-500 text-white py-2 px-4 rounded-md hover:bg-orange-600">
-                Volver
-            </button>
-            <button class="bg-green-500 text-white px-6 py-2 rounded-md hover:bg-green-600 transition"
-                (click)="goBack()">
-                Confirmar entrega
-            </button>
+            <app-action-button type="button" label="Volver" [onActionClick]="goBack.bind(this)"
+                styleEdit="bg-orange-500 hover:bg-orange-600" />
+            <app-action-button type="button" label="Confirmar entrega" styleEdit="bg-green-500 hover:bg-green-600"
+                [onActionClick]="goBack.bind(this)" />
         </div>
 
     </div>

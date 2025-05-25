@@ -1,17 +1,23 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { ActionButtonComponent } from '../action-button/action-button.component';
 
 @Component({
   standalone: true,
   selector: 'app-form-task',
   templateUrl: './form-task.component.html',
   styleUrls: ['./form-task.component.css'],
-  imports: [ReactiveFormsModule, CommonModule]
+  imports: [ReactiveFormsModule, CommonModule, ActionButtonComponent]
 })
 export class FormTaskComponent implements OnInit {
   @Input() isEditMode: boolean = false;
   @Input() taskId: string | null = null;
+  @Output() formSubmitted = new EventEmitter<FormData>();
+  formTask: FormGroup;
+  selectedFile: File | null = null;
+  currentFileName: string = '';
+
   @Input() set taskData(data: any) {
     if (data) {
       let formattedDate = '';
@@ -32,10 +38,6 @@ export class FormTaskComponent implements OnInit {
       }
     }
   }
-  @Output() formSubmitted = new EventEmitter<FormData>();
-  formTask: FormGroup;
-  selectedFile: File | null = null;
-  currentFileName: string = '';
 
   constructor(
     private fb: FormBuilder
@@ -58,6 +60,7 @@ export class FormTaskComponent implements OnInit {
   }
 
   goBack() {
+    console.log('Going back...');
     window.history.back();
   }
 

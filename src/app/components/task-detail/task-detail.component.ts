@@ -5,13 +5,13 @@ import { OrderService } from '../../services/order.service';
 import { AuthService } from '../../services/auth.service';
 import { saveAs } from 'file-saver';
 import { FileUploadService } from '../../services/file-upload.service';
-import { tap } from 'rxjs';
 import { OrderManagmentService } from '../../services/orderManagment.service';
+import { ActionButtonComponent } from '../ui/action-button/action-button.component';
 
 @Component({
   selector: 'app-task-detail',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, ActionButtonComponent],
   templateUrl: './task-detail.component.html',
   styleUrls: ['./task-detail.component.css']
 })

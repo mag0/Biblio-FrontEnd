@@ -75,14 +75,8 @@
     </div>
 
     <div class="flex justify-between items-center mt-6">
-      <button type="button" (click)="goBack()"
-        class="bg-orange-500 text-white py-2 px-4 rounded-md hover:bg-orange-600">
-        Volver
-      </button>
-      <button type="submit"
-        class="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 disabled:bg-gray-400 disabled:cursor-not-allowed">
-        Guardar Tarea
-      </button>
+      <app-action-button type="button" label="Volver" [onActionClick]="goBack.bind(this)" styleEdit="bg-orange-500" />
+      <app-action-button type="submit" label="Guardar tarea" styleEdit="bg-blue-500" />
     </div>
 
   </form>
