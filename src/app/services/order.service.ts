@@ -1,15 +1,18 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { EnvService } from './env.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class OrderService {
   // URL base para las operaciones relacionadas con las tareas/órdenes.
-  private apiUrl = 'https://localhost:44342/api/Order';
+  private apiUrl: string;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private envService: EnvService) {
+    this.apiUrl = this.envService.getApiUrl() + "/order";
+  }
 
   /**
    * Obtiene todas las órdenes/tareas desde la API.

@@ -1,14 +1,17 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { EnvService } from './env.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class UserService {
-  private apiUrl = 'https://localhost:44342/api/User'; // URL del controlador backend
+  private apiUrl: string; // URL del controlador backend
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private envService: EnvService) {
+    this.apiUrl = this.envService.getApiUrl() + '/User';
+  }
 
   /**
    * Obtiene la información de un usuario específico mediante su ID.
