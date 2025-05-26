@@ -14,20 +14,10 @@ export class OrderService {
     this.apiUrl = this.envService.getApiUrl() + "/order";
   }
 
-  /**
-   * Obtiene todas las órdenes/tareas desde la API.
-   * @returns Un Observable que emite un array de tareas.
-   */
   getOrders(): Observable<any[]> {
     return this.http.get<any[]>(this.apiUrl);
   }
 
-  /**
-   * Crea una nueva orden/tarea enviando datos de formulario.
-   * Incluye seguimiento del progreso de subida.
-   * @param formData Los datos del formulario para la nueva tarea.
-   * @returns Un Observable que emite eventos HTTP, incluida la respuesta final.
-   */
   createOrder(formData: FormData): Observable<any> {
     // La llamada POST debe usar solo this.apiUrl y observar los eventos
     return this.http.post(this.apiUrl, formData, {
@@ -36,11 +26,6 @@ export class OrderService {
     });
   }
 
-  /**
-   * Descarga el archivo asociado a una tarea específica.
-   * @param id El ID de la tarea cuyo archivo se descargará.
-   * @returns Un Observable que emite el archivo como un Blob.
-   */
   downloadFile(id: number): Observable<Blob> {
     const downloadUrl = `${this.apiUrl}/download/${id}`;
 
@@ -49,11 +34,6 @@ export class OrderService {
     });
   }
 
-  /**
-   * Elimina una tarea específica.
-   * @param id El ID de la tarea a eliminar.
-   * @returns Un Observable que emite la respuesta de la API tras la eliminación.
-   */
   deleteOrder(id: number): Observable<any> {
     const deleteUrl = `${this.apiUrl}/${id}`;
 
@@ -70,11 +50,6 @@ export class OrderService {
     });
   }
 
-  /**
-   * Obtiene una tarea específica por su ID.
-   * @param id El ID de la tarea a obtener.
-   * @returns Un Observable que emite los datos de la tarea.
-   */
   getTaskById(id: number): Observable<any> {
     return this.http.get<any>(`${this.apiUrl}/${id}`);
   }

@@ -34,6 +34,7 @@ export class TaskDetailComponent implements OnInit {
   isDenegated = false;
   isEarring = false;
   isProcess = false;
+  formData?: FormData;
 
   constructor(
     private route: ActivatedRoute,
@@ -133,7 +134,10 @@ export class TaskDetailComponent implements OnInit {
     this.ocrResponse = null;
 
     if(condition){
-      this.orderManagmentService.changeStatus(orderId, 'En Proceso').subscribe({
+      this.formData = new FormData();
+    this.formData.append('id', this.taskId.toString());
+    this.formData.append('status', 'En Proceso');
+      this.orderManagmentService.changeStatus(this.formData).subscribe({
       error: (err) => {
         console.error('Error al cambiar el estado:', err);
       }

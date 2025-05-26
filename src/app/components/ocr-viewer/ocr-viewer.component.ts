@@ -1,85 +1,55 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import { OrderManagmentService } from '../../services/orderManagment.service';
 import { ActivatedRoute } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
-import { tap } from 'rxjs/operators';
 import { OrderService } from '../../services/order.service';
-
-
-interface OcrPage {
-  number: number;
-  text: string;
-  confidence: number;
-  characters: number;
-  words: number;
-}
-
-interface OcrResponse {
-  status: string;
-  message: string;
-  metadata: {
-    fileName: string;
-    fileSize: string;
-    totalPages: number;
-    processingTime: string;
-    statistics: {
-      totalCharacters: number;
-      totalWords: number;
-      averageCharactersPerPage: number;
-      averageWordsPerPage: number;
-      averageConfidence?: number;
-    }
-  };
-  pages: OcrPage[];
-}
+import { OcrResponse } from '../../interfaces/ocr.interface';
+import { OcrTextViewerComponent } from '../ui/ocr-text-viewer/ocr-text-viewer.component';
+import { ActionButtonComponent } from '../ui/action-button/action-button.component';
 
 @Component({
   selector: 'app-ocr-viewer',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [CommonModule, FormsModule, OcrTextViewerComponent, ActionButtonComponent],
   templateUrl: './ocr-viewer.component.html',
   styleUrl: './ocr-viewer.component.css'
 })
 export class OcrViewerComponent implements OnInit {
   @Input() ocrData: OcrResponse | null = null;
-  currentPage: number = 1;
   isEditing: boolean = false;
   editingText: string = '';
+  currentPage: number = 1;
+  totalPages: number = 0;
   user: any;
   errorMessage: string = '';
   isRevision = false;
   taskId: number = 0;
-pagesPerView: number = 5;
-totalPages: number = 0;
+  formData?: FormData;
 
-  
   constructor(private router: Router, 
-    private orderManagmentService:OrderManagmentService,
+    private orderManagmentService: OrderManagmentService,
     private route: ActivatedRoute,
     private authService: AuthService,
     private orderService: OrderService
   ) {}
-  
+
   ngOnInit(): void {
     this.taskId = Number(this.route.snapshot.paramMap.get('id'));
 
-    if (!this.ocrData) {
-      const storedData = localStorage.getItem('ocrData');
-      if (storedData) {
-        this.ocrData = JSON.parse(storedData);
-      } else {
-        this.router.navigate(['/upload']);
-      }
+    const storedData = localStorage.getItem('ocrData');
+    if (storedData) {
+      this.ocrData = JSON.parse(storedData);
+      this.totalPages = this.ocrData?.metadata?.totalPages ?? 1; // Evita undefined/null
     }
-    
+
     this.orderService.getTaskById(this.taskId).subscribe(task => {
       this.isRevision = task?.status === 'En Revisión';
       console.log('Estado de la tarea:', task?.status);
     });
-  
+
     this.authService.getCurrentUser().subscribe({
       next: (userData) => {
         this.user = userData;
@@ -92,7 +62,32 @@ totalPages: number = 0;
   }
 
   finalizarProceso(): void {
-    this.orderManagmentService.changeStatus(this.taskId, 'En Revisión').subscribe({
+    const getFormData = this.getFormData('En Revisión');
+    this.orderManagmentService.changeStatus(getFormData).subscribe({
+      next: () => {
+        this.router.navigate(['/tasks/']);
+      },
+      error: (err) => {
+        console.error('Error al cambiar el estado:', err);
+      }
+    });
+  }
+  
+  denegarResultado(): void {
+    const getFormData = this.getFormData('Denegada');
+    this.orderManagmentService.changeStatus(getFormData).subscribe({
+      next: () => {
+        this.router.navigate(['/tasks/']);
+      },
+      error: (err) => {
+        console.error('Error al cambiar el estado:', err);
+      }
+    });
+  }
+  
+  finalizarRevision(): void {
+    const getFormData = this.getFormData('Completada');
+    this.orderManagmentService.changeStatus(getFormData).subscribe({
       next: () => {
         this.router.navigate(['/tasks/']);
       },
@@ -102,123 +97,34 @@ totalPages: number = 0;
     });
   }
 
-  denegarResultado(): void {
-    this.orderManagmentService.changeStatus(this.taskId, 'Denegada').subscribe({
-      next: () => {
-        this.router.navigate(['/tasks/']);
-      },
-      error: (err) => {
-        console.error('Error al cambiar el estado:', err);
-      }
-    })
+  getFormData(status: string): FormData {
+    this.formData = new FormData();
+    this.formData.append('id', this.taskId.toString());
+    this.formData.append('status', status);
+    return this.formData;
   }
 
-  finalizarRevision(): void {
-    this.orderManagmentService.changeStatus(this.taskId, 'Completada').subscribe({
-      next: () => {
-        this.router.navigate(['/tasks/']);
-      },
-      error: (err) => {
-        console.error('Error al cambiar el estado:', err);
-      }
-    })
-  }
-  
-  /**
-   * Cambia a la página especificada
-   * @param pageNumber Número de página a mostrar
-   */
   goToPage(pageNumber: number): void {
-    if (this.ocrData && pageNumber >= 1 && pageNumber <= this.ocrData.metadata.totalPages) {
+    if (pageNumber >= 1 && pageNumber <= this.totalPages) {
       this.currentPage = pageNumber;
-      this.isEditing = false;
     }
   }
-  
-  /**
-   * Obtiene la página actual
-   */
-  getCurrentPage(): OcrPage | null {
-    if (!this.ocrData || !this.ocrData.pages) return null;
-    return this.ocrData.pages.find(page => page.number === this.currentPage) || null;
-  }
-  
-  /**
-   * Inicia la edición del texto de la página actual
-   */
+
   startEditing(): void {
-    const currentPage = this.getCurrentPage();
-    if (currentPage) {
-      this.editingText = currentPage.text;
-      this.isEditing = true;
-    }
+    this.isEditing = true;
   }
-  
-  /**
-   * Guarda los cambios realizados en el texto
-   */
+
   saveChanges(): void {
     if (!this.ocrData || !this.isEditing) return;
-    
-    const pageIndex = this.ocrData.pages.findIndex(page => page.number === this.currentPage);
-    if (pageIndex !== -1) {
-      // Actualizar el texto
-      this.ocrData.pages[pageIndex].text = this.editingText;
-      
-      // Recalcular caracteres y palabras
-      this.ocrData.pages[pageIndex].characters = this.editingText.length;
-      this.ocrData.pages[pageIndex].words = this.countWords(this.editingText);
-      
-      // Recalcular estadísticas globales
-      this.recalculateStats();
-      
-      // Guardar en localStorage para persistencia
-      localStorage.setItem('ocrData', JSON.stringify(this.ocrData));
-      
-      this.isEditing = false;
-    }
-  }
-  
-  /**
-   * Cancela la edición sin guardar cambios
-   */
-  cancelEditing(): void {
+    localStorage.setItem('ocrData', JSON.stringify(this.ocrData));
     this.isEditing = false;
   }
-  
-  /**
-   * Cuenta las palabras en un texto
-   * @param text Texto a analizar
-   * @returns Número de palabras
-   */
-  private countWords(text: string): number {
-    return text.split(/\s+/).filter(word => word.length > 0).length;
-  }
-  
-  /**
-   * Recalcula las estadísticas globales del documento
-   */
-  private recalculateStats(): void {
-    if (!this.ocrData) return;
-    
-    let totalCharacters = 0;
-    let totalWords = 0;
-    
-    this.ocrData.pages.forEach(page => {
-      totalCharacters += page.characters;
-      totalWords += page.words;
-    });
-    
-    this.ocrData.metadata.statistics.totalCharacters = totalCharacters;
-    this.ocrData.metadata.statistics.totalWords = totalWords;
-    this.ocrData.metadata.statistics.averageCharactersPerPage = 
-      totalCharacters / this.ocrData.metadata.totalPages;
-    this.ocrData.metadata.statistics.averageWordsPerPage = 
-      totalWords / this.ocrData.metadata.totalPages;
+
+  cancelEditing(): void {
+    this.isEditing = false;
   }
 
   isToRevision(): boolean {
     return this.isRevision;
   }
-
 }

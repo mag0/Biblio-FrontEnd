@@ -1,0 +1,44 @@
+<div class="bg-gray-100 p-4 rounded-md mt-4">
+  <div *ngIf="!isEditing" class="bg-gray-200 p-4 rounded-md h-96 overflow-auto">
+    <pre class="whitespace-pre-wrap font-mono">{{ getCurrentPage()?.text }}</pre>
+  </div>
+  <div *ngIf="isEditing">
+    <textarea [(ngModel)]="editingText"
+      class="w-full h-96 border border-gray-400 rounded-md p-2 mt-2 whitespace-pre-wrap overflow-auto"></textarea>
+    <div class="flex justify-end gap-4 mt-4">
+      <button (click)="onSaveChanges()"
+        class="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 transition">
+        Guardar cambios
+      </button>
+      <button (click)="cancelEditing.emit()"
+        class="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600 transition">
+        Cancelar
+      </button>
+    </div>
+  </div>
+  <div class="flex justify-end mt-4">
+    <button *ngIf="!isEditing" (click)="onStartEditing()"
+      class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition">
+      Editar texto
+    </button>
+  </div>
+</div>
+
+<div *ngIf="ocrData" class="flex justify-center gap-2 mt-4">
+  <button *ngIf="currentPage > 1" (click)="goToPage(currentPage - 1)"
+    class="bg-gray-300 px-3 py-1 rounded-md hover:bg-blue-600 transition">
+    ←
+  </button>
+
+  <button *ngFor="let page of ocrData.pages.slice(currentPage - 1, currentPage - 1 + pagesPerView)"
+    (click)="goToPage(page.number)"
+    [ngClass]="{'bg-blue-500 text-white': currentPage === page.number, 'bg-gray-300': currentPage !== page.number}"
+    class="px-3 py-1 rounded-md hover:bg-blue-600 transition">
+    {{ page.number }}
+  </button>
+
+  <button *ngIf="currentPage + pagesPerView <= totalPages" (click)="goToPage(currentPage + 1)"
+    class="bg-gray-300 px-3 py-1 rounded-md hover:bg-blue-600 transition">
+    →
+  </button>
+</div>

@@ -1,76 +1,24 @@
 <div class="container max-w-5xl mx-auto mt-10 bg-white shadow-lg rounded-lg border border-blue-500 p-6">
   <div class="flex justify-between items-center mb-6">
     <h5 class="text-xl font-semibold text-blue-600">Visualizador OCR</h5>
-    <div class="flex gap-4">
-      <button *ngIf="!isToRevision()" (click)="finalizarProceso()" class="bg-green-500 text-white px-4 py-2 rounded-md">
-        <i class="fas fa-check"></i>
-        Finalizar proceso
-      </button>
+    <div *ngIf="!isToRevision()" class="flex gap-4">
+      <app-action-button label="Finalizar proceso" styleEdit="bg-green-500 hover:bg-green-600"
+        [onActionClick]="finalizarProceso.bind(this)" />
     </div>
     <div class="flex gap-4" *ngIf="isToRevision()">
-      <button (click)="denegarResultado()" class="bg-orange-500 text-white px-4 py-2 rounded-md">
-        <i class="fas fa-times"></i>
-        Denegar resultado
-      </button>
-      <button (click)="finalizarRevision()" class="bg-green-500 text-white px-4 py-2 rounded-md">
-        <i class="fas fa-check"></i>
-        Finalizar revisión
-      </button>
+      <app-action-button label="Denegar resultado" styleEdit="bg-orange-500 hover:bg-orange-600"
+        [onActionClick]="denegarResultado.bind(this)" />
+      <app-action-button label="Finalizar revisión" styleEdit="bg-green-500 hover:bg-orange-600"
+        [onActionClick]="finalizarRevision.bind(this)" />
     </div>
   </div>
 
   <div *ngIf="!ocrData" class="bg-gray-200 text-center p-6 rounded-md">
-    <p class="text-blue-600">No hay datos OCR disponibles. Por favor, procese un documento primero.</p>
-    <button routerLink="/upload" class="bg-blue-500 text-white px-4 py-2 rounded-md mt-4 hover:bg-blue-600 transition">
-      Ir a cargar documento
-    </button>
+    <p class="text-blue-600">No hay datos OCR disponibles.</p>
   </div>
 
-  <div class="bg-gray-100 p-4 rounded-md mt-4">
-    <div *ngIf="!isEditing" class="bg-gray-200 p-4 rounded-md h-96 overflow-auto">
-      <pre class="whitespace-pre-wrap font-mono">{{ getCurrentPage()?.text }}</pre>
-    </div>
-    <div *ngIf="isEditing">
-      <textarea [(ngModel)]="editingText"
-        class="w-full h-96 border border-gray-400 rounded-md p-2 mt-2 whitespace-pre-wrap overflow-auto"></textarea>
-      <div class="flex justify-end gap-4 mt-4">
-        <button (click)="saveChanges()"
-          class="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 transition">
-          Guardar cambios
-        </button>
-        <button (click)="cancelEditing()"
-          class="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600 transition">
-          Cancelar
-        </button>
-      </div>
-    </div>
-    <div class="flex justify-end mt-4">
-      <button *ngIf="!isEditing" (click)="startEditing()"
-        class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition">
-        Editar texto
-      </button>
-    </div>
-  </div>
-
-  <div *ngIf="ocrData" class="flex justify-center gap-2 mt-4">
-    <!-- Botón para retroceder -->
-    <button *ngIf="currentPage > 1" (click)="goToPage(currentPage - 1)"
-      class="bg-gray-300 px-3 py-1 rounded-md hover:bg-blue-600 transition">
-      ←
-    </button>
-
-    <!-- Páginas visibles -->
-    <button *ngFor="let page of ocrData.pages.slice(currentPage - 1, currentPage - 1 + pagesPerView)"
-      (click)="goToPage(page.number)"
-      [ngClass]="{'bg-blue-500 text-white': currentPage === page.number, 'bg-gray-300': currentPage !== page.number}"
-      class="px-3 py-1 rounded-md hover:bg-blue-600 transition">
-      {{ page.number }}
-    </button>
-
-    <!-- Botón para avanzar -->
-    <button *ngIf="currentPage + pagesPerView <= totalPages" (click)="goToPage(currentPage + 1)"
-      class="bg-gray-300 px-3 py-1 rounded-md hover:bg-blue-600 transition">
-      →
-    </button>
-  </div>
+  <app-ocr-text-viewer [ocrData]="ocrData" [currentPage]="currentPage" [isEditing]="isEditing"
+    [editingText]="editingText" (editClicked)="startEditing()" (saveChanges)="saveChanges()"
+    (cancelEditing)="cancelEditing()" (pageChange)="goToPage($event)">
+  </app-ocr-text-viewer>
 </div>

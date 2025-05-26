@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AuthService, User } from '../../services/auth.service';
 import { Router, RouterModule } from '@angular/router';
+import { ActionButtonComponent } from '../ui/action-button/action-button.component';
 
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule],
+  imports: [CommonModule, FormsModule, RouterModule, ActionButtonComponent],
   templateUrl: './profile.component.html',
 })
 export class ProfileComponent implements OnInit {

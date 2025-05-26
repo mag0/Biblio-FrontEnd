@@ -76,7 +76,7 @@
 
     <div class="flex justify-between items-center mt-6">
       <app-action-button type="button" label="Volver" [onActionClick]="goBack.bind(this)" styleEdit="bg-orange-500" />
-      <app-action-button type="submit" label="Guardar tarea" styleEdit="bg-blue-500" />
+      <app-action-button type="submit" label="{{isEditMode ? 'Actualizar' : 'Crear'}}" styleEdit="bg-blue-500" />
     </div>
 
   </form>

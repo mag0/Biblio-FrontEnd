@@ -80,7 +80,6 @@ export class FormTaskComponent implements OnInit {
   }
 
   onSubmit(): void {
-    console.log(this.formTask);
     if (this.formTask.valid) {
       const formData = new FormData();
       formData.append('name', this.formTask.get('name')?.value);

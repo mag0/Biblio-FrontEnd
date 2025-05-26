@@ -12,5 +12,5 @@ export class ActionButtonComponent {
   @Input() label: string = '';
   @Input() type: string = '';
   @Input() styleEdit: string = '';
-  @Input() onActionClick: () => void = () => '';
+  @Input() onActionClick: () => any = () => '';
 }

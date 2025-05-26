@@ -21,8 +21,8 @@ export class OrderManagmentService {
     return this.http.get<any[]>(`${this.apiUrl}/assigned?UserId=${UserId}`);
   }
 
-  changeStatus(orderId: number, newStatus: string): Observable<any> {
-    return this.http.put(`${this.apiUrl}/changeStatus?orderId=${orderId}&newStatus=${newStatus}`, {});
+  changeStatus(formData: FormData): Observable<any> {
+    return this.http.put(`${this.apiUrl}/changeStatus`, {id: formData.get('id'), status: formData.get('status')});
   }
 
 }
